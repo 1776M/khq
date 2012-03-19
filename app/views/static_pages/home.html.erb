@@ -6,7 +6,9 @@
     <a href="http://railstutorial.org/">Ruby on Rails Tutorial</a>
     sample application.
   </h2>
-
-  <%= link_to "Sign up now!", '#', class: "btn btn-large btn-primary" %>
+  <% if signed_in? %>
+  <% else %>
+    <%= link_to "Sign up now!", signup_path , class: "btn btn-large btn-primary" %>
+  <% end %>
 </div>
 
