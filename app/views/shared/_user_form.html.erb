@@ -1,5 +1,5 @@
-<%= provide(:title, 'Sign up') %>
-<h1>Sign up</h1>
+<%= provide(:title, 'Add a user to the group') %>
+<h1>Add a user to the group</h1>
 
 <div class="row">
   <div class="span6 offset3">
@@ -18,7 +18,12 @@
       <%= f.label :password_confirmation, "Confirmation" %>
       <%= f.password_field :password_confirmation %>
 
-      <%= f.submit "Create my account", :class => "btn btn-large btn-primary" %>
+      <%= hidden_field_tag :group_id, @group.id %>
+  
+      <%= f.label :admin_status? %>
+      <%= f.check_box :admin %> 
+
+      <%= f.submit "Add user", :class => "btn btn-large btn-primary" %>
     <% end %>
   </div>
 </div>

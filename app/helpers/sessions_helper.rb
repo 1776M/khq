@@ -35,6 +35,14 @@ module SessionsHelper
     session[:return_to] = request.fullpath
   end
 
+  def current_user_superadmin(user)
+    user.name == 'mandeep3'  
+  end
+
+  def current_user_admin(user, group)
+    (user.admin==true  ||  user.name == 'mandeep3')
+  end
+
   private
 
     def user_from_remember_token

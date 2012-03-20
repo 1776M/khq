@@ -1,0 +1,16 @@
+<% provide(:title, "Edit group name") %> 
+<h1>Edit your group name</h1>
+
+<div class="row">
+  <div class="span6 offset3">
+  <%= form_for(@group) do |f| %>
+      <%= render 'shared/error_messages', :object => f.object %>
+
+      <%= f.label :group_name %>
+      <%= f.text_field :group_name %>
+
+      <%= f.submit "Save changes", :class => "btn btn-large btn-primary" %>
+    <% end %>
+
+  </div>
+</div>

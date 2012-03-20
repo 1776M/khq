@@ -6,8 +6,12 @@ class UsersController < ApplicationController
 
   def destroy
     User.find(params[:id]).destroy
-    flash[:success] = "User destroyed."
-    redirect_to users_path
+    flash[:success] = "User deleted"
+    if current_user.name == 'mandeep3'     
+        redirect_to groups_path
+    else
+        redirect_to group_path(current_user.group_id)
+    end
   end
 
   def index
@@ -23,13 +27,17 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(params[:user])
+    @group = Group.find(params[:group_id])    
+    @user = @group.users.build(params[:user])
+    if params[:user][:admin]==true 
+        @user.admin=true
+    end
     if @user.save
-      sign_in @user
+      # sign_in @user
       flash[:success] = "Welcome to the Sample App!"
-      redirect_to @user
+      redirect_to groups_path
     else
-      render 'new'
+      redirect_to group_path(@group.id)
     end
   end 
 
@@ -61,7 +69,7 @@ class UsersController < ApplicationController
     end
 
     def admin_user
-      redirect_to(root_path) unless current_user.admin?
+      redirect_to(root_path) unless current_user.admin?  || current_user.name == 'mandeep3'
     end
 
 end
