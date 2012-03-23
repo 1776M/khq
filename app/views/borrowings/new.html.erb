@@ -1,0 +1,27 @@
+<%= provide(:title, 'Add borrowing data') %>
+<h1>Add borrowing data</h1>
+
+<div class="row">
+  <div class="span12">
+
+    <%= form_for @borrowing, {:class => "form-inline"} do |f| %>
+      <%= render 'shared/error_messages', :object => f.object %>
+
+      <%= f.text_field :size, :class=> "input-small", :placeholder=>"size" %>
+
+      <%= f.text_field :coupon, :class=> "input-small", :placeholder=>"coupon" %>
+
+      <%= f.text_field :issue_year, :class=> "input-small", :placeholder=>"issue year" %>
+
+      <%= f.text_field :maturity_year, :class=> "input-small", :placeholder=>"maturity year" %>
+
+      <%= f.text_field :currency, :class=> "input-small", :placeholder=>"currency" %>
+
+      <%= f.select :fixed_float, options_for_select([['Fixed','Fixed'],['Float',Float]]), :class=> "input-small", :placeholder=>"fixed/float" %>
+
+      <%= hidden_field_tag :basecase_id, @basecase.id %>
+ 
+      <%= f.submit "Submit", :class => "btn"  %>
+    <% end %>
+  </div>
+</div>
