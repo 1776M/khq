@@ -1,9 +1,11 @@
 Khq::Application.routes.draw do
   
+
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
   resources :groups
-  resources :projects, :only => [:create, :destroy, :show] 
+  resources :projects, :only => [:create, :destroy, :show]
+  resources :basecases, :only => [:create, :destroy, :show] 
 
   root to: 'static_pages#home'
 

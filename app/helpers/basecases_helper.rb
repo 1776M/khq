@@ -1,0 +1,2 @@
+module BasecasesHelper
+end

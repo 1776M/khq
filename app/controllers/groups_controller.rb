@@ -12,10 +12,9 @@ class GroupsController < ApplicationController
   def show
       @group = Group.find(params[:id])
       @users = @group.users
-      # @basecases = @group.basecases
-      # @title = @group.group_name
+      @basecases = @group.basecases
       @user = User.new if signed_in?
-      # @basecase = Basecase.new if signed_in? 
+      @basecase = Basecase.new if signed_in? 
   end
 
   def create

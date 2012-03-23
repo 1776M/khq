@@ -2,6 +2,24 @@
   <%= @group.group_name %> 
 </h1>
 
+<h3>
+   Financial data
+</h3>  
+
+  <% @basecases.each do |basecase| %>
+     <li>
+       <%= link_to 'Update your business financials', basecase %>
+       <%if current_user.name == 'mandeep3' %>
+
+              <%= link_to "delete", basecase,   :method => :delete,
+                                                :confirm => "You sure?" %>
+      <% end%>
+     </li>
+  <% end %>
+
+<br/><br/>
+<hr>
+
 
         <%= render 'shared/user_form' %>
 
@@ -17,4 +35,17 @@
                                           :title => user.name %>
      <% end%>
    </li>
+<% end %>
+
+
+<% if @group.basecases.count < 1 %>
+  <% if current_user.name == 'mandeep3' %>
+    <table class="front" summary="For signed-in users">
+        <tr>
+          <td class="main">
+            <%= render 'shared/basecase_form' %>
+          </td>
+        </tr>
+    </table>
+  <% end %>
 <% end %>
