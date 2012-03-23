@@ -20,6 +20,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @projects = @user.projects
+    @project = Project.new if signed_in?
   end
 
   def new

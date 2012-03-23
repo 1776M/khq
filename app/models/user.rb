@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
     has_secure_password
     before_save :create_remember_token
 
-
+    has_many :projects, :dependent => :destroy
     belongs_to :group
 
     validates :name, presence: true, length: { maximum: 50 }

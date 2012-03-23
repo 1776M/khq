@@ -1,2 +1,19 @@
 <% provide(:title, @user.name) %>
 <%= @user.name %>, <%= @user.email %>, <%= @user.admin %>
+
+<table class="front" summary="For signed-in users">
+    <tr>
+      <td class="main">
+        <%= render 'shared/project_form' %>
+      </td>
+    </tr>
+</table>
+
+<hr><br/>
+
+<h3 class="project">Your current projects</h3>
+<% unless @user.projects.empty? %>
+     <table class="projects" summary="User projects">
+        <%= render @projects %>
+     </table>        
+<% end %>
