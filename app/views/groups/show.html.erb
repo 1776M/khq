@@ -30,9 +30,10 @@
    <li>
      <%= link_to user.name, user %>
      <%if user.admin? && user.name!=current_user.name %>
-            <%= link_to "delete", user,   :method => :delete,
+              <%= link_to "delete", user,   :method => :delete,
                                           :confirm => "You sure?",
                                           :title => user.name %>
+            
      <% end%>
    </li>
 <% end %>
