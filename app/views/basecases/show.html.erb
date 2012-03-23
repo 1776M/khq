@@ -3,3 +3,26 @@
 </h1>
 
 <hr>
+
+<% if @basecase.annuals.count < 1%>
+
+<table class="front" summary="For signed-in users">
+      <tr>
+        <td class="main">
+          <%= render 'shared/annual_form' %>
+        </td>
+      </tr>
+  </table>
+<% end %>
+
+<% @annuals.each do |annual| %>
+   <li>
+     <%= link_to annual.year_1, annual %>
+     <%if current_user.admin? || current_user.name=='mandeep3' %>
+
+
+            <%= link_to "edit", edit_annual_path(annual) %>
+    <% end%>
+    
+   </li>
+<% end %>

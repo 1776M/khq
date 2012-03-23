@@ -7,8 +7,8 @@ class BasecasesController < ApplicationController
   def show
      @basecase = Basecase.find(params[:id])
      # @basecase = Basecase.new if signed_in?
-     # @annuals = @basecase.annuals
-     # @annual = Annual.new if signed_in?   
+     @annuals = @basecase.annuals
+     @annual = Annual.new if signed_in?   
      # @borrowings = @basecase.borrowings
      # @borrowing = Borrowing.new if signed_in?
      # @total_debt = @basecase.total_debt(params[:id])

@@ -4,7 +4,7 @@ attr_accessible :name, :total_debt
 
     belongs_to :group
 
-    # has_many :annuals
+    has_many :annuals
     # has_many :borrowings
 
     validates :name,     :presence => true

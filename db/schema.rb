@@ -11,7 +11,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120323120253) do
+ActiveRecord::Schema.define(:version => 20120323154944) do
+
+  create_table "annuals", :force => true do |t|
+    t.float    "year_0"
+    t.float    "year_1"
+    t.float    "year_2"
+    t.float    "year_3"
+    t.float    "year_4"
+    t.float    "year_5"
+    t.float    "year_6"
+    t.float    "year_7"
+    t.float    "year_8"
+    t.float    "year_9"
+    t.float    "year_10"
+    t.integer  "basecase_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "basecases", :force => true do |t|
     t.string   "name",       :default => "Core data"
