@@ -25,7 +25,6 @@
       <%= f.label :fixed_float %>
       <%= f.select :fixed_float, options_for_select([['Fixed','Fixed'],['Float',Float]]) %>
 
-      <%= f.hidden_field :top_borrowing, :value => borrowing.id %>
       <%= hidden_field_tag :scenario_id, @scenario.id %>
  
       <%= f.submit "Submit", :class => "btn"  %>
