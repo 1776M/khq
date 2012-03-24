@@ -3,3 +3,153 @@
 </h1>
 
 <hr><br/>
+
+<h1>EBITDA for the scenario</h1>
+
+<% if @scenario.actannuals.count < 1 %>
+<table class="front" summary="For signed-in users">
+      <tr>
+        <td class="main">
+  
+            <%= form_for @actannual do |f| %>
+              <%= render 'shared/error_messages', :object => f.object %>
+
+              <%= f.label :year_one %>
+              <%= f.text_field :year_0, :value => @annual.year_0 %>
+
+              <%= f.label :year_two %><br />  
+              <%= f.text_field :year_1, :value => @annual.year_1 %>
+
+              <%= f.label :year_three %><br />
+              <%= f.text_field :year_2, :value => @annual.year_2 %>
+
+              <%= f.label :year_four %><br />
+              <%= f.text_field :year_3, :value => @annual.year_3 %>
+
+              <%= f.label :year_five %><br />
+              <%= f.text_field :year_4, :value => @annual.year_4 %>
+
+              <%= f.label :year_six %><br />
+              <%= f.text_field :year_5, :value => @annual.year_5 %>
+
+              <%= hidden_field_tag :scenario_id, @scenario.id %>
+              <div class="actions">
+                <%= f.submit "Submit" %>
+              </div>
+            <% end %>
+
+        </td>
+      </tr>
+</table>
+<% end %>
+
+
+<% @actannuals.each do |actannual| %>
+   <li>
+     <%= link_to actannual.year_one, actannual %>
+     <%if current_user.admin? || current_user.name=='mandeep3' %>
+
+            <%= link_to "delete", actannual,   :method => :delete,
+                                               :confirm => "You sure?" %>
+            <%= link_to "edit", edit_actannual_path(actannual) %>
+    <% end %>
+    
+   </li>
+<% end %>
+
+<br/><br/><hr><br/>
+
+<h1>Edit or accept the existing debt portfolio for this scenario</h1>
+
+<% 
+     arr = Array.new 
+     @borrowings.each do |borrowing| 
+         arr << borrowing.id     
+     end
+%>
+
+
+<% arr.each do |i| %>
+<% j = 0 %>      
+
+      <% @actborrowings.each do |actborrowing| %>
+          <% if actborrowing.top_borrowing == i %> 
+              <li>
+                  <%= link_to actborrowing.size, actborrowing %>
+
+              <%if current_user.admin? || current_user.name=='mandeep3' %>
+
+                  <%= link_to "delete", actborrowing,   :method => :delete,
+                                                        :confirm => "You sure?" %>
+                  <%= link_to "edit", edit_actborrowing_path(actborrowing) %>
+              <% end%>
+              </li> 
+         <%  j = 1 %>
+         <% end %>
+     <% next %>
+     <% end %> 
+      
+
+              <% @borrowings.each do |borrowing| %>
+                  <% if j > 0 || borrowing.id != i %>
+                  <% next %>
+                  <% else %> 
+                  <%= form_for @actborrowing do |f| %>
+                      <%= render 'shared/error_messages', :object => f.object %>
+                      <div class="field">
+                        <%= f.label :size %><br />
+                        <%= f.text_field :size, :value => borrowing.size %>
+                      </div>
+                      <div class="field">
+                        <%= f.label :coupon %> (for floating debt enter the credit spread)<br />
+                        <%= f.text_field :coupon, :value => borrowing.coupon %>
+                      </div>
+                      <div class="field">
+                        <%= f.label :issue_year %><br />
+                        <%= f.text_field :issue_year, :value => borrowing.issue_year %>
+                     </div>
+                     <div class="field">
+                       <%= f.label :maturity_year %><br />
+                       <%= f.text_field :maturity_year, :value => borrowing.maturity_year %>
+                     </div>
+                     <div class="field">
+                       <%= f.label :currency %><br />
+                       <%= f.text_field :currency, :value => borrowing.currency %>
+                     </div>
+                     <div class="field">
+                       <%= f.label :fixed_float %><br />
+                       <%= f.text_field :fixed_float, :value => borrowing.fixed_float %>
+                     </div>
+                     <%= f.hidden_field :top_borrowing, :value => borrowing.id %>
+                     <%= hidden_field_tag :scenario_id, @scenario.id %>
+                     <div class="actions">
+                       <%= f.submit "Submit" %>
+                     </div>
+                <% end %>
+                <% end %>
+           <% end %>
+
+<% end %>
+
+<h1>Add new debt for this scenario</h1>
+
+      <% @actborrowings.each do |actborrowing| %>
+          <% if actborrowing.top_borrowing.nil? %> 
+              <li>
+                  <%= link_to actborrowing.size, actborrowing %>
+
+              <%if current_user.admin? || current_user.name=='mandeep3' %>
+
+                  <%= link_to "delete", actborrowing,   :method => :delete,
+                                                        :confirm => "You sure?" %>
+                  <%= link_to "edit", edit_actborrowing_path(actborrowing) %>
+              <% end%>
+              </li> 
+         <%  j = 1 %>
+         <% end %>
+     <% next %>
+     <% end %> 
+
+
+
+

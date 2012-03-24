@@ -29,3 +29,232 @@
 <% end %>
 
 <br/><hr><br/>
+
+<h1>Total debt</h1>
+<% total_debt_name = [] %>
+<% total_debt_amount = []%>
+<% @scenarios.each do |scenario| %>
+  <% @total_debt = scenario.total_debt(scenario.id) %>
+  <% if @total_debt.count > 0 %>
+       <b><%=scenario.name %></b><br />
+       <% total_debt_name << scenario.name %>
+     
+       <% total = 0 %>
+       <% @total_debt.each do |total_debt| %> 
+            <% total = total_debt.size + total  %>  
+       <% end %>
+       <%= total %><br /><br />
+       <% total_debt_amount << total %>
+  <% end # end if %>     
+<% end %>
+<br />
+<img src="<%=Gchart.bar(:data => total_debt_amount, :labels => total_debt_name, :bar_width_and_spacing => [19,40], :legend => total_debt_amount)%>">
+
+<hr><br/>
+
+<h1>Fixed percent of debt</h1>
+
+<% fixed_debt_name = [] %>
+<% fixed_debt_amount = [] %>
+
+<% @scenarios.each do |scenario| %>
+  <% @total_debt = scenario.total_debt(scenario.id) %>
+  <% if @total_debt.count > 0 %>
+  <% @fixed_percent = scenario.fixed_percent(scenario.id) %>
+       <b><%=scenario.name %></b><br />
+       <% fixed_debt_name << scenario.name %>
+
+       <% total = 0 %>
+       <% @total_debt.each do |total_debt| %> 
+            <% total = total_debt.size + total  %>  
+       <% end %>
+     
+       <% fixed = 0 %>
+       <% @fixed_percent.each do |fixed_percent| %>
+            <% fixed = fixed_percent.size + fixed  %>  
+       <% end %>
+       <% if total > 0 %>
+            <%= ((fixed/total)*100).round(2) %><br /><br />
+       <% else %>
+            <%= 0 %><br /><br />
+       <% end %>
+       <% fixed_debt_amount << fixed %>
+  <% end %>
+  <% end # end if %>
+<br/>
+<img src="<%=Gchart.bar(:data => fixed_debt_amount, :labels => fixed_debt_name, :bar_width_and_spacing => [19,40], :legend => fixed_debt_amount)%>">
+
+<hr><br/>
+
+<h1>Currency mix of debt</h1>
+
+<% @scenarios.each do |scenario| %>
+  <% @total_debt = scenario.total_debt(scenario.id) %>
+  <% if @total_debt.count > 0 %>
+  <% currency_name = [] %>
+  <% currency_amount = []%>
+  <% @currency_percent = @scenario.total_debt(scenario.id).group_by{|c| c.currency } %>
+       <b><%=scenario.name %></b><br />
+       <% total = 0 %>
+       <% @total_debt.each do |total_debt| %> 
+            <% total = total_debt.size + total  %>  
+       <% end %>
+     
+       <% @currency_percent.each do |currency, debt|  %>
+       <% total_currency = 0 %>
+       <h3><%= currency %></h3>
+       <% currency_name << currency %>   
+         <% debt.each do |debt| %>
+             <% total_currency = debt.size + total_currency  %>  
+         <% end %>   
+         <% if total > 0 %>
+              <%= ((total_currency/total)*100).round(2) %><br /><br />
+         <% else %>
+            <%= 0 %><br /><br />
+         <% end %>
+         <% currency_amount << total_currency %>
+       <% end %>
+       <br />
+       <img src="<%=Gchart.pie(:data => currency_amount, :labels => currency_amount, :legend => currency_name)%>">
+       <br />  
+  <% end # end if %>      
+<% end %>
+
+<br/><hr><br/>
+
+<h1>Floating percent of debt</h1>
+<% @scenarios.each do |scenario| %>
+  <% @total_debt = scenario.total_debt(scenario.id) %>
+  <% if @total_debt.count > 0 %>
+  <% fixed_float_name = [] %>
+  <% fixed_float_amount = []%>
+  <% @float_percent = @scenario.total_debt(scenario.id).group_by{|c| c.fixed_float } %>
+       <b><%=scenario.name %></b><br />
+
+       <% total = 0 %>
+       <% @total_debt.each do |total_debt| %> 
+            <% total = total_debt.size + total  %>  
+       <% end %>
+     
+
+         <% @float_percent.each do |fixed_float, debt| %>
+              <% total_float = 0 %>
+              <h3><%= fixed_float %></h3>
+              <% fixed_float_name << fixed_float %>
+              <% debt.each do |debt| %>  
+                <% total_float = debt.size + total_float  %>
+              <% end %>  
+              <% if total > 0 %>
+                <%= ((total_float/total)*100).round(2) %><br /><br />
+              <% else %>
+                <%= 0 %><br /><br />
+              <% end %>
+              <% fixed_float_amount << total_float %>
+         <% end %>
+         <br />
+         <img src="<%=Gchart.pie(:data => fixed_float_amount, :labels => fixed_float_amount, :legend => fixed_float_name)%>">
+         <br />
+  <% end # end if %>      
+<% end %>
+
+<br/><hr><br/>
+
+<h1>Term mix of debt</h1>
+<% @scenarios.each do |scenario| %>
+  <% @total_debt = scenario.total_debt(scenario.id) %>
+  <% if @total_debt.count > 0 %>
+  <% term_name = [] %>
+  <% term_amount = []%>
+  <% @maturity_percent = @scenario.total_debt(scenario.id).group_by{|c| c.maturity_year - c.issue_year } %>
+       <b><%=scenario.name %></b><br />
+
+       <% total = 0 %>
+       <% @total_debt.each do |total_debt| %> 
+            <% total = total_debt.size + total  %>  
+       <% end %>
+     
+
+       <% @maturity_percent.each do |term, debt| %>
+         <% total_term = 0 %>
+         <h3><%= term %> years </h3>
+         <% term_name << term %>
+           <% debt.each do |debt| %>  
+              <% total_term = debt.size + total_term  %>  
+           <% end %>      
+         <% if total > 0 %>
+              <%= ((total_term/total)*100).round(2) %><br /><br />
+         <% else %>
+              <%= 0 %><br /><br />
+         <% end %>
+         <% term_amount << total_term %>
+       <% end %>
+       <br />
+       <img src="<%=Gchart.pie(:data => term_amount, :labels => term_amount, :legend => term_name)%>">
+       <br />
+  <% end %>       
+<% end %>
+
+<br/><hr><br/>
+
+<h1>Macaulay duration</h1>
+<% duration_name = [] %>
+<% duration_amount = []%> 
+<% @scenarios.each do |scenario| %>
+<% @total_debt = scenario.total_debt(scenario.id) %>
+  <% if @total_debt.count > 0%>
+
+     <b><%=scenario.name %></b><br />
+     <% duration_name << scenario.name %>
+
+     <% total = 0 %>
+     <% @total_debt.each do |total_debt| %> 
+          <% total = total_debt.size + total  %>  
+     <% end %>
+     <% if total > 0 %>         
+         <%= (scenario.macaulay_duration(scenario.id)/total).round(2) %><br />
+     <% else %>
+         <%= 0 %><br />
+     <% end %>
+     <% if total > 0 %>
+         <% duration_amount << (scenario.macaulay_duration(scenario.id)/total).round(2) %>  
+     <% end %>
+  <% end # end if %>
+<% end %>
+<br />
+<img src="<%=Gchart.bar(:data => duration_amount, :labels => duration_name, :bar_width_and_spacing => [19,40], :legend => duration_amount)%>">
+
+<br/><hr><br/>
+
+<h1>Annul interest expense</h1>
+
+<% @scenarios.each do |scenario| %>
+<% @total_debt = scenario.total_debt(scenario.id) %>
+  <% if @total_debt.count > 0 %>
+
+    <b><%=scenario.name %></b><br />
+
+    <% year_count = 0 %>
+    <% year_amount = [] %>
+    <% year = ['year 1', 'year 2', 'year 3'] %>
+    <% year.each do |year|%>
+    
+        <h3><%= year %></h3>
+        <% total = 0 %> 
+        <% @total_debt.each do |total_debt| %>
+             <% if (total_debt.maturity_year - Time.now.year - year_count) > 0 %>            
+                <% total = (total_debt.size * total_debt.coupon) + total  %>
+             <% else %>
+                <% total = total + 0 %>
+             <% end %> 
+        <% end %>
+        <%= total %>
+        <% year_amount << total %> 
+        <% year_count = year_count + 1 %>
+    <% end %>
+    <br />
+    <img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
+    <br/><br/>
+  <% end # end if %>
+<% end %>
+
+<hr><br/>
