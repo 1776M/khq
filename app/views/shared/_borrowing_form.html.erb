@@ -2,20 +2,25 @@
 <h1>Add borrowing data</h1>
 
 <div class="row">
-  <div class="span12">
+  <div class="span6 offset3">
 
-    <%= form_for @borrowing, {:class => "form-inline"} do |f| %>
+    <%= form_for @borrowing do |f| %>
       <%= render 'shared/error_messages', :object => f.object %>
 
-      <%= f.text_field :size, :class=> "input-small", :placeholder=>"size" %>
+      <%= f.label :size %>
+      <%= f.text_field :size %>
 
-      <%= f.text_field :coupon, :class=> "input-small", :placeholder=>"coupon" %>
+      <%= f.label :coupon %>
+      <%= f.text_field :coupon %>
 
-      <%= f.text_field :issue_year, :class=> "input-small", :placeholder=>"issue year" %>
+      <%= f.label :issue_year %>
+      <%= f.text_field :issue_year %>
 
-      <%= f.text_field :maturity_year, :class=> "input-small", :placeholder=>"maturity " %>
+      <%= f.label :maturity_year %>
+      <%= f.text_field :maturity_year %>
 
-      <%= f.text_field :currency, :class=> "input-small", :placeholder=>"currency" %>
+      <%= f.label :currency %>
+      <%= f.text_field :currency %>
 
       <%= f.label :fixed_float %>
       <%= f.select :fixed_float, options_for_select([['Fixed','Fixed'],['Float',Float]]) %>
