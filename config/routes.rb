@@ -7,6 +7,7 @@ Khq::Application.routes.draw do
   resources :basecases, :only => [:create, :destroy, :show] 
   resources :annuals
   resources :borrowings
+  resources :scenarios, :only => [:create, :destroy, :show]
 
   root to: 'static_pages#home'
 

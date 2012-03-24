@@ -7,3 +7,25 @@
 <h3>
   Add a scenario to your project, then compare scenarios
 </h3>
+
+<h6>Ensure your <%= link_to 'business financials', group_path(current_user.group.id) %> are up to date before creating a scenario</h6>
+
+  <table class="front" summary="For signed-in users">
+      <tr>
+        <td class="main">
+          <%= render 'shared/scenario_form' %>
+        </td>
+      </tr>
+  </table>
+
+
+<% @scenarios.each do |scenario| %>
+   <li>
+     <%= link_to scenario.name, scenario %>
+
+            <%= link_to "delete", scenario,   :method => :delete,
+                                              :confirm => "You sure?" %>
+   </li>
+<% end %>
+
+<br/><hr><br/>
