@@ -11,6 +11,7 @@ Khq::Application.routes.draw do
   resources :actannuals
   resources :actborrowings
   resources :forwardcurves
+  resources :swapcurves
 
   root to: 'static_pages#home'
 
