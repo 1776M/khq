@@ -1,10 +1,5 @@
 Khq::Application.routes.draw do
 
-
-  get "theannuals/new"
-
-  get "actborrowings/new"
-
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
   resources :groups
@@ -15,6 +10,7 @@ Khq::Application.routes.draw do
   resources :scenarios, :only => [:create, :destroy, :show]
   resources :actannuals
   resources :actborrowings
+  resources :forwardcurves
 
   root to: 'static_pages#home'
 

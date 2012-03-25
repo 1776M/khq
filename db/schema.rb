@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120324142708) do
+ActiveRecord::Schema.define(:version => 20120325095752) do
 
   create_table "actannuals", :force => true do |t|
     t.float    "year_0"
@@ -77,6 +77,24 @@ ActiveRecord::Schema.define(:version => 20120324142708) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
     t.string   "currency"
+  end
+
+  create_table "forwardcurves", :force => true do |t|
+    t.string   "currency"
+    t.float    "term"
+    t.float    "year_0"
+    t.float    "year_1"
+    t.float    "year_2"
+    t.float    "year_3"
+    t.float    "year_4"
+    t.float    "year_5"
+    t.float    "year_6"
+    t.float    "year_7"
+    t.float    "year_8"
+    t.float    "year_9"
+    t.float    "year_10"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "groups", :force => true do |t|

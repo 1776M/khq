@@ -1,0 +1,45 @@
+<%= form_for @forwardcurve do |f| %>
+  <%= render 'shared/error_messages', :object => f.object %>
+
+    <%= f.label :currency %>
+    <%= f.text_field :currency %>
+
+    <%= f.label :term %><br />
+    <%= f.text_field :term %>
+
+    <%= f.label :year_one %><br />
+    <%= f.text_field :year_0 %>
+
+    <%= f.label :year_two %><br />  
+    <%= f.text_field :year_1 %>
+
+    <%= f.label :year_three %><br />
+    <%= f.text_field :year_2 %>
+
+    <%= f.label :year_four %><br />
+    <%= f.text_field :year_3 %>
+
+    <%= f.label :year_five %><br />
+    <%= f.text_field :year_4 %>
+
+    <%= f.label :year_six %><br />
+    <%= f.text_field :year_5 %>
+
+    <%= f.label :year_seven %><br />
+    <%= f.text_field :year_6 %>
+
+    <%= f.label :year_eight %><br />
+    <%= f.text_field :year_7 %>
+
+    <%= f.label :year_nine %><br />
+    <%= f.text_field :year_8 %>
+
+    <%= f.label :year_ten %><br />
+    <%= f.text_field :year_9 %>
+
+    <%= f.label :year_ten %><br />
+    <%= f.text_field :year_10 %>
+
+    <%= f.submit "Submit" %>
+
+<% end %>
