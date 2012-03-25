@@ -4,7 +4,7 @@
 
 <hr><br/>
 
-<h1>EBITDA for the scenario</h1>
+<h2>EBITDA for the scenario</h2>
 
 <% if @scenario.actannuals.count < 1 %>
 <table class="front" summary="For signed-in users">
@@ -46,7 +46,7 @@
 
 <% @actannuals.each do |actannual| %>
    <li>
-     <%= link_to actannual.year_one, actannual %>
+     <%= link_to actannual.year_0, actannual %>
      <%if current_user.admin? || current_user.name=='mandeep3' %>
 
             <%= link_to "delete", actannual,   :method => :delete,
@@ -59,7 +59,7 @@
 
 <br/><br/><hr><br/>
 
-<h1>Edit or accept the existing debt portfolio for this scenario</h1>
+<h2>Edit or accept the existing debt portfolio for this scenario</h2>
 
 <% 
      arr = Array.new 
@@ -131,7 +131,7 @@
 
 <% end %>
 
-<h1>Add new debt for this scenario</h1>
+<h2>Add new debt for this scenario</h2>
 
       <% @actborrowings.each do |actborrowing| %>
           <% if actborrowing.top_borrowing.nil? %> 
