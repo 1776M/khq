@@ -1,13 +1,9 @@
 <% provide(:title, @user.name) %>
 <%= @user.name %>, <%= @user.email %>, <%= @user.admin %>
 
-<table class="front" summary="For signed-in users">
-    <tr>
-      <td class="main">
+
         <%= render 'shared/project_form' %>
-      </td>
-    </tr>
-</table>
+
 
 <hr><br/>
 
