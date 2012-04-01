@@ -1,0 +1,33 @@
+<%= form_for @fxrate do |f| %>
+  <%= render 'shared/error_messages', :object => f.object %>
+
+    <%= f.label :currency_pair %>
+    <%= f.text_field :currency_pair %>
+
+    <%= f.label :rate_year_0 %><br />
+    <%= f.text_field :rate_year_0 %>
+
+    <%= f.label :rate_year_1 %><br />  
+    <%= f.text_field :rate_year_1 %>
+
+    <%= f.label :rate_year_2 %><br />
+    <%= f.text_field :rate_year_2 %>
+
+    <%= f.label :rate_year_3 %><br />
+    <%= f.text_field :rate_year_3 %>
+
+    <%= f.label :rate_year_4 %><br />
+    <%= f.text_field :rate_year_4 %>
+
+    <%= f.label :rate_year_5 %><br />
+    <%= f.text_field :rate_year_5 %>
+
+    <%= f.label :volatility %><br />
+    <%= f.text_field :volatility %>
+
+    <%= f.label :correlation %><br />
+    <%= f.text_field :correlation %>
+
+    <%= f.submit "Submit" %>
+
+<% end %>

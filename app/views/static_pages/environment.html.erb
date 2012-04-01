@@ -2,6 +2,10 @@
             <% if current_user %>
                 <% if current_user.name == 'mandeep3' %>
                     <li>
+                        <%= link_to "Fxrates", fxrates_path %>
+                        <%= link_to "new", new_fxrate_path %>
+                    </li>
+                    <li>
                         <%= link_to "Swap curves", swapcurves_path %>
                         <%= link_to "new", new_swapcurf_path %>
                     </li>

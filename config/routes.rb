@@ -1,5 +1,7 @@
 Khq::Application.routes.draw do
 
+  get "fxrates/new"
+
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
   resources :groups
@@ -14,6 +16,7 @@ Khq::Application.routes.draw do
   resources :swapcurves
   resources :currencies
   resources :actcurrencies
+  resources :fxrates
 
   root to: 'static_pages#home'
 

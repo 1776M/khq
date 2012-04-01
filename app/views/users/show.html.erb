@@ -9,7 +9,5 @@
 
 <h1>Your current projects</h1>
 <% unless @user.projects.empty? %>
-     <table class="projects" summary="User projects">
         <%= render @projects %>
-     </table>        
 <% end %>

@@ -1,17 +1,10 @@
-<tr>
-  <td class="projects">
-    <span class="content"><h2><%= link_to project.project_name, project_path(project.id) %></h2></span>
-  </td>
-  <td>
-  <h2>  
-  <% if current_user?(project.user) %> 
+ <li>   
+    <%= link_to project.project_name, project_path(project.id) %>
+    <% if current_user?(project.user) %> 
 
     <%= link_to "delete", project,   :method => :delete,
                                      :confirm => "You sure?",
                                      :title => project.project_name %>
 
     <% end %>
-  </h2>
-  </td>
-</tr>
-
+  </li>
