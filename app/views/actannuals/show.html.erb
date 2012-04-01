@@ -1,3 +1,70 @@
 <h1>
   <%= @actannual.year_0 %>
 </h1>
+
+
+<h2>Edit or accept the existing currency mix</h2>
+
+<%
+#for each currencies, check if actcurrencies is already set, otherwise show form
+
+# if this is set to 1, then the actcurrency for can be skipped
+%>
+
+<% @actcurrencies.each do |actcurrency| %>
+
+         <li>
+              <%= link_to actcurrency.currency_name, actcurrency %>
+              <%= link_to "edit", edit_actcurrency_path(actcurrency) %>    
+         </li>
+<% end %>
+
+<% currency_check = 'None' %>
+
+<% @currencies.each do |currency|  %>
+
+   <% @actcurrencies.each do |actcurrency| %>
+     
+     <%  # need to check which currencies are already set in actcurrencies %>
+     <% if actcurrency.currency_name == currency.currency_name  %>
+         <% currency_check = currency.currency_name %>
+
+         <% break %>
+     <% end %> 
+   <% end %> 
+   
+   <% if currency.currency_name != currency_check %>
+    
+    <div class="row">
+      <div class="span12">
+
+        <%= form_for @actcurrency, {:class => "form-inline"} do |f| %>
+          <%= render 'shared/error_messages', :object => f.object %>
+
+          <%= f.text_field :currency_name, :class=> "input-small", :placeholder=>"currency", :value => currency.currency_name %>
+
+          <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value => currency.year_0 %>
+
+          <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value => currency.year_1 %>
+
+          <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value => currency.year_2 %>
+
+          <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value => currency.year_3 %>
+
+          <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value => currency.year_4 %>
+
+          <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value => currency.year_5 %>
+
+          <%= hidden_field_tag :actannual_id, @actannual.id %>
+ 
+          <%= f.submit "Submit", :class => "btn"  %>
+        <% end %> 
+      </div>
+    </div>
+  <% end %>
+
+<% end %> 
+
+<h2>Add another currency</h2>
+
+<%=render 'shared/actcurrency_form' %>

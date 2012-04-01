@@ -1,3 +1,13 @@
 <h1>
   <%= @annual.year_0 %>
 </h1>
+
+
+          <%= render 'shared/currency_form' %>
+
+<% @currencies.each do |currency| %>
+   <li>
+     <%= link_to currency.currency_name, currency %>
+            <%= link_to "edit", edit_currency_path(currency) %>
+   </li>
+<% end %>
