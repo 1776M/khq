@@ -1,7 +1,5 @@
 Khq::Application.routes.draw do
 
-  get "fxrates/new"
-
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
   resources :groups

@@ -18,8 +18,6 @@
       <%= f.text_field :currency, :class=> "input-small", :placeholder=>"currency" %>
 
       <%= f.select :fixed_float, options_for_select([['Fixed','Fixed'],['Float',Float]]), :class=> "input-small", :placeholder=>"fixed/float" %>
-
-      <%= hidden_field_tag :basecase_id, @basecase.id %>
  
       <%= f.submit "Submit", :class => "btn"  %>
     <% end %>

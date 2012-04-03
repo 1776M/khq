@@ -5,7 +5,6 @@
       <%= link_to "kheraHQ", root_path, id: "logo" %>
       <nav>
         <ul class="nav pull-right">
-          <li><%= link_to "Home", root_path %></li>
           <% if signed_in? %>
             <% if current_user.name=='mandeep3'%>
               <li><%= link_to "Environment", environment_path %></li> 

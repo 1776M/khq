@@ -1,6 +1,8 @@
 <% provide(:title, @user.name) %>
-<%= @user.name %>, <%= @user.email %>, <%= @user.admin %>
 
+<% if current_user=='mandeep3'%>
+  <%= @user.name %>,<%= @user.admin %>
+<% end %> 
 
         <%= render 'shared/project_form' %>
 

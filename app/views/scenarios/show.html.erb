@@ -4,7 +4,7 @@
 
 <hr><br/>
 
-<h2>EBITDA for the scenario</h2>
+<h5>EBITDA</h5>
 
 <% if @scenario.actannuals.count < 1 %>
 <table class="front" summary="For signed-in users">
@@ -185,8 +185,6 @@
 <% end %>
 
 <br/><br/><hr><br/>
-
-<br/><br/><hr><br/>
 <% if @scenario.actannuals.count > 0 %>
 <h1>Total debt</h1>
 
@@ -194,7 +192,8 @@
 <% @total_debt.each do |total_debt| %>
      <% total = total_debt.size + total  %>
 <% end %>
-<%= total %>
+
+<h2><%= total %></h2>
 
 <br/><br/><hr><br/>
 
@@ -219,8 +218,10 @@
   <% fixed_float_amount << total_float %>
 <% end %> 
 <br />
-<img src="<%=Gchart.pie(:data => fixed_float_amount, :labels => fixed_float_amount, :legend => fixed_float_name)%>">
 
+<h1>
+    <img src="<%=Gchart.pie(:data => fixed_float_amount, :labels => fixed_float_amount, :legend => fixed_float_name)%>">
+</h1>
 
 <br/><br/><hr><br/>
 
@@ -244,8 +245,10 @@
   <% currency_amount << total_currency %>
 <% end %> 
 <br />
-<img src="<%=Gchart.pie(:data => currency_amount, :labels => currency_amount, :legend => currency_name)%>">
 
+<h1>
+  <img src="<%=Gchart.pie(:data => currency_amount, :labels => currency_amount, :legend => currency_name)%>">
+</h1>
 
 <br/><br/><hr><br/>
 
@@ -269,12 +272,16 @@
   <% term_amount << total_term %> 
 <% end %>
 <br />
-<img src="<%=Gchart.pie(:data => term_amount, :labels => term_amount, :legend => term_name)%>">
+<h1>
+  <img src="<%=Gchart.pie(:data => term_amount, :labels => term_amount, :legend => term_name)%>">
+</h1>
 <br/><br/><hr><br/>
 
 <h1>Macaulay duration</h1>
-<% if total > 0 %> 
- <%= (@scenario.macaulay_duration(@scenario.id)/total).round(2) %>
+<% if total > 0 %>
+ <h2>  
+   <%= (@scenario.macaulay_duration(@scenario.id)/total).round(2) %>
+ </h2>
 <% else %>
    <%= 0 %><br />
 <% end %>  
@@ -301,7 +308,9 @@
     <% year_count = year_count + 1 %>
 <% end %>
 <br />
-<img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
+<h1>
+  <img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
+</h1>
 <br/><br/>
 
 <% end %>

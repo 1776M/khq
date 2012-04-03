@@ -7,14 +7,12 @@
 </h3>  
 
   <% @basecases.each do |basecase| %>
-     <li>
        <%= link_to 'Update your business financials', basecase %>
        <%if current_user.name == 'mandeep3' %>
 
               <%= link_to "delete", basecase,   :method => :delete,
                                                 :confirm => "You sure?" %>
       <% end%>
-     </li>
   <% end %>
 
 <br/><br/>
