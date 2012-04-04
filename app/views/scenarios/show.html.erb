@@ -315,3 +315,280 @@
 
 <% end %>
 
+
+
+<hr><br/>
+
+<h1>FX risk</h1>
+
+<%
+
+    # need to define the variables outside loops to be able to use them later on
+
+    m_USD_EBITDA_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_EUR_EBITDA_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_GBP_EBITDA_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_YEN_EBITDA_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_BRL_EBITDA_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_EURUSD_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_EURGBP_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_EURYEN_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_EURBRL_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+
+    m_EUR_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15] # these are the 6m forward curves for interest rates
+    m_USD_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_GBP_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_YEN_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_BRL_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+    m_EBITDA_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
+
+    m_correlated = Array.new(9){Array.new(17){Array.new(5){0}}}
+    m_simulated = Array.new(9){Array.new(17){Array.new(5){0}}}
+    m_market_data = Array.new(9){Array.new(13){0}}
+
+    m_correlated_ir = Array.new(6){Array.new(17){Array.new(5){0}}}
+    m_simulated_ir = Array.new(6){Array.new(17){Array.new(5){0}}}
+    m_market_data_ir = Array.new(6){Array.new(13){0}}
+
+%>
+
+<%
+
+    # assume correlation between EBITDA in different regions is 0.3, and between EBITDA and each currency is small at 0.15   
+
+    m_decomped =
+    Matrix[[1.0, 0.3, 0.3, 0.3, 0.3, 0.15, 0.15, 0.15, 0.15,],
+	    [0.3, 1.0, 0.3, 0.3, 0.3, 0.15, 0.15, 0.15, 0.15,],
+           [0.3, 0.3, 1.0, 0.3, 0.3, 0.15, 0.15, 0.15, 0.15,],
+           [0.3, 0.3, 0.3, 1.0, 0.3, 0.15, 0.15, 0.15, 0.15,],
+           [0.3, 0.3, 0.3, 0.3, 1.0, 0.15, 0.15, 0.15, 0.15,],
+           [0.15, 0.15, 0.15, 0.15, 0.15, 0.10, 0.10, 0.10, 0.10,],
+           [0.15, 0.15, 0.15, 0.15, 0.15, 0.10, 0.10, 0.10, 0.10,],
+           [0.15, 0.15, 0.15, 0.15, 0.15, 0.10, 0.10, 0.10, 0.10,],
+           [0.15, 0.15, 0.15, 0.15, 0.15, 0.10, 0.10, 0.10, 0.10] 
+          ].cholesky_factor
+
+
+    h = 0
+    for h in 0...5
+        i = 0
+        for i in 0...9
+            j=0
+            for j in 0...9
+                k = 0
+                for k in 0...17
+                    m_correlated[i][k][h] = m_correlated[i][k][h] + (m_decomped[i,j] * rand()) 
+                end
+            end
+        end
+    end
+
+
+
+    @actannuals.each do |actannual|
+     actannual.actcurrencies.each do |currency| 
+      if currency.currency_name =='USD'
+        m_USD_EBITDA_curve = [currency.year_0, currency.year_1, currency.year_2, currency.year_3, currency.year_4, currency.year_5, 0.2, 0.15]
+      end
+
+      if currency.currency_name =='EUR'
+        m_EUR_EBITDA_curve = [currency.year_0, currency.year_1, currency.year_2, currency.year_3, currency.year_4, currency.year_5, 0.2, 0.15]
+      end
+
+      if currency.currency_name =='GBP'
+        m_GBP_EBITDA_curve = [currency.year_0, currency.year_1, currency.year_2, currency.year_3, currency.year_4, currency.year_5, 0.2, 0.15]
+      end
+
+      if currency.currency_name =='YEN'
+        m_YEN_EBITDA_curve = [currency.year_0, currency.year_1, currency.year_2, currency.year_3, currency.year_4, currency.year_5, 0.2, 0.15]
+      end
+
+      if currency.currency_name =='BRL'
+        m_BRL_EBITDA_curve = [currency.year_0, currency.year_1, currency.year_2, currency.year_3, currency.year_4, currency.year_5, 0.2, 0.15]
+      end
+     end # end of the currency loop
+
+        # the following line is used in the interest rate risk calculations
+
+        m_EBITDA_curve = [actannual.year_0, actannual.year_1, actannual.year_2, actannual.year_3, actannual.year_4, actannual.year_5, 0.2, 0.15]
+   
+
+        @fxrate.each do |fxrate| 
+           if fxrate.currency_pair == 'EURUSD'
+                m_EURUSD_curve = [fxrate.rate_year_0, fxrate.rate_year_1, fxrate.rate_year_2, fxrate.rate_year_3, fxrate.rate_year_4, fxrate.rate_year_5, 0.2, 0.15]
+           end
+
+           if fxrate.currency_pair == 'EURGBP' 
+                m_EURGBP_curve = [fxrate.rate_year_0, fxrate.rate_year_1, fxrate.rate_year_2, fxrate.rate_year_3, fxrate.rate_year_4, fxrate.rate_year_5, 0.2, 0.15]
+           end
+
+           if fxrate.currency_pair == 'EURYEN' 
+                m_EURYEN_curve = [fxrate.rate_year_0, fxrate.rate_year_1, fxrate.rate_year_2, fxrate.rate_year_3, fxrate.rate_year_4, fxrate.rate_year_5, 0.2, 0.15]
+           end
+
+           if fxrate.currency_pair == 'EURBRL' 
+                m_EURBRL_curve = [fxrate.rate_year_0, fxrate.rate_year_1, fxrate.rate_year_2, fxrate.rate_year_3, fxrate.rate_year_4, fxrate.rate_year_5, 0.2, 0.15]
+           end
+        end
+        @forwardcurve.each do |forwardcurve|
+           if forwardcurve.currency == 'EUR' 
+                m_EUR_curve = [forwardcurve.year_0, forwardcurve.year_1, forwardcurve.year_2, forwardcurve.year_3, forwardcurve.year_4, forwardcurve.year_5, 0.2, 0.15]
+           end
+
+           if forwardcurve.currency == 'USD' 
+                m_USD_curve = [forwardcurve.year_0, forwardcurve.year_1, forwardcurve.year_2, forwardcurve.year_3, forwardcurve.year_4, forwardcurve.year_5, 0.2, 0.15]
+           end
+
+           if forwardcurve.currency == 'GBP' 
+                m_GBP_curve = [forwardcurve.year_0, forwardcurve.year_1, forwardcurve.year_2, forwardcurve.year_3, forwardcurve.year_4, forwardcurve.year_5, 0.2, 0.15]
+           end
+
+           if forwardcurve.currency == 'YEN' 
+                m_YEN_curve = [forwardcurve.year_0, forwardcurve.year_1, forwardcurve.year_2, forwardcurve.year_3, forwardcurve.year_4, forwardcurve.year_5, 0.2, 0.15]
+           end
+
+           if forwardcurve.currency == 'BRL' 
+                m_BRL_curve = [forwardcurve.year_0, forwardcurve.year_1, forwardcurve.year_2, forwardcurve.year_3, forwardcurve.year_4, forwardcurve.year_5, 0.2, 0.15]
+           end
+        end
+
+    
+        # need a market_data array to hold all the other curves
+        m_market_data = [m_USD_EBITDA_curve, m_EUR_EBITDA_curve, m_GBP_EBITDA_curve, m_YEN_EBITDA_curve, m_BRL_EBITDA_curve, m_EURUSD_curve, m_EURGBP_curve, m_EURYEN_curve, m_EURBRL_curve ]
+
+    
+
+    # need to set the mean curve value for year zero equal to the market data year zero value, for each curve
+
+    for j in 0...9
+                                
+        for k in 0...17
+
+            m_simulated[j][k][0] = m_market_data[j][0]
+        end
+    end 
+
+
+   # this creates the simulated data using the market data and correlated data
+
+   m = 0
+   for m in 0...17
+       i = 0
+       for i in 1...5
+           j = 0
+           for j in 0...9
+   
+               x = m_simulated[j][m][i-1] * Math.exp(Math.log(m_market_data[j][i]/m_market_data[j][i-1]))
+               x = x + (m_market_data[j][6]* (m_market_data[j][i] - x))
+               m_simulated[j][m][i] = x * Math.exp((m_market_data[j][7]* m_correlated[j][m][i]) - (m_market_data[j][7]*m_market_data[j][7]/2))
+                        
+               # prevent negative numbers
+               if m_simulated[j][m][i] < 0
+                   m_simulated[j][m][i] = m_simulated[j][m][i] * -1
+               end 
+           end
+       end
+    end
+
+
+   end # this is the end of the annuals each do loop, variables defined in the loop can only be used in the loop %> 
+
+
+<br/><br/><hr><br/>
+
+<h1>Annul FX interest expense</h1>
+<% year_count = 0 # need to set year count back to zero after interest expense calculation above %>
+<% year_amount = [] %>
+<% year = ['year 1', 'year 2', 'year 3'] %>
+<% year.each do |year|%>
+    
+    <h3><%= year %></h3>
+    <% m_interest_expense = Array.new(17){0}%>
+    <% for i in 0...17 %>
+        <% total = 0 %> 
+            <% @total_debt.each do |total_debt| %>
+                <% if (total_debt.maturity_year - Time.now.year - year_count) > 0 %>            
+                    <% if total_debt.currency == 'EUR' %>
+                        <% if total_debt.fixed_float = 'Fixed' %>
+                            <% total = total + (total_debt.size * total_debt.coupon)  %> 
+                        <% end %>
+                        <% if total_debt.fixed_float = 'Float' %>
+                            <% total = total + (total_debt.size * (m_EUR_curve[year_count+1] + total_debt.coupon))  %> 
+                        <% end %>                                    
+                    <% end %> 
+                    <% if total_debt.currency == 'USD' %>
+                        <% if total_debt.fixed_float = 'Fixed' %>
+                            <% total = total + (total_debt.size * total_debt.coupon)/m_simulated[5][i][year_count + 1] %> 
+                        <% end %>
+                        <% if total_debt.fixed_float = 'Float' %>
+                            <% total = total + (total_debt.size * (m_USD_curve[year_count+1] + total_debt.coupon))/m_simulated[5][i][year_count + 1]  %> 
+                        <% end %>
+                    <% end %> 
+                    <% if total_debt.currency == 'GBP' %>
+                        <% if total_debt.fixed_float = 'Fixed' %>
+                            <% total = total + (total_debt.size * total_debt.coupon)/m_simulated[6][i][year_count + 1] %> 
+                        <% end %>
+                        <% if total_debt.fixed_float = 'Float' %>
+                            <% total = total + (total_debt.size * (m_GBP_curve[year_count+1] + total_debt.coupon))/m_simulated[6][i][year_count + 1]  %> 
+                        <% end %>
+                    <% end %> 
+                    <% if total_debt.currency == 'YEN' %>
+                        <% if total_debt.fixed_float = 'Fixed' %>
+                            <% total = total + (total_debt.size * total_debt.coupon)/m_simulated[7][i][year_count + 1] %> 
+                        <% end %>
+                        <% if total_debt.fixed_float = 'Float' %>
+                            <% total = total + (total_debt.size * (m_YEN_curve[year_count+1] + total_debt.coupon))/m_simulated[7][i][year_count + 1]  %> 
+                        <% end %>
+                    <% end %> 
+                    <% if total_debt.currency == 'BRL' %>
+                        <% if total_debt.fixed_float = 'Fixed' %>
+                            <% total = total + (total_debt.size * total_debt.coupon)/m_simulated[8][i][year_count + 1] %> 
+                        <% end %>
+                        <% if total_debt.fixed_float = 'Float' %>
+                            <% total = total + (total_debt.size * (m_BRL_curve[year_count+1] + total_debt.coupon))/m_simulated[8][i][year_count + 1]  %> 
+                        <% end %> 
+                    <% end %> 
+                <% else %>
+                    <% total = total + 0 %>
+                <% end %> 
+            <% end %>
+        <%m_interest_expense[i] = total  %>
+    <% end %>
+    <% if m_interest_expense.sum_it > 0 %>
+    Mean: <br/>
+    <%= m_interest_expense.mean_it.round(2) %><br/>
+    Standard deviation: <br/>
+    <%= m_interest_expense.standard_deviation_it.round(2) %></br>
+    Percentiles <br/>
+    99%: 
+    <%= m_interest_expense.calculate_percentile(0.99).round(2) %></br>
+    95%: 
+    <%= m_interest_expense.calculate_percentile(0.95).round(2) %></br>
+    85%:
+    <%= m_interest_expense.calculate_percentile(0.85).round(2) %></br>
+    75%:  
+    <%= m_interest_expense.calculate_percentile(0.75).round(2) %></br>
+    67%: 
+    <%= m_interest_expense.calculate_percentile(0.67).round(2) %></br>
+    50%:
+    <%= m_interest_expense.calculate_percentile(0.50).round(2) %></br>
+    33%:
+    <%= m_interest_expense.calculate_percentile(0.33).round(2) %></br>
+    25%:
+    <%= m_interest_expense.calculate_percentile(0.25).round(2) %></br>
+    15%:
+    <%= m_interest_expense.calculate_percentile(0.15).round(2) %></br>
+    5%:
+     <%= m_interest_expense.calculate_percentile(0.05).round(2) %></br>
+    1%:
+    <%= m_interest_expense.calculate_percentile(0.01).round(2) %></br>
+    <% year_amount << m_interest_expense.mean_it.round(2) %>
+    <% else %>
+      <%= 'There is no interest in this period' %>
+    <% end # end for sum_it if > 0 %> 
+    <% year_count = year_count + 1 %>
+<% end %>
+
+<br />
+<img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
+<br/><br/>

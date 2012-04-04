@@ -21,6 +21,7 @@ module Khq
       config.autoload_paths << "#{::Rails.root.to_s}/lib" # <-- set path
       require "extend_matrix" # <-- forcibly load your matrix extension
       require "extend_math" # <-- forcibly load your math extension
+      require "extend_enumerable" # <-- forcibly load your math extension
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.

@@ -20,10 +20,8 @@ class ScenariosController < ApplicationController
      @float_percent = @scenario.total_debt(params[:id]).group_by{|c| c.fixed_float }
      @maturity_percent = @scenario.total_debt(params[:id]).group_by{|c| c.maturity_year - c.issue_year }
      @reset_percent = @scenario.total_debt(params[:id]).group_by{|c| c.maturity_year - Time.now.year }
-     # this it to add show the cholesky 
-     #@cholesky = Cholesky.find(:all)
-     #@choleskyir = Choleskyir.find(:all)
-     #@forwardcurve = Forwardcurve.find(:all)
+     @fxrate = Fxrate.find(:all)
+     @forwardcurve = Forwardcurve.find(:all)
   end
 
   def create
