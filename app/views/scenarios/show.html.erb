@@ -285,34 +285,6 @@
 <% else %>
    <%= 0 %><br />
 <% end %>  
-
-<br/><br/><hr><br/>
-
-<h1>Annul interest expense</h1>
-<% year_count = 0 %>
-<% year_amount = [] %>
-<% year = ['year 1', 'year 2', 'year 3', 'year 4', 'year 5'] %>
-<% year.each do |year|%>
-    
-    <h3><%= year %></h3>
-    <% total = 0 %> 
-    <% @total_debt.each do |total_debt| %>
-         <% if (total_debt.maturity_year - Time.now.year - year_count) > 0 %>            
-            <% total = (total_debt.size * total_debt.coupon) + total  %>
-         <% else %>
-            <% total = total + 0 %>
-         <% end %> 
-    <% end %>
-    <%= total %>
-    <% year_amount << total %> 
-    <% year_count = year_count + 1 %>
-<% end %>
-<br />
-<h1>
-  <img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3', 'year 4', 'year 5'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
-</h1>
-<br/><br/>
-
 <% end %>
 
 
@@ -490,7 +462,7 @@
 
 
 <br/><br/><hr><br/>
-
+<% if @scenario.actannuals.count > 0 %>
 <h1>Annul FX interest expense</h1>
 <% m_interest_expense_table = Array.new(5){Array.new(13){0}}%>
 <% year_count = 0 # need to set year count back to zero after interest expense calculation above %>
@@ -498,7 +470,6 @@
 <% year = ['year 1', 'year 2', 'year 3', 'year 4', 'year 5'] %>
 <% year.each do |year|%>
     
-    <h3><%= year %></h3>
     <% m_interest_expense = Array.new(17){0}%>
     <% for i in 0...17 %>
         <% total = 0 %> 
@@ -551,49 +522,21 @@
         <%m_interest_expense[i] = total  %>
     <% end %>
     <% if m_interest_expense.sum_it > 0 %>
-    Mean: <br/>
-    <%= m_interest_expense.mean_it.round(2) %><br/>
     <% m_interest_expense_table[year_count][0] = m_interest_expense.mean_it.round(2) %>
-    Standard deviation: <br/>
-    <%= m_interest_expense.standard_deviation_it.round(2) %></br>
     <% m_interest_expense_table[year_count][1] = m_interest_expense.standard_deviation_it.round(2) %>
-    Percentiles <br/>
-    99%: 
-    <%= m_interest_expense.calculate_percentile(0.99).round(2) %></br>
     <% m_interest_expense_table[year_count][2] = m_interest_expense.calculate_percentile(0.99).round(2) %>
-    95%: 
-    <%= m_interest_expense.calculate_percentile(0.95).round(2) %></br>
     <% m_interest_expense_table[year_count][3] = m_interest_expense.calculate_percentile(0.95).round(2) %>
-    85%:
-    <%= m_interest_expense.calculate_percentile(0.85).round(2) %></br>
     <% m_interest_expense_table[year_count][4] = m_interest_expense.calculate_percentile(0.85).round(2) %>
-    75%:  
-    <%= m_interest_expense.calculate_percentile(0.75).round(2) %></br>
     <% m_interest_expense_table[year_count][5] = m_interest_expense.calculate_percentile(0.75).round(2) %>
-    67%: 
-    <%= m_interest_expense.calculate_percentile(0.67).round(2) %></br>
     <% m_interest_expense_table[year_count][6] = m_interest_expense.calculate_percentile(0.67).round(2) %>
-    50%:
-    <%= m_interest_expense.calculate_percentile(0.50).round(2) %></br>
     <% m_interest_expense_table[year_count][7] = m_interest_expense.calculate_percentile(0.50).round(2) %>
-    33%:
-    <%= m_interest_expense.calculate_percentile(0.33).round(2) %></br>
     <% m_interest_expense_table[year_count][8] = m_interest_expense.calculate_percentile(0.33).round(2) %>
-    25%:
-    <%= m_interest_expense.calculate_percentile(0.25).round(2) %></br>
     <% m_interest_expense_table[year_count][9] = m_interest_expense.calculate_percentile(0.25).round(2) %>
-    15%:
-    <%= m_interest_expense.calculate_percentile(0.15).round(2) %></br>
     <% m_interest_expense_table[year_count][10] = m_interest_expense.calculate_percentile(0.15).round(2) %>
-    5%:
-     <%= m_interest_expense.calculate_percentile(0.05).round(2) %></br>
     <% m_interest_expense_table[year_count][11] = m_interest_expense.calculate_percentile(0.05).round(2) %>
-    1%:
-    <%= m_interest_expense.calculate_percentile(0.01).round(2) %></br>    
     <% m_interest_expense_table[year_count][12] = m_interest_expense.calculate_percentile(0.01).round(2) %>
     <% year_amount << m_interest_expense.mean_it.round(2) %>
     <% else %>
-      <%= 'There is no interest in this period' %>
       <% year_amount << 0 %> 
     <% end # end for sum_it if > 0 %> 
     <% year_count = year_count + 1 %>
@@ -720,5 +663,8 @@
 </table>  
 
 <br />
-<img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3', 'year 4', 'year 5'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
+<h1>
+  <img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3', 'year 4', 'year 5'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
+</h1>
 <br/><br/>
+<% end # check actannuals count %>
