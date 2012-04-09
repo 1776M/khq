@@ -291,7 +291,7 @@
 <h1>Annul interest expense</h1>
 <% year_count = 0 %>
 <% year_amount = [] %>
-<% year = ['year 1', 'year 2', 'year 3'] %>
+<% year = ['year 1', 'year 2', 'year 3', 'year 4', 'year 5'] %>
 <% year.each do |year|%>
     
     <h3><%= year %></h3>
@@ -309,17 +309,12 @@
 <% end %>
 <br />
 <h1>
-  <img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
+  <img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3', 'year 4', 'year 5'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
 </h1>
 <br/><br/>
 
 <% end %>
 
-
-
-<hr><br/>
-
-<h1>FX risk</h1>
 
 <%
 
@@ -497,9 +492,10 @@
 <br/><br/><hr><br/>
 
 <h1>Annul FX interest expense</h1>
+<% m_interest_expense_table = Array.new(5){Array.new(13){0}}%>
 <% year_count = 0 # need to set year count back to zero after interest expense calculation above %>
 <% year_amount = [] %>
-<% year = ['year 1', 'year 2', 'year 3'] %>
+<% year = ['year 1', 'year 2', 'year 3', 'year 4', 'year 5'] %>
 <% year.each do |year|%>
     
     <h3><%= year %></h3>
@@ -557,38 +553,172 @@
     <% if m_interest_expense.sum_it > 0 %>
     Mean: <br/>
     <%= m_interest_expense.mean_it.round(2) %><br/>
+    <% m_interest_expense_table[year_count][0] = m_interest_expense.mean_it.round(2) %>
     Standard deviation: <br/>
     <%= m_interest_expense.standard_deviation_it.round(2) %></br>
+    <% m_interest_expense_table[year_count][1] = m_interest_expense.standard_deviation_it.round(2) %>
     Percentiles <br/>
     99%: 
     <%= m_interest_expense.calculate_percentile(0.99).round(2) %></br>
+    <% m_interest_expense_table[year_count][2] = m_interest_expense.calculate_percentile(0.99).round(2) %>
     95%: 
     <%= m_interest_expense.calculate_percentile(0.95).round(2) %></br>
+    <% m_interest_expense_table[year_count][3] = m_interest_expense.calculate_percentile(0.95).round(2) %>
     85%:
     <%= m_interest_expense.calculate_percentile(0.85).round(2) %></br>
+    <% m_interest_expense_table[year_count][4] = m_interest_expense.calculate_percentile(0.85).round(2) %>
     75%:  
     <%= m_interest_expense.calculate_percentile(0.75).round(2) %></br>
+    <% m_interest_expense_table[year_count][5] = m_interest_expense.calculate_percentile(0.75).round(2) %>
     67%: 
     <%= m_interest_expense.calculate_percentile(0.67).round(2) %></br>
+    <% m_interest_expense_table[year_count][6] = m_interest_expense.calculate_percentile(0.67).round(2) %>
     50%:
     <%= m_interest_expense.calculate_percentile(0.50).round(2) %></br>
+    <% m_interest_expense_table[year_count][7] = m_interest_expense.calculate_percentile(0.50).round(2) %>
     33%:
     <%= m_interest_expense.calculate_percentile(0.33).round(2) %></br>
+    <% m_interest_expense_table[year_count][8] = m_interest_expense.calculate_percentile(0.33).round(2) %>
     25%:
     <%= m_interest_expense.calculate_percentile(0.25).round(2) %></br>
+    <% m_interest_expense_table[year_count][9] = m_interest_expense.calculate_percentile(0.25).round(2) %>
     15%:
     <%= m_interest_expense.calculate_percentile(0.15).round(2) %></br>
+    <% m_interest_expense_table[year_count][10] = m_interest_expense.calculate_percentile(0.15).round(2) %>
     5%:
      <%= m_interest_expense.calculate_percentile(0.05).round(2) %></br>
+    <% m_interest_expense_table[year_count][11] = m_interest_expense.calculate_percentile(0.05).round(2) %>
     1%:
-    <%= m_interest_expense.calculate_percentile(0.01).round(2) %></br>
+    <%= m_interest_expense.calculate_percentile(0.01).round(2) %></br>    
+    <% m_interest_expense_table[year_count][12] = m_interest_expense.calculate_percentile(0.01).round(2) %>
     <% year_amount << m_interest_expense.mean_it.round(2) %>
     <% else %>
       <%= 'There is no interest in this period' %>
+      <% year_amount << 0 %> 
     <% end # end for sum_it if > 0 %> 
     <% year_count = year_count + 1 %>
 <% end %>
+<br/><br/>
+
+<table class="table">  
+        <thead>  
+          <tr>  
+            <th>Interest expense distribution</th>  
+            <th>Year 1</th>  
+            <th>Year 2</th>  
+            <th>Year 3</th>
+            <th>Year 4</th>
+            <th>Year 5</th>            
+          </tr>  
+        </thead>  
+        <tbody>  
+          <tr>  
+            <td>Mean</td>  
+            <td><%= m_interest_expense_table[0][0] %></td>  
+            <td><%= m_interest_expense_table[1][0] %></td>  
+            <td><%= m_interest_expense_table[2][0] %></td>  
+            <td><%= m_interest_expense_table[3][0] %></td>  
+            <td><%= m_interest_expense_table[4][0] %></td>  
+          </tr>  
+          <tr>  
+            <td>Standard deviation</td>  
+            <td><%= m_interest_expense_table[0][1] %></td>  
+            <td><%= m_interest_expense_table[1][1] %></td>  
+            <td><%= m_interest_expense_table[2][1] %></td>  
+            <td><%= m_interest_expense_table[3][1] %></td>  
+            <td><%= m_interest_expense_table[4][1] %></td>
+          </tr>  
+          <tr>  
+            <td>99%</td>  
+            <td><%= m_interest_expense_table[0][2] %></td>  
+            <td><%= m_interest_expense_table[1][2] %></td>  
+            <td><%= m_interest_expense_table[2][2] %></td>  
+            <td><%= m_interest_expense_table[3][2] %></td>  
+            <td><%= m_interest_expense_table[4][2] %></td>
+          </tr>  
+          <tr>  
+            <td>95%</td>  
+            <td><%= m_interest_expense_table[0][3] %></td>  
+            <td><%= m_interest_expense_table[1][3] %></td>  
+            <td><%= m_interest_expense_table[2][3] %></td>  
+            <td><%= m_interest_expense_table[3][3] %></td>  
+            <td><%= m_interest_expense_table[4][3] %></td>
+          </tr> 
+          <tr>  
+            <td>85%</td>  
+            <td><%= m_interest_expense_table[0][4] %></td>  
+            <td><%= m_interest_expense_table[1][4] %></td>  
+            <td><%= m_interest_expense_table[2][4] %></td>  
+            <td><%= m_interest_expense_table[3][4] %></td>  
+            <td><%= m_interest_expense_table[4][4] %></td>
+          </tr> 
+          <tr>  
+            <td>75%</td>  
+            <td><%= m_interest_expense_table[0][5] %></td>  
+            <td><%= m_interest_expense_table[1][5] %></td>  
+            <td><%= m_interest_expense_table[2][5] %></td>  
+            <td><%= m_interest_expense_table[3][5] %></td>  
+            <td><%= m_interest_expense_table[4][5] %></td>
+          </tr> 
+          <tr>  
+            <td>67%</td>  
+            <td><%= m_interest_expense_table[0][6] %></td>  
+            <td><%= m_interest_expense_table[1][6] %></td>  
+            <td><%= m_interest_expense_table[2][6] %></td>  
+            <td><%= m_interest_expense_table[3][6] %></td>  
+            <td><%= m_interest_expense_table[4][6] %></td>
+          </tr> 
+          <tr>  
+            <td>50%</td>  
+            <td><%= m_interest_expense_table[0][7] %></td>  
+            <td><%= m_interest_expense_table[1][7] %></td>  
+            <td><%= m_interest_expense_table[2][7] %></td>  
+            <td><%= m_interest_expense_table[3][7] %></td>  
+            <td><%= m_interest_expense_table[4][7] %></td>
+          </tr> 
+          <tr>  
+            <td>33%</td>  
+            <td><%= m_interest_expense_table[0][8] %></td>  
+            <td><%= m_interest_expense_table[1][8] %></td>  
+            <td><%= m_interest_expense_table[2][8] %></td>  
+            <td><%= m_interest_expense_table[3][8] %></td>  
+            <td><%= m_interest_expense_table[4][8] %></td>
+          </tr> 
+          <tr>  
+            <td>25%</td>  
+            <td><%= m_interest_expense_table[0][9] %></td>  
+            <td><%= m_interest_expense_table[1][9] %></td>  
+            <td><%= m_interest_expense_table[2][9] %></td>  
+            <td><%= m_interest_expense_table[3][9] %></td>  
+            <td><%= m_interest_expense_table[4][9] %></td>
+          </tr> 
+          <tr>  
+            <td>15%</td>  
+            <td><%= m_interest_expense_table[0][10] %></td>  
+            <td><%= m_interest_expense_table[1][10] %></td>  
+            <td><%= m_interest_expense_table[2][10] %></td>  
+            <td><%= m_interest_expense_table[3][10] %></td>  
+            <td><%= m_interest_expense_table[4][10] %></td>
+          </tr> 
+          <tr>  
+            <td>5%</td>  
+            <td><%= m_interest_expense_table[0][11] %></td>  
+            <td><%= m_interest_expense_table[1][11] %></td>  
+            <td><%= m_interest_expense_table[2][11] %></td>  
+            <td><%= m_interest_expense_table[3][11] %></td>  
+            <td><%= m_interest_expense_table[4][11] %></td>
+          </tr> 
+          <tr>  
+            <td>1%</td>  
+            <td><%= m_interest_expense_table[0][12] %></td>  
+            <td><%= m_interest_expense_table[1][12] %></td>  
+            <td><%= m_interest_expense_table[2][12] %></td>  
+            <td><%= m_interest_expense_table[3][12] %></td>  
+            <td><%= m_interest_expense_table[4][12] %></td>
+          </tr> 
+        </tbody>  
+</table>  
 
 <br />
-<img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
+<img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3', 'year 4', 'year 5'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
 <br/><br/>
