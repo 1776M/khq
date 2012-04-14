@@ -7,9 +7,10 @@ class ScenariosController < ApplicationController
      @scenario = Scenario.find(params[:id])
      # @scenario = scenario.new if signed_in?
      @actannuals = @scenario.actannuals
-     @actannual = Actannual.new if signed_in?   
+     @actannual = @scenario.actannuals.find(:last) #Actannual.new if signed_in?
+     @actannual_new = Actannual.new if signed_in?    
      @actborrowings = @scenario.actborrowings
-     @actborrowing = Actborrowing.new if signed_in?
+     @actborrowing_new = Actborrowing.new if signed_in?
      @group = @scenario.project.user.group
      @basecase = Basecase.find(:last, :conditions => [" group_id = ?", @group.id])
      @annual =  Annual.find(:last, :conditions => [" basecase_id = ?", @basecase.id])

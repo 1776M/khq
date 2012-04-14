@@ -2,7 +2,7 @@
 <h1>Add borrowing data</h1>
 
 <div class="row">
-  <div class="span6 offset3">
+  <div class="span12">
 
     <%= form_for @actborrowing do |f| %>
       <%= render 'shared/error_messages', :object => f.object %>
@@ -23,7 +23,7 @@
       <%= f.text_field :currency, :value => @borrowing.currency %>
 
       <%= f.label :fixed_float %>
-      <%= f.select :fixed_float, options_for_select([['Fixed','Fixed'],['Float',Float]]) %>
+      <%= f.text_field :fixed_float, :value => @borrowing.fixed_float %>
 
       <%= f.hidden_field :top_borrowing, :value => borrowing.id %>
       <%= hidden_field_tag :scenario_id, @scenario.id %>

@@ -4,60 +4,86 @@
 
 <hr><br/>
 
-<h5>EBITDA</h5>
+<h1>EBITDA</h1>
 
 <% if @scenario.actannuals.count < 1 %>
-<table class="front" summary="For signed-in users">
-      <tr>
-        <td class="main">
-  
-            <%= form_for @actannual do |f| %>
+
+            <%= form_for @actannual_new do |f| %>
               <%= render 'shared/error_messages', :object => f.object %>
 
-              <%= f.label :year_one %>
-              <%= f.text_field :year_0, :value => @annual.year_0 %>
+              <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> @annual.year_0 %>
 
-              <%= f.label :year_two %><br />  
-              <%= f.text_field :year_1, :value => @annual.year_1 %>
+              <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> @annual.year_1 %>
 
-              <%= f.label :year_three %><br />
-              <%= f.text_field :year_2, :value => @annual.year_2 %>
+              <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> @annual.year_2 %>
 
-              <%= f.label :year_four %><br />
-              <%= f.text_field :year_3, :value => @annual.year_3 %>
+              <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> @annual.year_3 %>
 
-              <%= f.label :year_five %><br />
-              <%= f.text_field :year_4, :value => @annual.year_4 %>
+              <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> @annual.year_4 %>
 
-              <%= f.label :year_six %><br />
-              <%= f.text_field :year_5, :value => @annual.year_5 %>
+              <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> @annual.year_5 %>
 
               <%= hidden_field_tag :scenario_id, @scenario.id %>
-              <div class="actions">
-                <%= f.submit "Submit" %>
-              </div>
+
+              <%= f.submit "Submit" %>
             <% end %>
 
-        </td>
-      </tr>
-</table>
+<% else %>
+
+  <div class="row">
+    <div class="span12">
+
+      <%= form_for @actannual, {:class => "form-inline"} do |f| %>
+        <%= render 'shared/error_messages', :object => f.object %>
+
+        <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=>"year 0" %>
+
+        <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=>"year 1" %>
+
+        <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=>"year 2" %>
+
+        <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=>"year 3" %>
+
+        <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=>"year 4" %>
+
+        <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=>"year 5" %>
+ 
+      <% end %>
+    </div>
+  </div>
+
 <% end %>
 
-
 <% @actannuals.each do |actannual| %>
-   <li>
-     <%= link_to actannual.year_0, actannual %>
-     <%if current_user.admin? || current_user.name=='mandeep3' %>
+  
+  <div class="row">
+    <div class="span12">
 
-            <%= link_to "delete", actannual,   :method => :delete,
-                                               :confirm => "You sure?" %>
-            <%= link_to "edit", edit_actannual_path(actannual) %>
-    <% end %>
-    
-   </li>
+      <%= form_for @actannual, {:class => "form-inline"} do |f| %>
+        <%= render 'shared/error_messages', :object => f.object %>
+
+        <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0" %>
+
+        <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1" %>
+
+        <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2" %>
+
+        <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3" %>
+
+        <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4" %>
+
+        <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5" %>
+ 
+        <%= f.submit "Submit", :class => "btn"  %>
+      <% end %>
+    </div>
+  </div>
+
+
 <% end %>
 
 <br/><br/><hr><br/>
+<h1>Debt portfolio</h1>
 
 <h2>Edit or accept the existing debt portfolio for this scenario</h2>
 
@@ -72,117 +98,122 @@
 <% arr.each do |i| %>
 <% j = 0 %>      
 
+      <% # this is debt that has been added for the scenario %>
+
       <% @actborrowings.each do |actborrowing| %>
           <% if actborrowing.top_borrowing == i %> 
-              <li>
-                  <%= link_to actborrowing.size, actborrowing %>
+                  <%= form_for actborrowing do |f| %>
+                      <%= render 'shared/error_messages', :object => f.object %>
 
-              <%if current_user.admin? || current_user.name=='mandeep3' %>
+                      <%= f.text_field :size, :class=> "input-small", :placeholder=>"size" %>
 
-                  <%= link_to "delete", actborrowing,   :method => :delete,
-                                                        :confirm => "You sure?" %>
-                  <%= link_to "edit", edit_actborrowing_path(actborrowing) %>
-              <% end%>
-              </li> 
+                      <%= f.text_field :coupon, :class=> "input-small", :placeholder=>"coupon" %>
+
+                      <%= f.text_field :issue_year, :class=> "input-small", :placeholder=>"issue_year" %>
+
+                      <%= f.text_field :maturity_year, :class=> "input-small", :placeholder=>"maturity_year" %>
+
+                      <%= f.text_field :currency, :class=> "input-small", :placeholder=>"currency" %>
+
+                      <%= f.text_field :fixed_float, :class=> "input-small", :placeholder=>"fixed/float" %>
+
+                      <%= f.submit "Submit" %>
+
+                <% end %>
          <%  j = 1 %>
          <% end %>
      <% next %>
      <% end %> 
       
+     <% # this is debt that exists in the basecase, only shown if the above isn't shown, i.e. if j>0 %>
 
-              <% @borrowings.each do |borrowing| %>
-                  <% if j > 0 || borrowing.id != i %>
-                  <% next %>
-                  <% else %> 
-                  <%= form_for @actborrowing do |f| %>
-                      <%= render 'shared/error_messages', :object => f.object %>
-                      <div class="field">
-                        <%= f.label :size %><br />
-                        <%= f.text_field :size, :value => borrowing.size %>
-                      </div>
-                      <div class="field">
-                        <%= f.label :coupon %> (for floating debt enter the credit spread)<br />
-                        <%= f.text_field :coupon, :value => borrowing.coupon %>
-                      </div>
-                      <div class="field">
-                        <%= f.label :issue_year %><br />
-                        <%= f.text_field :issue_year, :value => borrowing.issue_year %>
-                     </div>
-                     <div class="field">
-                       <%= f.label :maturity_year %><br />
-                       <%= f.text_field :maturity_year, :value => borrowing.maturity_year %>
-                     </div>
-                     <div class="field">
-                       <%= f.label :currency %><br />
-                       <%= f.text_field :currency, :value => borrowing.currency %>
-                     </div>
-                     <div class="field">
-                       <%= f.label :fixed_float %><br />
-                       <%= f.text_field :fixed_float, :value => borrowing.fixed_float %>
-                     </div>
-                     <%= f.hidden_field :top_borrowing, :value => borrowing.id %>
-                     <%= hidden_field_tag :scenario_id, @scenario.id %>
-                     <div class="actions">
-                       <%= f.submit "Submit" %>
-                     </div>
-                <% end %>
-                <% end %>
-           <% end %>
+     <% @borrowings.each do |borrowing| %>
+       <% if j > 0 || borrowing.id != i %>
+         <% next %>
+       <% else %> 
+         <%= form_for @actborrowing_new do |f| %>
+           <%= render 'shared/error_messages', :object => f.object %>
+
+           <%= f.text_field :size, :class=> "input-small", :placeholder=>"size", :value => borrowing.size %>
+
+           <%= f.text_field :coupon, :class=> "input-small", :placeholder=>"coupon", :value => borrowing.coupon %>
+
+           <%= f.text_field :issue_year, :class=> "input-small", :placeholder=>"issue_year", :value => borrowing.issue_year %>
+
+           <%= f.text_field :maturity_year, :class=> "input-small", :placeholder=>"maturity_year", :value => borrowing.maturity_year %>
+
+           <%= f.text_field :currency, :class=> "input-small", :placeholder=>"currency", :value => borrowing.currency %>
+
+           <%= f.text_field :fixed_float, :class=> "input-small", :placeholder=>"fixed/float", :value => borrowing.fixed_float %>
+
+           <%= f.hidden_field :top_borrowing, :value => borrowing.id %>
+           <%= hidden_field_tag :scenario_id, @scenario.id %>
+ 
+           <%= f.submit "Submit" %>
+
+         <% end %>
+       <% end %>
+     <% end %>
 
 <% end %>
 
 <h2>Add new debt for this scenario</h2>
-<b>Debt specific to this scenario</b>
+<b>Debt specific to this scenario</b><br/>
       <% @actborrowings.each do |actborrowing| %>
           <% if actborrowing.top_borrowing.nil? %> 
-              <li>
-                  <%= link_to actborrowing.size, actborrowing %>
+              <%= form_for actborrowing do |f| %>
+                      <%= render 'shared/error_messages', :object => f.object %>
 
-              <%if current_user.admin? || current_user.name=='mandeep3' %>
+                        <%= f.text_field :size, :class=> "input-small", :placeholder=>"size" %>
 
-                  <%= link_to "delete", actborrowing,   :method => :delete,
-                                                        :confirm => "You sure?" %>
-                  <%= link_to "edit", edit_actborrowing_path(actborrowing) %>
-              <% end%>
-              </li> 
+                        <%= f.text_field :coupon, :class=> "input-small", :placeholder=>"coupon"%>
+
+                        <%= f.text_field :issue_year, :class=> "input-small", :placeholder=>"issue_year" %>
+
+                        <%= f.text_field :maturity_year, :class=> "input-small", :placeholder=>"maturity_year" %>
+
+                        <%= f.text_field :currency, :class=> "input-small", :placeholder=>"currency" %>
+
+                        <%= f.text_field :fixed_float, :class=> "input-small", :placeholder=>"fixed/float" %>
+
+                        <%= hidden_field_tag :scenario_id, @scenario.id %>
+ 
+                        <%= f.submit "Submit" %>
+
+              <% end %>
+ 
          <%  j = 1 %>
          <% end %>
      <% next %>
      <% end %> 
 
-<br/><br/>
+For floating rate debt enter the credit spread as the coupon
 
-<%= form_for @actborrowing do |f| %>
+<br/><br/>
+  <div class="row">
+    <div class="span12">
+      <%= form_for @actborrowing_new do |f| %>
                       <%= render 'shared/error_messages', :object => f.object %>
-                      <div class="field">
-                        <%= f.label :size %><br />
-                        <%= f.text_field :size%>
-                      </div>
-                      <div class="field">
-                        <%= f.label :coupon %> (for floating debt enter the credit spread)<br />
-                        <%= f.text_field :coupon%>
-                      </div>
-                      <div class="field">
-                        <%= f.label :issue_year %><br />
-                        <%= f.text_field :issue_year %>
-                     </div>
-                     <div class="field">
-                       <%= f.label :maturity_year %><br />
-                       <%= f.text_field :maturity_year %>
-                     </div>
-                     <div class="field">
-                       <%= f.label :currency %><br />
-                       <%= f.text_field :currency%>
-                     </div>
-                     <div class="field">
-                       <%= f.label :fixed_float %><br />
-                       <%= f.select :fixed_float, options_for_select([['Fixed','Fixed'],['Float',Float]], 'Fixed') %>
-                     </div>
-                     <%= hidden_field_tag :scenario_id, @scenario.id %>
-                     <div class="actions">
-                       <%= f.submit "Submit" %>
-                     </div>
-<% end %>
+
+                        <%= f.text_field :size, :class=> "input-small", :placeholder=>"size" %>
+
+                        <%= f.text_field :coupon, :class=> "input-small", :placeholder=>"coupon"%>
+
+                        <%= f.text_field :issue_year, :class=> "input-small", :placeholder=>"issue_year" %>
+
+                        <%= f.text_field :maturity_year, :class=> "input-small", :placeholder=>"maturity_year" %>
+
+                        <%= f.text_field :currency, :class=> "input-small", :placeholder=>"currency" %>
+
+                        <%= f.text_field :fixed_float, :class=> "input-small", :placeholder=>"fixed/float" %>
+
+                        <%= hidden_field_tag :scenario_id, @scenario.id %>
+ 
+                        <%= f.submit "Submit" %>
+
+      <% end %>
+    </div>
+  </div>
 
 <br/><br/><hr><br/>
 <% if @scenario.actannuals.count > 0 %>
@@ -309,12 +340,12 @@
     m_BRL_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
     m_EBITDA_curve = [1, 1, 1, 1, 1, 1, 0.2, 0.15]
 
-    m_correlated = Array.new(9){Array.new(17){Array.new(5){0}}}
-    m_simulated = Array.new(9){Array.new(17){Array.new(5){0}}}
+    m_correlated = Array.new(9){Array.new(17){Array.new(6){0}}}
+    m_simulated = Array.new(9){Array.new(17){Array.new(6){0}}}
     m_market_data = Array.new(9){Array.new(13){0}}
 
-    m_correlated_ir = Array.new(6){Array.new(17){Array.new(5){0}}}
-    m_simulated_ir = Array.new(6){Array.new(17){Array.new(5){0}}}
+    m_correlated_ir = Array.new(6){Array.new(17){Array.new(6){0}}}
+    m_simulated_ir = Array.new(6){Array.new(17){Array.new(6){0}}}
     m_market_data_ir = Array.new(6){Array.new(13){0}}
 
 %>
@@ -337,7 +368,7 @@
 
 
     h = 0
-    for h in 0...5
+    for h in 0...6
         i = 0
         for i in 0...9
             j=0
@@ -441,7 +472,7 @@
    m = 0
    for m in 0...17
        i = 0
-       for i in 1...5
+       for i in 1...6
            j = 0
            for j in 0...9
    
@@ -667,4 +698,4 @@
   <img src="<%=Gchart.bar(:data => year_amount, :labels => ['year 1', 'year 2', 'year 3', 'year 4', 'year 5'], :bar_width_and_spacing => [19,40], :legend => year_amount)%>">
 </h1>
 <br/><br/>
-<% end # check actannuals count %>
+<% end %>
