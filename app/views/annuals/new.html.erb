@@ -5,7 +5,6 @@
   <div class="span12">
 
     <%= form_for @annual, {:class => "form-inline"} do |f| %>
-      <%= render 'shared/error_messages', :object => f.object %>
 
       <%= f.text_field :name, :class=> "input-small", :placeholder=>"EBITDA" %>
 

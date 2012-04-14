@@ -16,7 +16,6 @@ class AnnualsController < ApplicationController
       flash[:success] = "You have created new data"
       redirect_to basecase_path(@annual.basecase_id)
     else
-      @title = "Sign up"
       render 'new'
     end
   end
