@@ -4,12 +4,14 @@
 
 <hr><br/>
 
-<h1>EBITDA</h1>
+<h1>Financials</h1>
 
 <% if @scenario.actannuals.count < 1 %>
 
             <%= form_for @actannual_new do |f| %>
               <%= render 'shared/error_messages', :object => f.object %>
+
+              <%= f.text_field :name, :class=> "input-small", :placeholder=>"EBITDA", :value => @annual.name %>
 
               <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> @annual.year_0 %>
 
@@ -36,6 +38,8 @@
       <%= form_for @actannual, {:class => "form-inline"} do |f| %>
         <%= render 'shared/error_messages', :object => f.object %>
 
+        <%= f.text_field :name, :class=> "input-small", :placeholder=>"EBITDA", :value => "EBITDA" %>
+
         <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=>"year 0" %>
 
         <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=>"year 1" %>
@@ -61,6 +65,8 @@
 
       <%= form_for @actannual, {:class => "form-inline"} do |f| %>
         <%= render 'shared/error_messages', :object => f.object %>
+
+        <%= f.text_field :name, :class=> "input-small", :placeholder=>"EBITDA" %>
 
         <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0" %>
 

@@ -1,10 +1,11 @@
 class Annual < ActiveRecord::Base
 
-    attr_accessible :year_0, :year_1, :year_2, :year_3, :year_4, :year_5 		
+    attr_accessible :name, :year_0, :year_1, :year_2, :year_3, :year_4, :year_5 		
 
     belongs_to :basecase
     has_many :currencies
 
+    validates :name,       :presence => true
     validates :year_0,     :presence => true
     validates :year_1,     :presence => true
     validates :year_2,     :presence => true
