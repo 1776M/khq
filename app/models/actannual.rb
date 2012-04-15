@@ -1,6 +1,6 @@
 class Actannual < ActiveRecord::Base
 
-    attr_accessible :name, :year_0, :year_1, :year_2, :year_3, :year_4, :year_5 		
+    attr_accessible :name, :year_0, :year_1, :year_2, :year_3, :year_4, :year_5, :top_annual 		
 
     belongs_to :scenario
     has_many :actcurrencies

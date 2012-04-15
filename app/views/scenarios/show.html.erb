@@ -6,39 +6,15 @@
 
 <h1>Financials</h1>
 
-<% if @scenario.actannuals.count < 1 %>
-
-            <%= form_for @actannual_new do |f| %>
-              <%= render 'shared/error_messages', :object => f.object %>
-
-              <%= f.text_field :name, :class=> "input-small", :placeholder=>"EBITDA", :value => @annual.name %>
-
-              <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> @annual.year_0 %>
-
-              <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> @annual.year_1 %>
-
-              <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> @annual.year_2 %>
-
-              <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> @annual.year_3 %>
-
-              <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> @annual.year_4 %>
-
-              <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> @annual.year_5 %>
-
-              <%= hidden_field_tag :scenario_id, @scenario.id %>
-
-              <%= f.submit "Submit" %>
-            <% end %>
-
-<% else %>
+<h2>Edit or accept the existing financials for this scenario</h2>
 
   <div class="row">
     <div class="span12">
 
-      <%= form_for @actannual, {:class => "form-inline"} do |f| %>
+      <%= form_for @annual, {:class => "form-inline"} do |f| %>
         <%= render 'shared/error_messages', :object => f.object %>
 
-        <%= f.text_field :name, :class=> "input-small", :placeholder=>"EBITDA", :value => "EBITDA" %>
+        <%= f.text_field :name, :class=> "input-small", :placeholder=>"EBITDA", :value => "Line item" %>
 
         <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=>"year 0" %>
 
@@ -56,35 +32,81 @@
     </div>
   </div>
 
-<% end %>
+<% 
 
-<% @actannuals.each do |actannual| %>
-  
-  <div class="row">
-    <div class="span12">
+     # put the id of each annual into an array
 
-      <%= form_for @actannual, {:class => "form-inline"} do |f| %>
-        <%= render 'shared/error_messages', :object => f.object %>
+     arr_annual = Array.new 
+     @annuals.each do |annual| 
+         arr_annual << annual.id     
+     end
+%>
 
-        <%= f.text_field :name, :class=> "input-small", :placeholder=>"EBITDA" %>
+<% #loop through each basecase annual  %>
+<% arr_annual.each do |i| %>
+<% j = 0 %>      
 
-        <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0" %>
+      <% # this is annual that has been added for the scenario %>
 
-        <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1" %>
+      <% @actannuals.each do |actannual| %>
+          <% if actannual.top_annual == i %>
+              <%= link_to actannual.name, actannual_path(actannual.id) %>
+                 <%= form_for actannual do |f| %>
+                      <%= render 'shared/error_messages', :object => f.object %>
 
-        <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2" %>
+                      <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item" %>
 
-        <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3" %>
+                      <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0" %>
 
-        <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4" %>
+                      <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1" %>
 
-        <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5" %>
+                      <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2" %>
+
+                      <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3" %>
+
+                      <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4" %>
+
+                      <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5" %>
+
+                      <%= f.submit "Update" %>
+
+                <% end %>
+         <%  j = 1 %>
+         <% end %>
+     <% next %>
+     <% end %> 
+      
+     <% # this is annual that exists in the basecase, only shown if the above isn't shown, i.e. if j>0 %>
+
+     <% @annuals.each do |annual| %>
+       <% if j > 0 || annual.id != i %>
+         <% next %>
+       <% else %> 
+         <%= form_for @actannual_new do |f| %>
+           <%= render 'shared/error_messages', :object => f.object %>
+
+           <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item", :value=> annual.name %>
+
+           <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> annual.year_0 %>
+
+           <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> annual.year_1 %>
+
+           <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> annual.year_2 %>
+
+           <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> annual.year_3 %>
+
+           <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> annual.year_4 %>
+
+           <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> annual.year_5 %>
+
+           <%= f.hidden_field :top_annual, :value => annual.id %>
+           <%= hidden_field_tag :scenario_id, @scenario.id %>
  
-        <%= f.submit "Submit", :class => "btn"  %>
-      <% end %>
-    </div>
-  </div>
+           <%= f.submit "Accept" %>
 
+         <% end %>
+       <% end %>
+     <% end %>
 
 <% end %>
 
@@ -94,6 +116,9 @@
 <h2>Edit or accept the existing debt portfolio for this scenario</h2>
 
 <% 
+
+     # put the id of each borrowing into an array
+
      arr = Array.new 
      @borrowings.each do |borrowing| 
          arr << borrowing.id     
@@ -101,6 +126,8 @@
 %>
 
 
+
+<% #loop through each basecase borrowing  %>
 <% arr.each do |i| %>
 <% j = 0 %>      
 
@@ -123,7 +150,7 @@
 
                       <%= f.text_field :fixed_float, :class=> "input-small", :placeholder=>"fixed/float" %>
 
-                      <%= f.submit "Submit" %>
+                      <%= f.submit "Update" %>
 
                 <% end %>
          <%  j = 1 %>
@@ -155,7 +182,7 @@
            <%= f.hidden_field :top_borrowing, :value => borrowing.id %>
            <%= hidden_field_tag :scenario_id, @scenario.id %>
  
-           <%= f.submit "Submit" %>
+           <%= f.submit "Accept" %>
 
          <% end %>
        <% end %>
@@ -184,7 +211,7 @@
 
                         <%= hidden_field_tag :scenario_id, @scenario.id %>
  
-                        <%= f.submit "Submit" %>
+                        <%= f.submit "Update" %>
 
               <% end %>
  

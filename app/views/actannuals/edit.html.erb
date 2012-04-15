@@ -7,7 +7,7 @@
     <%= form_for @actannual, {:class => "form-inline"} do |f| %>
       <%= render 'shared/error_messages', :object => f.object %>
 
-      <%= f.text_field :name, :class=> "input-small", :placeholder=>"EBITDA", :value => @annual.name %>
+      <%= f.text_field :name, :class=> "input-small", :placeholder=>"EBITDA" %>
 
       <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0" %>
 

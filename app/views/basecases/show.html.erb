@@ -8,6 +8,7 @@
 
 <%= render 'shared/annual_form' %>
 
+<h4>Current annual data</h4>
 <% @annuals.each do |annual| %>
    <li>
      <%= link_to annual.year_1, annual %>
@@ -23,9 +24,9 @@
 <h2>Debt portfolio</h2>
 
 
-          <%= render 'shared/borrowing_form' %>
+<%= render 'shared/borrowing_form' %>
 
-
+<h4>Current debt portfolio</h4>
 <% @borrowings.each do |borrowing| %>
    <li>
      <%= link_to borrowing.size, borrowing %>

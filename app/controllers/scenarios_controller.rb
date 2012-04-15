@@ -14,6 +14,7 @@ class ScenariosController < ApplicationController
      @group = @scenario.project.user.group
      @basecase = Basecase.find(:last, :conditions => [" group_id = ?", @group.id])
      @annual =  Annual.find(:last, :conditions => [" basecase_id = ?", @basecase.id])
+     @annuals =  Annual.find(:all, :conditions => [" basecase_id = ?", @basecase.id])
      @borrowings =  Borrowing.find(:all, :conditions => [" basecase_id = ?", @basecase.id])
      @total_debt = @scenario.total_debt(params[:id])
      @fixed_percent = @scenario.fixed_percent(params[:id])

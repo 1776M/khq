@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120414140423) do
+ActiveRecord::Schema.define(:version => 20120415121321) do
 
   create_table "actannuals", :force => true do |t|
     t.float    "year_0"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(:version => 20120414140423) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
     t.string   "name"
+    t.integer  "top_annual"
   end
 
   create_table "actborrowings", :force => true do |t|
@@ -38,9 +39,9 @@ ActiveRecord::Schema.define(:version => 20120414140423) do
     t.integer  "maturity_year"
     t.string   "fixed_float"
     t.integer  "scenario_id"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
-    t.string   "currency",      :default => "EUR"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.string   "currency"
     t.integer  "top_borrowing"
   end
 
