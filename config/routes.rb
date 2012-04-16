@@ -7,14 +7,24 @@ Khq::Application.routes.draw do
   resources :basecases, :only => [:create, :destroy, :show] 
   resources :annuals
   resources :borrowings
-  resources :scenarios, :only => [:create, :destroy, :show]
+  resources :scenarios, :only => [:create, :destroy, :show] do
+       collection do
+  		get :filter
+  	end
+  end
+
   resources :actannuals
   resources :actborrowings
   resources :forwardcurves
   resources :swapcurves
   resources :currencies
   resources :actcurrencies
-  resources :fxrates
+  resources :fxrates do
+       collection do
+  		get :filter
+  	end
+  end
+  resources :rules
 
   root to: 'static_pages#home'
 

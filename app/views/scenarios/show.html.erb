@@ -50,7 +50,6 @@
 
       <% @actannuals.each do |actannual| %>
           <% if actannual.top_annual == i %>
-              <%= link_to actannual.name, actannual_path(actannual.id) %>
                  <%= form_for actannual do |f| %>
                       <%= render 'shared/error_messages', :object => f.object %>
 
@@ -75,7 +74,7 @@
          <% end %>
      <% next %>
      <% end %> 
-      
+       
      <% # this is annual that exists in the basecase, only shown if the above isn't shown, i.e. if j>0 %>
 
      <% @annuals.each do |annual| %>
@@ -109,6 +108,8 @@
      <% end %>
 
 <% end %>
+<%= link_to "Edit currency composition", actannuals_path %>
+
 
 <br/><br/><hr><br/>
 <h1>Debt portfolio</h1>

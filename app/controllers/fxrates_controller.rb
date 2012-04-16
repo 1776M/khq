@@ -46,6 +46,9 @@ class FxratesController < ApplicationController
     redirect_to fxrates_path
   end
 
+  def filter
+  end
+
   private
 
       def authorized_superadmin

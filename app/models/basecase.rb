@@ -6,6 +6,7 @@ class Basecase < ActiveRecord::Base
 
     has_many :annuals
     has_many :borrowings
+    has_many :rules
 
     validates :name,     :presence => true
     validates :group_id, :presence => true

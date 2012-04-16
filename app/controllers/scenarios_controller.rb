@@ -48,6 +48,10 @@ class ScenariosController < ApplicationController
 
   end
 
+  def filter
+   @scenario = Scenario.find(:all) 
+  end
+
   private
 
     def authenticate

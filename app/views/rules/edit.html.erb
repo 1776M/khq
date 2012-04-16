@@ -1,0 +1,15 @@
+<%= provide(:title, 'Edit rules') %>
+<h4>Edit rules</h4>
+
+<div class="row">
+  <div class="span12">
+
+    <%= form_for @rule do |f| %>
+      <%= render 'shared/error_messages', :object => f.object %>
+
+      <%= f.text_area :name %>
+
+      <%= f.submit "Update", :class => "btn"  %>
+    <% end %>
+  </div>
+</div>
