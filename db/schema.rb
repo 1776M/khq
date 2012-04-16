@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120415121321) do
+ActiveRecord::Schema.define(:version => 20120416115655) do
 
   create_table "actannuals", :force => true do |t|
     t.float    "year_0"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(:version => 20120415121321) do
     t.integer  "actannual_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.integer  "top_currency"
   end
 
   create_table "annuals", :force => true do |t|

@@ -5,12 +5,12 @@ class ActannualsController < ApplicationController
 
   def show
       @actannual = Actannual.find(params[:id])
-      @actcurrency = Actcurrency.new if signed_in?
+      @actcurrency_new = Actcurrency.new if signed_in?
       @actcurrencies = @actannual.actcurrencies
       @group = @actannual.scenario.project.user.group
       @basecase = Basecase.find(:last, :conditions => [" group_id = ?", @group.id])
-      @annual =  Annual.find(:last, :conditions => [" basecase_id = ?", @basecase.id])
-      @currencies = @annual.currencies
+      @annuals = Annual.find(:all, :conditions => [" basecase_id = ?", @basecase.id])
+      @currencies =  Currency.find(:all, :conditions => [" annual_id = ?", @actannual.top_annual])
   end
 
   def create

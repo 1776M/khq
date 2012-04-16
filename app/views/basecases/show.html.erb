@@ -9,34 +9,56 @@
 <%= render 'shared/annual_form' %>
 
 <h4>Current annual data</h4>
-<% @annuals.each do |annual| %>
-   <li>
-     <%= link_to annual.year_1, annual %>
-     <%if current_user.admin? || current_user.name=='mandeep3' %>
 
+     <% @annuals.each do |annual| %>
+         <%= form_for annual do |f| %>
+           <%= render 'shared/error_messages', :object => f.object %>
 
-            <%= link_to "edit", edit_annual_path(annual) %>
-    <% end%>
-    
-   </li>
-<% end %>
+           <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item", :value=> annual.name %>
+
+           <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> annual.year_0 %>
+
+           <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> annual.year_1 %>
+
+           <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> annual.year_2 %>
+
+           <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> annual.year_3 %>
+
+           <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> annual.year_4 %>
+
+           <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> annual.year_5 %>
+ 
+           <%= f.submit "Update" %>
+
+         <% end %>
+       <% end %>
+
 
 <h2>Debt portfolio</h2>
-
 
 <%= render 'shared/borrowing_form' %>
 
 <h4>Current debt portfolio</h4>
-<% @borrowings.each do |borrowing| %>
-   <li>
-     <%= link_to borrowing.size, borrowing %>
-     <%if current_user.admin? || current_user.name=='mandeep3' %>
 
-            <%= link_to "delete", borrowing,   :method => :delete,
-                                               :confirm => "You sure?" %>
-            <%= link_to "edit", edit_borrowing_path(borrowing) %>
-    <% end%>
-   </li>
-<% end %>
+     <% @borrowings.each do |borrowing| %>
+         <%= form_for borrowing do |f| %>
+           <%= render 'shared/error_messages', :object => f.object %>
+
+           <%= f.text_field :size, :class=> "input-small", :placeholder=>"size", :value => borrowing.size %>
+
+           <%= f.text_field :coupon, :class=> "input-small", :placeholder=>"coupon", :value => borrowing.coupon %>
+
+           <%= f.text_field :issue_year, :class=> "input-small", :placeholder=>"issue_year", :value => borrowing.issue_year %>
+
+           <%= f.text_field :maturity_year, :class=> "input-small", :placeholder=>"maturity_year", :value => borrowing.maturity_year %>
+
+           <%= f.text_field :currency, :class=> "input-small", :placeholder=>"currency", :value => borrowing.currency %>
+
+           <%= f.text_field :fixed_float, :class=> "input-small", :placeholder=>"fixed/float", :value => borrowing.fixed_float %>
+
+           <%= f.submit "Update" %>
+
+         <% end %>
+     <% end %>
 
 <br/><br/><hr><br/>

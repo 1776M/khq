@@ -1,6 +1,6 @@
 class Actcurrency < ActiveRecord::Base
 
-    attr_accessible :currency_name, :year_0, :year_1, :year_2, :year_3, :year_4, :year_5 		
+    attr_accessible :currency_name, :year_0, :year_1, :year_2, :year_3, :year_4, :year_5, :top_currency 		
 
     belongs_to :actannual
 

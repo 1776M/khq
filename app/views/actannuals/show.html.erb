@@ -2,69 +2,149 @@
   <%= @actannual.year_0 %>
 </h1>
 
+<h2>Edit or accept the existing currencies for this annual data</h2>
 
-<h2>Edit or accept the existing currency mix</h2>
+<% 
 
-<%
-#for each currencies, check if actcurrencies is already set, otherwise show form
+     # put the id of each borrowing into an array
 
-# if this is set to 1, then the actcurrency for can be skipped
+     arr = Array.new 
+     @currencies.each do |currency| 
+         arr << currency.id     
+     end
 %>
 
-<% @actcurrencies.each do |actcurrency| %>
 
-         <li>
-              <%= link_to actcurrency.currency_name, actcurrency %>
-              <%= link_to "edit", edit_actcurrency_path(actcurrency) %>    
-         </li>
+<% #loop through each basecase borrowing  %>
+<% arr.each do |i| %>
+<% j = 0 %>      
+
+      <% # this is currency that has been added for the actannual %>
+
+      <% @actcurrencies.each do |actcurrency| %>
+          <% if actcurrency.top_currency == i %> 
+                  <%= form_for actcurrency do |f| %>
+                      <%= render 'shared/error_messages', :object => f.object %>
+
+                      <%= f.text_field :currency_name, :class=> "input-small", :placeholder=>"currency" %>
+
+                      <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0" %>
+
+                      <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1" %>
+
+                      <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2" %>
+
+                      <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3" %>
+
+                      <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4" %>
+
+                      <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5" %>
+
+                      <%= f.submit "Update" %>
+
+                <% end %>
+         <%  j = 1 %>
+         <% end %>
+     <% next %>
+     <% end %> 
+      
+     <% # this is currency that exists in the annual, only shown if the above isn't shown, i.e. if j > 0 %>
+
+     <% @currencies.each do |currency| %>
+       <% if j > 0 || currency.id != i %>
+         <% next %>
+       <% else %> 
+         <%= form_for @actcurrency_new do |f| %>
+           <%= render 'shared/error_messages', :object => f.object %>
+
+           <%= f.text_field :currency_name, :class=> "input-small", :placeholder=>"currency", :value => currency.currency_name %>
+
+           <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value => currency.year_0 %>
+
+           <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value => currency.year_1 %>
+
+           <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value => currency.year_2 %>
+
+           <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value => currency.year_3 %>
+
+           <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value => currency.year_4 %>
+
+           <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value => currency.year_5 %>
+
+           <%= f.hidden_field :top_currency, :value => currency.id %>
+           <%= hidden_field_tag :actannual_id, @actannual.id %>
+ 
+           <%= f.submit "Accept" %>
+
+         <% end %>
+       <% end %>
+     <% end %>
+
 <% end %>
 
-<% currency_check = 'None' %>
+<h2>Add new currencies for this annual data</h2>
+<b>Currencies specific to this annual data</b><br/>
+      <% @actcurrencies.each do |actcurrency| %>
+          <% if actcurrency.top_currency.nil? %> 
+              <%= form_for actcurrency do |f| %>
+                      <%= render 'shared/error_messages', :object => f.object %>
 
-<% @currencies.each do |currency|  %>
+                      <%= f.text_field :currency_name, :class=> "input-small", :placeholder=>"currency" %>
 
-   <% @actcurrencies.each do |actcurrency| %>
-     
-     <%  # need to check which currencies are already set in actcurrencies %>
-     <% if actcurrency.currency_name == currency.currency_name  %>
-         <% currency_check = currency.currency_name %>
+                      <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0" %>
 
-         <% break %>
-     <% end %> 
-   <% end %> 
-   
-   <% if currency.currency_name != currency_check %>
-    
-    <div class="row">
-      <div class="span12">
+                      <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1" %>
 
-        <%= form_for @actcurrency, {:class => "form-inline"} do |f| %>
-          <%= render 'shared/error_messages', :object => f.object %>
+                      <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2" %>
 
-          <%= f.text_field :currency_name, :class=> "input-small", :placeholder=>"currency", :value => currency.currency_name %>
+                      <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3" %>
 
-          <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value => currency.year_0 %>
+                      <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4" %>
 
-          <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value => currency.year_1 %>
+                      <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5" %>
 
-          <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value => currency.year_2 %>
-
-          <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value => currency.year_3 %>
-
-          <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value => currency.year_4 %>
-
-          <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value => currency.year_5 %>
-
-          <%= hidden_field_tag :actannual_id, @actannual.id %>
+                      <%= hidden_field_tag :actannual_id, @actannual.id %>
  
-          <%= f.submit "Submit", :class => "btn"  %>
-        <% end %> 
-      </div>
+                      <%= f.submit "Update" %>
+
+              <% end %>
+ 
+         <%  j = 1 %>
+         <% end %>
+     <% next %>
+     <% end %> 
+
+For floating rate debt enter the credit spread as the coupon
+
+<br/><br/>
+  <div class="row">
+    <div class="span12">
+      <%= form_for @actcurrency_new do |f| %>
+                      <%= render 'shared/error_messages', :object => f.object %>
+
+
+                      <%= f.text_field :currency_name, :class=> "input-small", :placeholder=>"currency" %>
+
+                      <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0" %>
+
+                      <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1" %>
+
+                      <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2" %>
+
+                      <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3" %>
+
+                      <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4" %>
+
+                      <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5" %>
+
+                      <%= hidden_field_tag :actannual_id, @actannual.id %>
+ 
+                      <%= f.submit "Submit" %>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 
-<% end %> 
 
-<h2>Add another currency</h2>
 
-<%=render 'shared/actcurrency_form' %>
+
+
