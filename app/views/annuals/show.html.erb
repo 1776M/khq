@@ -2,6 +2,10 @@
   <%= @annual.year_0 %>
 </h1>
 
+<% if current_user.admin? || current_user.name == 'mandeep3' %>
+  <h6>Ensure your <%= link_to 'business financials', basecase_path(@annual.basecase.id) %> are up to date before creating a scenario</h6>
+<% end %>
+<br/><br/>
 
           <%= render 'shared/currency_form' %>
 

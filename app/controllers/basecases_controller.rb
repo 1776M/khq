@@ -9,6 +9,7 @@ class BasecasesController < ApplicationController
      # @basecase = Basecase.new if signed_in?
      @annuals = @basecase.annuals
      @annual = Annual.new if signed_in?
+     @rules = @basecase.rules
      @rule = Rule.new if signed_in?      
      @borrowings = @basecase.borrowings
      @borrowing = Borrowing.new if signed_in?

@@ -1,0 +1,21 @@
+<% name = @filename['datafile'].original_filename %>
+<% directory = "public/assets" %>   
+<% path = File.join(directory, name) %>
+
+
+<%
+
+require 'csv'
+
+thegrid = CSV.table(path, :headers => true, :header_converters => :symbol)
+
+%>
+
+<%= thegrid %><br/>
+
+
+<h1>Save uploaded data to database</h1>
+<%= form_tag({:action => :uploadfile}, :multipart => true) do %>
+  <%= file_field_tag 'upload[datafile]' %>
+  <%= submit_tag("Upload") %> 
+<% end %>

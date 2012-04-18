@@ -6,7 +6,25 @@
 
 <h2>Financials</h2>
 
-<%= render 'shared/rule_form'  %>
+
+<% if @basecase.rules.count < 1 %>
+  <%= render 'shared/rule_form'  %>
+<% else %>
+  <div class="row">
+    <div class="span12">
+
+     <% @rules.each do |rule| %>
+      <%= form_for rule do |f| %>
+        <%= render 'shared/error_messages', :object => f.object %>
+
+        <%= f.text_area :name %>
+
+        <%= f.submit "Update", :class => "btn"  %>
+      <% end %>
+    <% end %>
+    </div>
+  </div>
+<% end %>
 
 <%= render 'shared/annual_form' %>
 

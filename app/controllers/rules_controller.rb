@@ -26,7 +26,7 @@ class RulesController < ApplicationController
     @rule = Rule.find(params[:id])
     if @rule.update_attributes(params[:rule])
       flash[:success] = "Rule updated"
-      redirect_to @rule
+      redirect_to basecase_path(@rule.basecase_id)
     else
       @title = "Edit rule"
       render 'edit'
