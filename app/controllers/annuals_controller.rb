@@ -49,6 +49,17 @@ class AnnualsController < ApplicationController
         redirect_to group_path(current_user.group_id)
     end
   end
+
+  def bulk_create
+    @basecase = current_user.group.basecases(:last)
+    @thegrid = params[:thegrid]
+    @thegrid.each do |thegrid|
+       flash[:success] = "You have created new data"
+ 
+       # @annual = @basecase.annuals.build(params[thegrid])
+    end 
+  end
+
   
   private
 

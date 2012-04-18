@@ -5,7 +5,11 @@ Khq::Application.routes.draw do
   resources :groups
   resources :projects, :only => [:create, :destroy, :show]
   resources :basecases, :only => [:create, :destroy, :show] 
-  resources :annuals
+  resources :annuals do
+       collection do
+  		post :bulk_create
+  	end
+  end
   resources :borrowings
   resources :scenarios, :only => [:create, :destroy, :show] do
        collection do

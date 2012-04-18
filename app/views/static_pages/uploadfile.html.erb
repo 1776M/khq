@@ -8,14 +8,42 @@
 require 'csv'
 
 thegrid = CSV.table(path, :headers => true, :header_converters => :symbol)
+thegrid[:basecase_id] = @basecase.id
+
+annual_headers = [:name, :year_0, :year_1, :year_2, :year_3, :year_4, :year_5, :basecase_id]
+
+# if the uploaded file is an annual file then it will be set to 1 later and save data to annual model
+annual_file = 0 
 
 %>
 
-<%= thegrid %><br/>
-
-
-<h1>Save uploaded data to database</h1>
-<%= form_tag({:action => :uploadfile}, :multipart => true) do %>
-  <%= file_field_tag 'upload[datafile]' %>
-  <%= submit_tag("Upload") %> 
+<% if thegrid.headers == annual_headers %>
+  <% annual_file = 1 %>
 <% end %>
+
+<% if annual_file > 0 %>
+  <% annual = Hash.new %>
+  <% thegrid.each do |row| %>
+    <% params[:annual] = {
+     
+       name: row[0],
+       year_0: row[1], 
+       year_1: row[2],
+       year_2: row[3],
+       year_3: row[4],
+       year_4: row[5],
+       year_5: row[6],
+       basecase_id: row[7]
+      }
+     %>
+    <% @annual = @basecase.annuals.build(params[:annual]) %>
+    <%    if @annual.save  %>
+    <%      flash[:success] = "You have created new data" %>
+    <%    else %>
+    <%      flash[:success] = "It didn't work mate" %>
+    <%    end %> 
+  <% end %>
+
+<% end %>
+
+<%= @basecase.annuals.count %>

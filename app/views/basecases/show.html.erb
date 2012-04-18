@@ -7,6 +7,12 @@
 <h2>Financials</h2>
 
 
+<h1>Upload input data</h1>
+<%= form_tag({:controller => 'static_pages', :action => :uploadfile}, :multipart => true) do %>
+  <%= file_field_tag 'upload[datafile]' %>
+  <%= submit_tag("Upload") %> 
+<% end %>
+
 <% if @basecase.rules.count < 1 %>
   <%= render 'shared/rule_form'  %>
 <% else %>

@@ -5,21 +5,3 @@
       with <a href="http://rubyonrails.org/">Ruby on Rails</a>. This
       is the sample application for the tutorial.
     </p>
-
-<%
-
-require 'csv'
-
-thegrid = CSV.table("public/assets/khq.csv", :headers => true, :header_converters => :symbol)
-
-%>
-
-<%= thegrid %><br/>
-<%= thegrid[1][1]=12 %><br/>
-<%= thegrid %><br/>
-
-<h1>File Upload</h1>
-<%= form_tag({:action => :uploadfile}, :multipart => true) do %>
-  <%= file_field_tag 'upload[datafile]' %>
-  <%= submit_tag("Upload") %> 
-<% end %>
