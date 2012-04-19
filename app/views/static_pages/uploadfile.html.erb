@@ -15,54 +15,73 @@ annual_headers = [:name, :year_0, :year_1, :year_2, :year_3, :year_4, :year_5, :
 # if the uploaded file is an annual file then it will be set to 1 later and save data to annual model
 annual_file = 0 
 
+if thegrid.headers == annual_headers 
+    annual_file = 1 
+end 
+
+if annual_file > 0 
+    annual = Hash.new
+    thegrid.each do |row| 
+        params[:annual] = {
+     
+            name: row[0],
+            year_0: row[1], 
+            year_1: row[2],
+            year_2: row[3],
+            year_3: row[4],
+            year_4: row[5],
+            year_5: row[6],
+            basecase_id: row[7]
+            }
+     
+        @annual = @basecase.annuals.build(params[:annual]) 
+        if @annual.save  
+            flash[:success] = "You have created new data" 
+        else 
+            flash[:success] = "It didn't work mate" 
+        end 
+    end
+
+else 
+    theinput_id = 0
+    @inputs = @basecase.inputs 
+    update = 0 
+    @inputs.each do |theinput| 
+    
+        if theinput.name == name.split('.').first
+
+            # find the id of the input that needs to be updated
+            update = 1
+            theinput_id = theinput.id
+        end 
+    end 
+  
+ 
+    input = Hash.new 
+    params[:input] = {
+     
+        name: name.split('.').first,
+        body: thegrid.to_s, 
+        basecase_id: @basecase.id
+       }
+     
+    if update < 1  
+        @input = @basecase.inputs.build(params[:input]) 
+            if @input.save  
+                flash[:success] = "You have created new data" 
+            else 
+                flash[:success] = "It didn't work mate" 
+            end 
+    
+    else 
+        @input = Input.find(:last, :conditions => [" id = ?", theinput_id]) 
+            if @input.update_attributes(params[:input])
+                flash[:success] = "Data updated"
+            else
+                flash[:success] = "The data didn't update this time"
+            end   
+    end
+end 
 %>
 
-<% if thegrid.headers == annual_headers %>
-  <% annual_file = 1 %>
-<% end %>
-
-<% if annual_file > 0 %>
-  <% annual = Hash.new %>
-  <% thegrid.each do |row| %>
-    <% params[:annual] = {
-     
-       name: row[0],
-       year_0: row[1], 
-       year_1: row[2],
-       year_2: row[3],
-       year_3: row[4],
-       year_4: row[5],
-       year_5: row[6],
-       basecase_id: row[7]
-      }
-     %>
-    <% @annual = @basecase.annuals.build(params[:annual]) %>
-    <%    if @annual.save  %>
-    <%      flash[:success] = "You have created new data" %>
-    <%    else %>
-    <%      flash[:success] = "It didn't work mate" %>
-    <%    end %> 
-  <% end %>
-
-<% else %>
-  <% input = Hash.new %>
-  <% thegrid.each do |row| %>
-    <% params[:input] = {
-     
-       name: @filename['datafile'].original_filename.split('.').first,
-       body: thegrid.to_s, 
-       basecase_id: @basecase.id
-      }
-     %>
-    <% @input = @basecase.inputs.build(params[:input]) %>
-    <%    if @input.save  %>
-    <%      flash[:success] = "You have created new data" %>
-    <%    else %>
-    <%      flash[:success] = "It didn't work mate" %>
-    <%    end %> 
-  <% end %>
-
-<% end %>
-
-<%= @basecase.annuals.count %>
-<%= @basecase.inputs.count %>
+<%= @input.id %>
