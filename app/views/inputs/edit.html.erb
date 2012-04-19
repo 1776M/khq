@@ -1,0 +1,17 @@
+<%= provide(:title, 'Edit input data') %>
+<h4>Edit input data</h4>
+
+<div class="row">
+  <div class="span12">
+
+    <%= form_for @input, {:class => "form-inline"} do |f| %>
+      <%= render 'shared/error_messages', :object => f.object %>
+
+      <%= f.text_field :name, :class=> "input-small", :placeholder=>"name" %>
+
+      <%= f.text_field :body, :class=> "input-small", :placeholder=>"body" %>
+ 
+      <%= f.submit "Submit", :class => "btn"  %>
+    <% end %>
+  </div>
+</div>

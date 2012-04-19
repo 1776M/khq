@@ -44,6 +44,25 @@ annual_file = 0
     <%    end %> 
   <% end %>
 
+<% else %>
+  <% input = Hash.new %>
+  <% thegrid.each do |row| %>
+    <% params[:input] = {
+     
+       name: @filename['datafile'].original_filename.split('.').first,
+       body: thegrid.to_s, 
+       basecase_id: @basecase.id
+      }
+     %>
+    <% @input = @basecase.inputs.build(params[:input]) %>
+    <%    if @input.save  %>
+    <%      flash[:success] = "You have created new data" %>
+    <%    else %>
+    <%      flash[:success] = "It didn't work mate" %>
+    <%    end %> 
+  <% end %>
+
 <% end %>
 
 <%= @basecase.annuals.count %>
+<%= @basecase.inputs.count %>

@@ -5,3 +5,16 @@
       with <a href="http://rubyonrails.org/">Ruby on Rails</a>. This
       is the sample application for the tutorial.
     </p>
+
+<% 
+  require 'csv'
+
+  thetable = CSV.table("public/assets/khq2.csv", :headers => true, :header_converters => :symbol)
+%>
+
+<%= thetable %>
+
+<%   thetable = thetable.to_s %> <br/>
+<% thetable = CSV.parse(thetable, :headers => true, :header_converters => :symbol) %>
+
+<%= thetable[0][0] %>

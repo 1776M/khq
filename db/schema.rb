@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120416165338) do
+ActiveRecord::Schema.define(:version => 20120419120346) do
 
   create_table "actannuals", :force => true do |t|
     t.float    "year_0"
@@ -145,6 +145,14 @@ ActiveRecord::Schema.define(:version => 20120416165338) do
     t.string   "group_name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "inputs", :force => true do |t|
+    t.string   "name"
+    t.string   "body"
+    t.integer  "basecase_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "projects", :force => true do |t|

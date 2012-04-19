@@ -29,6 +29,7 @@ Khq::Application.routes.draw do
   	end
   end
   resources :rules
+  resources :inputs
 
   root to: 'static_pages#home'
 
