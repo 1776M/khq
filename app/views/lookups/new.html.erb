@@ -1,0 +1,17 @@
+<%= provide(:title, 'Add lookups') %>
+<h4>Add lookups</h4>
+
+<div class="row">
+  <div class="span12">
+
+    <%= form_for @lookup do |f| %>
+      <%= render 'shared/error_messages', :object => f.object %>
+
+      <%= f.text_area :name %>
+
+      <%= hidden_field_tag :basecase_id, @basecase.id %>
+ 
+      <%= f.submit "Submit", :class => "btn"  %>
+    <% end %>
+  </div>
+</div>

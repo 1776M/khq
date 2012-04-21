@@ -8,7 +8,7 @@ class Basecase < ActiveRecord::Base
     has_many :borrowings
     has_many :rules
     has_many :inputs
-
+    has_many :lookups
 
     validates :name,     :presence => true
     validates :group_id, :presence => true
