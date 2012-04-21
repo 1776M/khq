@@ -17,4 +17,19 @@
 <%   thetable = thetable.to_s %> <br/>
 <% thetable = CSV.parse(thetable, :headers => true, :header_converters => :symbol) %>
 
-<%= thetable[0][0] %>
+<%
+  lookup = Hash.new
+
+  a = 0 
+  thetable.each do |row|
+    col_num = 0
+    while col_num < thetable.headers().count
+      lookup[row[0] + "." + row[col_num]] = row[col_num]
+      
+      col_num = col_num + 1
+    end 
+  end
+  
+%>
+
+<%=lookup %>

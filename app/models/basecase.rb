@@ -47,6 +47,48 @@ class Basecase < ActiveRecord::Base
            return total_duration      
     end
 
+#    def lookup_table(@annuals, @inputs)
+#
+#       lookup = Hash.new
+#
+       # create hash entry for each annual
+       # create hash entry for each annual value
+
+#       @annuals.each do |annual|
+#           lookup[annual.name] = [annual.year_0, annual.year_1, annual.year_2, annual.year_3, annual.year_4, annual.year_5]
+#           lookup[annual.name + "." + "year_0"] = annual.year_0
+#           lookup[annual.name + "." + "year_0"] = annual.year_1
+#           lookup[annual.name + "." + "year_0"] = annual.year_2
+#           lookup[annual.name + "." + "year_0"] = annual.year_3
+#           lookup[annual.name + "." + "year_0"] = annual.year_4
+#           lookup[annual.name + "." + "year_0"] = annual.year_5 
+#      end
+
+       # create hash entry for each input single
+       # create hash entry for each input multi
+
+#       @inputs.each do |input|
+           
+
+           # if input.name.headers().count==2
+#             input.name.each do |row|   
+#               lookup[row[0]] = row[1] 
+#              end 
+           # else 
+#             input.name.each do |row|
+#                col_num = 0
+#                while col_num < input.name.headers().count
+#                  lookup[row[0] + "." + row[col_num]] = row[col_num]
+#      
+#                  col_num = col_num + 1
+#                end 
+#             end  
+
+#        end
+# 
+#        return lookup    
+#     end
+
     def parse_code(input_string)
         
        # explode string into new lines
