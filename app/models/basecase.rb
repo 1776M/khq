@@ -47,4 +47,57 @@ class Basecase < ActiveRecord::Base
            return total_duration      
     end
 
+    def parse_code(input_string)
+        
+       # explode string into new lines
+       input_string = input_string.split(/\r?\n/)
+
+       # create an array of rules
+       rules_array = []
+
+       # put all the rules into an array
+       input_string.each do |sub_rule|
+               rules_array << sub_rule                
+       end
+  
+       # loop through the rules array and perform appropriate actions or call appropriate functions
+
+       rules_array.delete_if {|x| x == "" || x == " "}
+
+       # string to record whether it is a rule or not
+       is_rule = 0  
+       
+       # head is the left had side of the equals sign, body is the right     
+       rule_head = ""
+       rule_body = ""
+
+       rules_array.each do |rule|
+
+         # check if it contains an = sign
+         if rule.include? "="
+            is_rule = 1
+            rule_head = rule.split("=").first
+            rule_body = rule.split("=").last
+         end
+
+         # create a look_up table/hash of all actors before running the parse_code function
+
+         # find the actors on the right
+         # split the actors, for each actor find_actor()
+
+         # evaluate the rule but only allow certain operands and numbers, or an array containing numbers
+         # eval(rule)
+
+         # find the actor on the left
+         # find_actor
+
+         # update or create the actor on the left      
+         # if exists update actor, else create actor
+
+       end
+	
+       return rule_body     
+
+    end
+
 end

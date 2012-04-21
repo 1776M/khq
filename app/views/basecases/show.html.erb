@@ -13,6 +13,9 @@
   <%= submit_tag("Upload") %> 
 <% end %>
 
+<%= @basecase.parse_code(@rules.last.name)%>
+
+
 <% if @basecase.rules.count < 1 %>
   <%= render 'shared/rule_form'  %>
 <% else %>
