@@ -24,25 +24,13 @@
   thetable.each do |row|
     col_num = 0
     while col_num < thetable.headers().count
-      lookup[row[0] + "." + row[col_num]] = row[col_num]
+      lookup[row[0] + "." + thetable.headers[col_num].to_s] = row[col_num]
       
       col_num = col_num + 1
     end 
   end
   
 %>
-
+<b><%=thetable.headers[0] %></b>
 <%=lookup %>
 
-<%
-
- array_one = [1,2,3]
- array_two = [2,3,4]
-
- array_three = array_one.zip(array_two).map{|x| x.reduce(:+)}
-
-
-%>
-
-<br/>
-<%=array_three %>

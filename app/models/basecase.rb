@@ -72,17 +72,17 @@ class Basecase < ActiveRecord::Base
 
         @inputs.each do |input|
            require 'csv'
-           input.name = CSV.parse(input.name, :headers => true, :header_converters => :symbol) 
+           input.body = CSV.parse(input.body, :headers => true, :header_converters => :symbol) 
            
-           if input.name.headers().count==2
-               input.name.each do |row|   
+           if input.body.headers().count==2
+               input.body.each do |row|   
                    lookup[row[0]] = row[1] 
                end 
            else 
-               input.name.each do |row|
+               input.body.each do |row|
                    col_num = 0
-                   while col_num < input.name.headers().count
-                       lookup[row[0] + "." + row[col_num]] = row[col_num]
+                   while col_num < input.body.headers().count
+                       lookup[row[0] + "." + input.body.headers[col_num].to_s] = row[col_num]
       
                        col_num = col_num + 1
                    end 
