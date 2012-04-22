@@ -4,6 +4,40 @@
 
 <hr>
 
+<% # update the lookup table on page reload 
+
+    lookup_hash = Hash.new
+
+    params[:lookup] = {
+     
+        name: @basecase.lookup_table(@basecase.id),
+        basecase_id: @basecase.id
+       }
+     
+    if @basecase.lookups.count > 0  
+
+        @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", @basecase.id]) 
+            if @lookup.update_attributes(params[:lookup])
+                flash[:success] = "Data updated"
+            else
+                flash[:success] = "The data didn't update this time"
+            end   
+    
+    else 
+        @lookup = @basecase.lookups.build(params[:lookup]) 
+            if @lookup.save  
+                flash[:success] = "You have created new data" 
+            else 
+                flash[:success] = "It didn't work mate" 
+            end 
+
+    end
+
+%>
+
+<% @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", @basecase.id])  %>
+<%=@lookup.name %>
+
 <h2>Financials</h2>
 
 

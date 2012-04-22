@@ -47,80 +47,85 @@ class Basecase < ActiveRecord::Base
            return total_duration      
     end
 
-#    def lookup_table(@annuals, @inputs)
-#
-#       lookup = Hash.new
-#
-       # create hash entry for each annual
-       # create hash entry for each annual value
+    def lookup_table(id)
 
-#       @annuals.each do |annual|
-#           lookup[annual.name] = [annual.year_0, annual.year_1, annual.year_2, annual.year_3, annual.year_4, annual.year_5]
-#           lookup[annual.name + "." + "year_0"] = annual.year_0
-#           lookup[annual.name + "." + "year_0"] = annual.year_1
-#           lookup[annual.name + "." + "year_0"] = annual.year_2
-#           lookup[annual.name + "." + "year_0"] = annual.year_3
-#           lookup[annual.name + "." + "year_0"] = annual.year_4
-#           lookup[annual.name + "." + "year_0"] = annual.year_5 
-#      end
+        @annuals =  Annual.find(:all, :conditions => [" basecase_id = ?", id])
+        @inputs =   Input.find(:all, :conditions => [" basecase_id = ?", id])
 
-       # create hash entry for each input single
-       # create hash entry for each input multi
+        lookup = Hash.new
 
-#       @inputs.each do |input|
+        # create hash entry for each annual
+        # create hash entry for each annual value
+
+        @annuals.each do |annual|
+            lookup[annual.name] = [annual.year_0, annual.year_1, annual.year_2, annual.year_3, annual.year_4, annual.year_5]
+            lookup[annual.name + "." + "year_0"] = annual.year_0
+            lookup[annual.name + "." + "year_1"] = annual.year_1
+            lookup[annual.name + "." + "year_2"] = annual.year_2
+            lookup[annual.name + "." + "year_3"] = annual.year_3
+            lookup[annual.name + "." + "year_4"] = annual.year_4
+            lookup[annual.name + "." + "year_5"] = annual.year_5 
+        end
+
+        # create hash entry for each input single
+        # create hash entry for each input multi
+
+        @inputs.each do |input|
+           require 'csv'
+           input.name = CSV.parse(input.name, :headers => true, :header_converters => :symbol) 
            
+           if input.name.headers().count==2
+               input.name.each do |row|   
+                   lookup[row[0]] = row[1] 
+               end 
+           else 
+               input.name.each do |row|
+                   col_num = 0
+                   while col_num < input.name.headers().count
+                       lookup[row[0] + "." + row[col_num]] = row[col_num]
+      
+                       col_num = col_num + 1
+                   end 
+               end  
 
-           # if input.name.headers().count==2
-#             input.name.each do |row|   
-#               lookup[row[0]] = row[1] 
-#              end 
-           # else 
-#             input.name.each do |row|
-#                col_num = 0
-#                while col_num < input.name.headers().count
-#                  lookup[row[0] + "." + row[col_num]] = row[col_num]
-#      
-#                  col_num = col_num + 1
-#                end 
-#             end  
-
-#        end
-# 
-#        return lookup    
-#     end
+           end
+        end
+ 
+        return lookup    
+     end
 
     def parse_code(input_string)
         
-       # explode string into new lines
-       input_string = input_string.split(/\r?\n/)
+#       # explode string into new lines
+#       input_string = input_string.split(/\r?\n/)
 
-       # create an array of rules
-       rules_array = []
+#       # create an array of rules
+#       rules_array = []
 
-       # put all the rules into an array
-       input_string.each do |sub_rule|
-               rules_array << sub_rule                
-       end
+#       # put all the rules into an array
+#       input_string.each do |sub_rule|
+#               rules_array << sub_rule                
+#       end
   
-       # loop through the rules array and perform appropriate actions or call appropriate functions
+#       # loop through the rules array and perform appropriate actions or call appropriate functions
 
-       rules_array.delete_if {|x| x == "" || x == " "}
+#       rules_array.delete_if {|x| x == "" || x == " "}
 
        # string to record whether it is a rule or not
-       is_rule = 0  
+#       is_rule = 0  
        
        # head is the left had side of the equals sign, body is the right     
-       rule_head = ""
-       rule_body = ""
+#       rule_head = ""
+#       rule_body = ""
 
-       rules_array.each do |rule|
+#       rules_array.each do |rule|
 
          # check if it contains an = sign
-         if rule.include? "="
-            is_rule = 1
-            rule_head = rule.split("=").first
-            rule_body = rule.split("=").last
-         end
+#         if rule.include? "="
+#            is_rule = 1
+#            rule_head = rule.split("=").first
+#            rule_body = rule.split("=").last
+#         end
 
          # create a look_up table/hash of all actors before running the parse_code function
 
@@ -136,9 +141,9 @@ class Basecase < ActiveRecord::Base
          # update or create the actor on the left      
          # if exists update actor, else create actor
 
-       end
+#       end
 	
-       return rule_body     
+       return input_string     
 
     end
 

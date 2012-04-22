@@ -19,6 +19,7 @@ class BasecasesController < ApplicationController
      @float_percent = @basecase.total_debt(params[:id]).group_by{|c| c.fixed_float }
      @maturity_percent = @basecase.total_debt(params[:id]).group_by{|c| c.maturity_year - c.issue_year }
      @reset_percent = @basecase.total_debt(params[:id]).group_by{|c| c.maturity_year - Time.now.year }
+     @inputs = Input.find(:all, :conditions => [" basecase_id = ?", @basecase.id])
      # this it to add show the cholesky 
      # @cholesky = Cholesky.find(:all)
      # @choleskyir = Choleskyir.find(:all)

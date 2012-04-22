@@ -33,3 +33,16 @@
 %>
 
 <%=lookup %>
+
+<%
+
+ array_one = [1,2,3]
+ array_two = [2,3,4]
+
+ array_three = array_one.zip(array_two).map{|x| x.reduce(:+)}
+
+
+%>
+
+<br/>
+<%=array_three %>
