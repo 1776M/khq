@@ -6,6 +6,8 @@
 
 <% # update the lookup table on page reload 
 
+#  @basecase.create_lookuptable(@basecase.id)
+
     lookup_hash = Hash.new
 
     params[:lookup] = {
@@ -36,7 +38,7 @@
 %>
 
 <% @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", @basecase.id])  %>
-<%=@lookup.name %>
+<%= @lookup.name %><br/>
 
 <h2>Financials</h2>
 
@@ -47,7 +49,7 @@
   <%= submit_tag("Upload") %> 
 <% end %>
 
-<%= @basecase.parse_code(@rules.last.name)%>
+<%= @basecase.parse_code(@rules.last.name, @basecase.id)%><br/>
 
 
 <% if @basecase.rules.count < 1 %>

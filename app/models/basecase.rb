@@ -94,46 +94,168 @@ class Basecase < ActiveRecord::Base
         return lookup    
      end
 
-    def parse_code(input_string)
+     def create_lookuptable(id)
+
+         params = Hash.new
+         @basecase = Basecase.find(id) 
+
+         params[:lookup] = {
+     
+             name: @basecase.lookup_table(id),
+             basecase_id: id
+             }
+     
+         if @basecase.lookups.count < 1  
+
+             @lookup = @basecase.lookups.build(params[:lookup]) 
+                 if @lookup.save  
+                     # this is just a dummy variable to do something in the loop
+                     a = 1
+                 end 
+         end
+
+      end
+
+     def update_lookuptable(id, lookup_array)
+
+         params = Hash.new
+         @basecase = Basecase.find(id) 
+
+         params[:lookup] = {
+     
+             name: lookup_array,
+             basecase_id: id
+             }
+     
+             @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", id]) 
+                 if @lookup.update_attributes(params[:lookup])
+                     # this is just a dummy variable to do something in the loop
+                     a = 1
+                 end   
+      end
+
+
+    def parse_code(input_string, id)
         
-#       # explode string into new lines
-#       input_string = input_string.split(/\r?\n/)
+       # explode string into new lines
+       input_string = input_string.split(/\r?\n/)
 
-#       # create an array of rules
-#       rules_array = []
+       # create an array of rules
+       rules_array = []
 
-#       # put all the rules into an array
-#       input_string.each do |sub_rule|
-#               rules_array << sub_rule                
-#       end
+       # put all the rules into an array
+       input_string.each do |sub_rule|
+               rules_array << sub_rule                
+       end
   
-#       # loop through the rules array and perform appropriate actions or call appropriate functions
+       # loop through the rules array and perform appropriate actions or call appropriate functions
 
-#       rules_array.delete_if {|x| x == "" || x == " "}
+       rules_array.delete_if {|x| x == "" || x == " "}
 
        # string to record whether it is a rule or not
-#       is_rule = 0  
+       is_rule = 0  
        
        # head is the left had side of the equals sign, body is the right     
-#       rule_head = ""
-#       rule_body = ""
+       rule_head = ""
+       rule_body = ""
+     
+       # pull out the lookup_array
+       @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", id])
+       lookup_array = @lookup.name
 
-#       rules_array.each do |rule|
+       # array to hold true/false of whether each actor is an array or not
+       type_check = []
+
+       # sets to 1 if rules contains array  
+       rule_contains_array = 0
+
+       # holds the max length of any array within a single rule
+       max_array_length = 0
+
+       rules_array.each do |rule|
 
          # check if it contains an = sign
-#         if rule.include? "="
-#            is_rule = 1
-#            rule_head = rule.split("=").first
-#            rule_body = rule.split("=").last
-#         end
+         if rule.include? "="
+            is_rule = 1
+            rule_head = rule.split("=").first
+            rule_body = rule.split("=").last
+         end
 
-         # create a look_up table/hash of all actors before running the parse_code function
+         # first replace all + - * / ( ) with a space before and after it, if it does not exist
 
-         # find the actors on the right
-         # split the actors, for each actor find_actor()
+         if rule_body.include? "+"
+             rule_body = rule_body.gsub(/[+]/, '+' => ' + ')
+         end
+
+         if rule_body.include? "-"
+             rule_body = rule_body.gsub(/[-]/, '-' => ' - ')
+         end
+
+         if rule_body.include? "*"
+             rule_body = rule_body.gsub(/[*]/, '*' => ' * ')
+         end
+
+         if rule_body.include? "/"
+             rule_body = rule_body.gsub("/", '/' => ' / ')
+         end
+
+         if rule_body.include? "("
+             rule_body = rule_body.gsub(/[(]/, '(' => ' ( ')
+         end
+
+         if rule_body.include? ")"
+             rule_body = rule_body.gsub(/[)]/, ')' => ' ) ')
+         end
+
+         # replace all multiple white spaces with a single space
+         rule_body = rule_body.squeeze(" ")
+
+         # replace all actors with the items from the lookup table
+
+         # add operators to lookup_array
+         lookup_array["+"] = "+"
+         lookup_array["-"] = "-"
+         lookup_array["*"] = "*"
+         lookup_array["/"] = "/"
+         lookup_array["("] = "("
+         lookup_array[")"] = ")"
+
+         broken_string = rule_body.split(" ")
+
+         # substitute the lookup table into the rule
+         broken_string.each do |item|
+
+             # need to check if any item is an array
+             type_check << lookup_array[:"#{ item }"].kind_of?(Array)
+             if type_check.include?(true)
+                 rule_contains_array = 1
+             end
+ 
+             if lookup_array[:"#{ item }"].kind_of?(Array)
+                 if lookup_array[:"#{ item }"].count > max_array_length  
+                     max_array_length = lookup_array[:"#{ item }"].count
+                 end
+             end 
+
+
+             # if there are no arrays in the formula then use the simple approach to calculations
+             if max_array_length == 0
+                 if lookup_array[:"#{ item }"]
+                     value = lookup_array[:"#{ item }"] 
+                     rule_body = rule_body.gsub("#{item}", "#{ value }" ) 
+                 end
+             end 
+
+         end 
+         
 
          # evaluate the rule but only allow certain operands and numbers, or an array containing numbers
-         # eval(rule)
+         if max_array_length == 0
+               rule_body = eval(rule_body)
+#              rule_body = 
+#              lookup_array["#{ rule_head }"] = rule_body
+#             update_lookuptable(id, lookup_array)   
+         end
 
          # find the actor on the left
          # find_actor
@@ -141,9 +263,9 @@ class Basecase < ActiveRecord::Base
          # update or create the actor on the left      
          # if exists update actor, else create actor
 
-#       end
+       end
 	
-       return input_string     
+       return rule_body     
 
     end
 
