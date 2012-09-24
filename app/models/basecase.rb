@@ -89,11 +89,25 @@ class Basecase < ActiveRecord::Base
                end  
 
            end
+
+           # add the actual arrays from the input table to the lookups as well
+
+           row_num = 0
+           input.body.each do |row|
+               lookup[row[0]] = input.body[row_num].fields
+
+               # remove the first and last items (i.e the row name is first and basecase id value is last)
+               lookup[row[0]].pop
+               lookup[row[0]].shift
+               row_num = row_num + 1
+           end
+
         end
  
         return lookup    
      end
 
+     # this is not used, lookup table is created within the basecase show page
      def create_lookuptable(id)
 
          params = Hash.new
@@ -116,6 +130,7 @@ class Basecase < ActiveRecord::Base
 
       end
 
+     # this is not used, lookup table is updated within the basecase show page
      def update_lookuptable(id, lookup_array)
 
          params = Hash.new
@@ -152,13 +167,28 @@ class Basecase < ActiveRecord::Base
 
        rules_array.delete_if {|x| x == "" || x == " "}
 
-       # string to record whether it is a rule or not
-       is_rule = 0  
-       
-       # head is the left had side of the equals sign, body is the right     
+       # head is the left hand side of the equals sign, body is the right     
        rule_head = ""
        rule_body = ""
-     
+
+       # rule_head_array is an array for holding results of summed arrays
+       rule_head_array = []
+
+       # array for holding non-array items as arrays, e.g + becomes +,+,+,+,+
+       items_as_array = []
+
+       # all parts of the broken string are arrays
+       broken_string_as_array = []
+
+       # broken_string_as_array is then sorted into a series of strings held in an array, to be evaluated
+       strings_to_evaluate = []
+
+       # this holds the evaluated strings after strings_to_evaluate
+       evaluated_strings = []
+
+       # this array holds all the evaluated_strings (i.e. the answers to each rule calculation)
+       answers_array = []
+       
        # pull out the lookup_array
        @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", id])
        lookup_array = @lookup.name
@@ -166,17 +196,16 @@ class Basecase < ActiveRecord::Base
        # array to hold true/false of whether each actor is an array or not
        type_check = []
 
-       # sets to 1 if rules contains array  
-       rule_contains_array = 0
-
-       # holds the max length of any array within a single rule
-       max_array_length = 0
-
        rules_array.each do |rule|
+
+         # holds the max length of any array within a single rule
+         max_array_length = 0
+    
+         # have to reset this to empty, for each loop of the array
+         broken_string_as_array = []
 
          # check if it contains an = sign
          if rule.include? "="
-            is_rule = 1
             rule_head = rule.split("=").first
             rule_body = rule.split("=").last
          end
@@ -210,6 +239,9 @@ class Basecase < ActiveRecord::Base
          # replace all multiple white spaces with a single space
          rule_body = rule_body.squeeze(" ")
 
+         # remove white space from end of string
+         rule_head = rule_head.strip!
+
          # replace all actors with the items from the lookup table
 
          # add operators to lookup_array
@@ -223,49 +255,88 @@ class Basecase < ActiveRecord::Base
          broken_string = rule_body.split(" ")
 
          # substitute the lookup table into the rule
+
+         # loop through the broken_string twice, first to find the max_array_length, then two convert all items to array or leave as items
          broken_string.each do |item|
 
-             # need to check if any item is an array
-             type_check << lookup_array[:"#{ item }"].kind_of?(Array)
-             if type_check.include?(true)
-                 rule_contains_array = 1
-             end
- 
+             # find the max length of an array in the rule, under the assumption all arrays are the same length
              if lookup_array[:"#{ item }"].kind_of?(Array)
                  if lookup_array[:"#{ item }"].count > max_array_length  
                      max_array_length = lookup_array[:"#{ item }"].count
                  end
              end 
 
+         end
+
+         broken_string.each do |item|
 
              # if there are no arrays in the formula then use the simple approach to calculations
              if max_array_length == 0
                  if lookup_array[:"#{ item }"]
-                     value = lookup_array[:"#{ item }"] 
-                     rule_body = rule_body.gsub("#{item}", "#{ value }" ) 
+                     value = lookup_array[:"#{ item }"]
+                     # need to add space before and after item so EBIT and EBITA aren't mixed up
+                     # item = item + " " 
+                     rule_body = rule_body.gsub("#{item}", "#{ value }" )
+                     # need to remove the spaces from item again so rest of code is not screwed up
+                     # item = item.strip! 
                  end
              end 
 
+
+             if max_array_length > 0
+                 # need to convert each item in broken string into an array, so all items are an array
+
+                 if lookup_array[:"#{ item }"].kind_of?(Array) != true
+                     items_as_array = Array.new(max_array_length){|x| x = item }
+                     # add these new items_as_array into broken_string_as_array
+                     broken_string_as_array << items_as_array 
+                 end
+
+                 # add array items into the broken_string_as_array too
+                 if lookup_array[:"#{ item }"].kind_of?(Array) 
+                     broken_string_as_array << lookup_array[:"#{ item }"] 
+                 end
+   
+             end
+
          end 
          
+         evaluated_strings = []
 
          # evaluate the rule but only allow certain operands and numbers, or an array containing numbers
          if max_array_length == 0
-               rule_body = eval(rule_body)
-#              rule_body = 
-#              lookup_array["#{ rule_head }"] = rule_body
-#             update_lookuptable(id, lookup_array)   
+               # rule_body = eval(rule_body)
+
+               # delete any previous elements in the array
+               # evaluated_strings.delete_if {|x| x }
+               evaluated_strings << eval(rule_body)               
+ 
+               # need to add the rule head into the lookup array
+               lookup_array[:"#{rule_head}"]  = eval(rule_body)  
          end
 
-         # find the actor on the left
-         # find_actor
+         # evaluate the rule for arrays
 
-         # update or create the actor on the left      
-         # if exists update actor, else create actor
+         if max_array_length > 0
+             # using the stackoverflow answer
+
+             strings_to_evaluate = broken_string_as_array.transpose.map { |c| c.join } 
+             
+             strings_to_evaluate.each do |item|
+
+                 # delete any previous elements in the array
+                 # evaluated_strings.delete_if {|x| x }
+                 evaluated_strings << eval(item)
+                 lookup_array[:"#{rule_head}"]  = evaluated_strings 
+             end
+
+         end
+
+         answers_array << evaluated_strings
 
        end
-	
-       return rule_body     
+ 	
+       return lookup_array #answers_array
 
     end
 
