@@ -1,8 +1,7 @@
 <h1>
-  <%= @actannual.year_0 %>
+  <%= @actannual.name %>
 </h1>
 
-<h2>Edit or accept the existing currencies for this annual data</h2>
 
 <% 
 
@@ -82,7 +81,6 @@
 
 <% end %>
 
-<h2>Add new currencies for this annual data</h2>
 <b>Currencies specific to this annual data</b><br/>
       <% @actcurrencies.each do |actcurrency| %>
           <% if actcurrency.top_currency.nil? %> 
@@ -114,7 +112,7 @@
      <% next %>
      <% end %> 
 
-For floating rate debt enter the credit spread as the coupon
+Add annual data specific to this scenario
 
 <br/><br/>
   <div class="row">

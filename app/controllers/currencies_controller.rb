@@ -27,7 +27,7 @@ class CurrenciesController < ApplicationController
     @currency = Currency.find(params[:id])
     if @currency.update_attributes(params[:currency])
       flash[:success] = "Data updated"
-      redirect_to @currency
+      redirect_to annual_path(@currency.annual_id)
     else
       @title = "Edit data"
       render 'edit'

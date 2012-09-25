@@ -1,17 +1,37 @@
 <h1>
-  <%= @annual.year_0 %>
+  <%= @annual.name %>
 </h1>
 
-<% if current_user.admin? || current_user.name == 'mandeep3' %>
-  <h6>Ensure your <%= link_to 'business financials', basecase_path(@annual.basecase.id) %> are up to date before creating a scenario</h6>
-<% end %>
-<br/><br/>
+
 
           <%= render 'shared/currency_form' %>
 
 <% @currencies.each do |currency| %>
-   <li>
-     <%= link_to currency.currency_name, currency %>
-            <%= link_to "edit", edit_currency_path(currency) %>
-   </li>
+
+    <%= form_for currency do |f| %>
+           <%= render 'shared/error_messages', :object => f.object %>
+
+           <%= f.text_field :currency_name, :class=> "input-small", :placeholder=>"currency", :value => currency.currency_name %>
+
+           <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value => currency.year_0 %>
+
+           <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value => currency.year_1 %>
+
+           <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value => currency.year_2 %>
+
+           <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value => currency.year_3 %>
+
+           <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value => currency.year_4 %>
+
+           <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value => currency.year_5 %>
+
+           <%= hidden_field_tag :annual_id, @annual.id %>
+ 
+           <%= f.submit "Update" %>
+
+    <% end %>
+
 <% end %>
+
+
+
