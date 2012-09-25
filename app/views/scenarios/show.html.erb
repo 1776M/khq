@@ -12,9 +12,9 @@
       <%= form_for @epochdate, {:class => "form-inline"} do |f| %>
         <%= render 'shared/error_messages', :object => f.object %>
 
-        <%= f.text_field :currency, :class=> "input-small", :placeholder=>"home fx" %>
+        <%= f.text_field :currency, :class=> "input-small", :placeholder=>"home fx", :value => @epochdates.currency %>
 
-        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"start year" %>
+        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"start year", :value => @epochdates.start_year %>
 
         <%= hidden_field_tag :scenario_id, @scenario.id %>
  

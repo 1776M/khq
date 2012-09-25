@@ -8,7 +8,7 @@ class ScenariosController < ApplicationController
      # @scenario = scenario.new if signed_in?
      @actannuals = @scenario.actannuals
      @actannual = @scenario.actannuals.find(:last) #Actannual.new if signed_in?
-     @epochdates = @scenario.epochdates
+     @epochdates = @scenario.epochdates.find(:last)
      @epochdate = Epochdate.new if signed_in?
      @actannual_new = Actannual.new if signed_in?    
      @actborrowings = @scenario.actborrowings
