@@ -4,6 +4,25 @@
 
 <hr><br/>
 
+<h1>General info</h1>
+
+  <div class="row">
+    <div class="span12">
+
+      <%= form_for @epochdate, {:class => "form-inline"} do |f| %>
+        <%= render 'shared/error_messages', :object => f.object %>
+
+        <%= f.text_field :currency, :class=> "input-small", :placeholder=>"home fx" %>
+
+        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"start year" %>
+
+        <%= hidden_field_tag :scenario_id, @scenario.id %>
+ 
+        <%= f.submit "Submit", :class => "btn"  %>
+      <% end %>
+    </div>
+  </div>
+
 <h1>Financials</h1>
 
 <h2>Edit or accept the existing financials for this scenario</h2>

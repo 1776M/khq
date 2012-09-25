@@ -1,0 +1,17 @@
+<%= provide(:title, 'Edit epoch data') %>
+<h1>Edit epoch data</h1>
+
+<div class="row">
+  <div class="span12">
+
+    <%= form_for @epochdate, {:class => "form-inline"} do |f| %>
+      <%= render 'shared/error_messages', :object => f.object %>
+
+      <%= f.text_field :currency, :class=> "input-small", :placeholder=>"home fx" %>
+
+      <%= f.text_field :year, :class=> "input-small", :placeholder=>"start year" %>
+ 
+      <%= f.submit "Submit", :class => "btn"  %>
+    <% end %>
+  </div>
+</div>

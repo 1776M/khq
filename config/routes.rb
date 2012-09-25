@@ -21,6 +21,8 @@ Khq::Application.routes.draw do
   resources :actborrowings
   resources :forwardcurves
   resources :swapcurves
+  resources :epochfxrates
+  resources :epochdates
   resources :currencies
   resources :actcurrencies
   resources :fxrates do

@@ -1,0 +1,15 @@
+<%= form_for @epochfxrate do |f| %>
+  <%= render 'shared/error_messages', :object => f.object %>
+
+    <%= f.label :currency_pair %>
+    <%= f.text_field :currency_pair %>
+
+    <%= f.label :year %><br />
+    <%= f.text_field :year %>
+
+    <%= f.label :rate %><br />
+    <%= f.text_field :rate %>
+
+    <%= f.submit "Submit" %>
+
+<% end %>

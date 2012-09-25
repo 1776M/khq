@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120421214927) do
+ActiveRecord::Schema.define(:version => 20120925155051) do
 
   create_table "actannuals", :force => true do |t|
     t.float    "year_0"
@@ -105,6 +105,22 @@ ActiveRecord::Schema.define(:version => 20120421214927) do
     t.float    "year_4"
     t.float    "year_5"
     t.integer  "annual_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "epochdates", :force => true do |t|
+    t.string   "currency"
+    t.integer  "start_year"
+    t.integer  "scenario_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "epochfxrates", :force => true do |t|
+    t.string   "currency_pair"
+    t.integer  "year"
+    t.float    "rate"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
