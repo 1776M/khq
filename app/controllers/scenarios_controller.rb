@@ -26,6 +26,7 @@ class ScenariosController < ApplicationController
      @reset_percent = @scenario.total_debt(params[:id]).group_by{|c| c.maturity_year - Time.now.year }
      @fxrate = Fxrate.find(:all)
      @forwardcurve = Forwardcurve.find(:all)
+     @epochfxrates = Epochfxrate.find(:all)
   end
 
   def create
