@@ -53,7 +53,7 @@
 <h1>Upload input data</h1>
 
 <%= form_tag({:controller => 'static_pages', :action => :uploadfile}, :multipart => true) do %>
-  <%= file_field_tag 'upload[datafile]' %>
+  <%= file_field_tag 'upload[datafile]' %> 
   <%= submit_tag("Upload") %> 
 <% end %>
 
@@ -121,6 +121,8 @@
   <%= render @annuals %>
 </ul>
 
+<!--
+
 <h2>Debt portfolio</h2>
 
 <%= render 'shared/borrowing_form' %>
@@ -149,3 +151,5 @@
      <% end %>
 
 <br/><br/><hr><br/>
+
+-->

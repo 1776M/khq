@@ -4,6 +4,13 @@
 
 <hr><br/>
 
+<%= form_tag({:controller => 'static_pages', :action => :uploadfiletwo}, :multipart => true) do %>
+  <%= file_field_tag 'upload[datafile]' %>
+  <%= hidden_field_tag :scenario_id, @scenario.id %> 
+  <%= submit_tag("Upload") %> 
+<% end %>
+
+
 <h1>General info</h1>
 
   <div class="row">
@@ -14,7 +21,7 @@
 
         <%= f.text_field :currency, :class=> "input-small", :placeholder=>"home fx", :value => "home fx" %>
 
-        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"start year", :value => "start year" %>
+        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"year", :value => "year" %>
 
       <% end %>
     </div>
@@ -29,7 +36,7 @@
 
         <%= f.text_field :currency, :class=> "input-small", :placeholder=>"home fx", :value => @epochdates.currency %>
 
-        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"start year", :value => @epochdates.start_year %>
+        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"home fx", :value => @epochdates.start_year %>
 
         <%= hidden_field_tag :scenario_id, @scenario.id %>
  
@@ -46,7 +53,7 @@
 
         <%= f.text_field :currency, :class=> "input-small", :placeholder=>"home fx" %>
 
-        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"start year" %>
+        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"home fx" %>
 
         <%= hidden_field_tag :scenario_id, @scenario.id %>
  
@@ -162,36 +169,43 @@
 
 <% end %>
 
+<% #loop through each scenario specific actannual  %>
+
+
+<% @actannuals.each do |actannual| %>
+       <% if actannual.top_annual %>
+         <% next %> 
+       <% else %>
+         <%= form_for actannual do |f| %>
+           <%= render 'shared/error_messages', :object => f.object %>
+
+           <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item", :value=> actannual.name %>
+
+           <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> actannual.year_0 %>
+
+           <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> actannual.year_1 %>
+
+           <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> actannual.year_2 %>
+
+           <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> actannual.year_3 %>
+
+           <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> actannual.year_4 %>
+
+           <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> actannual.year_5 %>
+
+           <%= hidden_field_tag :scenario_id, @scenario.id %>
+ 
+           <%= f.submit "Accept" %>
+
+         <% end %>
+       <% end %>
+<% end %>
 
 <h1>Epoch</h1>
 <h2>Local currency</h2>
 
 <% @actannuals.each do |actannual| %>
     <h4><%=link_to actannual.name, actannual %></h4> <br/>
-
-      <div class="row">
-        <div class="span12">
-
-          <%= form_for actannual, {:class => "form-inline"} do |f| %>
-            <%= render 'shared/error_messages', :object => f.object %>
-
-            <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item", :value=> actannual.name %>
-
-            <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> actannual.year_0 %>
-
-            <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> actannual.year_1 %>
-
-            <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> actannual.year_2 %>
-
-            <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> actannual.year_3 %>
-
-            <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> actannual.year_4 %>
-
-            <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> actannual.year_5 %> 
-        
-          <% end %>
-        </div>
-      </div>
 
     <% actannual.actcurrencies.each do |currency| %>
    
@@ -205,29 +219,21 @@
 
              <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> (currency.year_0*actannual.year_0) %>
 
-             <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> (currency.year_0*actannual.year_1) %>
+             <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> (currency.year_1*actannual.year_1) %>
 
-             <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> (currency.year_0*actannual.year_2) %>
+             <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> (currency.year_2*actannual.year_2) %>
 
-             <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> (currency.year_0*actannual.year_3) %>
+             <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> (currency.year_3*actannual.year_3) %>
 
-             <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> (currency.year_0*actannual.year_4) %>
+             <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> (currency.year_4*actannual.year_4) %>
 
-             <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> (currency.year_0*actannual.year_5) %> 
+             <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> (currency.year_5*actannual.year_5) %> 
         
           <% end %>
         </div>
       </div>
       
     <% end %>
-    <br/>
-<% end %>
-
-
-<h2>Foreign currency</h2>
-
-<% @actannuals.each do |actannual| %>
-    <h4><%=link_to actannual.name, actannual %></h4> <br/>
 
       <div class="row">
         <div class="span12">
@@ -253,66 +259,24 @@
         </div>
       </div>
 
-    <% actannual.actcurrencies.each do |currency| %>
 
-        <% the_pair = (@epochdates.currency + currency.currency_name) %>
-
-        <div class="row">
-        <div class="span12">  
-
-          <%= form_for currency, {:class => "form-inline"} do |f| %>
-            <%= render 'shared/error_messages', :object => f.object %>
-
-             <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item", :value=> currency.currency_name %>
-
-             <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> (currency.year_0*actannual.year_0)*(Epochfxrate.where(currency_pair: the_pair).last.rate) %>
-
-             <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> (currency.year_1*actannual.year_1)*(Epochfxrate.where(currency_pair: the_pair).last.rate) %>
-
-             <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> (currency.year_2*actannual.year_2)*(Epochfxrate.where(currency_pair: the_pair).last.rate) %>
-
-             <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> (currency.year_3*actannual.year_3)*(Epochfxrate.where(currency_pair: the_pair).last.rate) %>
-
-             <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> (currency.year_4*actannual.year_4)*(Epochfxrate.where(currency_pair: the_pair).last.rate) %>
-
-             <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> (currency.year_5*actannual.year_5)*(Epochfxrate.where(currency_pair: the_pair).last.rate) %> 
-        
-          <% end %>
-        </div>
-      </div>
-      
-    <% end %>
-    <br/>
 <% end %>
+
+
 
 <h2>Epoch risk</h2>
 
+<% actannual_total_array = Array.new %>
+
 <% @actannuals.each do |actannual| %>
     <h4><%=link_to actannual.name, actannual %></h4> <br/>
 
-      <div class="row">
-        <div class="span12">
-
-          <%= form_for actannual, {:class => "form-inline"} do |f| %>
-            <%= render 'shared/error_messages', :object => f.object %>
-
-            <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item", :value=> actannual.name %>
-
-            <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> actannual.year_0 %>
-
-            <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> actannual.year_1 %>
-
-            <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> actannual.year_2 %>
-
-            <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> actannual.year_3 %>
-
-            <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> actannual.year_4 %>
-
-            <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> actannual.year_5 %> 
-        
-          <% end %>
-        </div>
-      </div>
+    <% total_year_0 = 0 %>       
+    <% total_year_1 = 0 %>
+    <% total_year_2 = 0 %>       
+    <% total_year_3 = 0 %>
+    <% total_year_4 = 0 %>       
+    <% total_year_5 = 0 %>
 
     <% actannual.actcurrencies.each do |currency| %>
 
@@ -328,25 +292,98 @@
 
              <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> (currency.year_0*actannual.year_0) %>
 
-             <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> (currency.year_1*actannual.year_1)*(Epochfxrate.where(currency_pair: the_pair).last.rate)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1).last.rate) %>
+             <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> ((currency.year_1*actannual.year_1)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1).last.rate)).round(1) %>
 
-             <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> (currency.year_2*actannual.year_2)*(Epochfxrate.where(currency_pair: the_pair).last.rate)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 1).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 1).last.rate) %>
+             <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> ((currency.year_2*actannual.year_2)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 1).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 1).last.rate)).round(1) %>
 
-             <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> (currency.year_3*actannual.year_3)*(Epochfxrate.where(currency_pair: the_pair).last.rate)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 2).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 2).last.rate) %>
+             <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> ((currency.year_3*actannual.year_3)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 2).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 2).last.rate)).round(1) %>
 
-             <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> (currency.year_4*actannual.year_4)*(Epochfxrate.where(currency_pair: the_pair).last.rate)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 3).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 3).last.rate) %>
+             <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> ((currency.year_4*actannual.year_4)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 3).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 3).last.rate)).round(1) %>
 
-             <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> (currency.year_5*actannual.year_5)*(Epochfxrate.where(currency_pair: the_pair).last.rate)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 3).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 3).last.rate) %> 
-        
+             <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> ((currency.year_5*actannual.year_5)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 3).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 3).last.rate)).round(1) %> 
+
+
+             <% total_year_0 = total_year_0 + (currency.year_0*actannual.year_0) %>       
+             <% total_year_1 = total_year_1 + (currency.year_1*actannual.year_1)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1).last.rate)  %>
+             <% total_year_2 = total_year_2 + (currency.year_2*actannual.year_2)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 1).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 1).last.rate) %>
+             <% total_year_3 = total_year_3 + (currency.year_3*actannual.year_3)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 2).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 2).last.rate) %>
+             <% total_year_4 = total_year_4 + (currency.year_4*actannual.year_4)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 3).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 3).last.rate) %>
+             <% total_year_5 = total_year_5 + (currency.year_5*actannual.year_5)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 3).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 3).last.rate) %>
+ 
+
           <% end %>
         </div>
       </div>
       
     <% end %>
-    <br/>
+    <% actannual_total_array << [total_year_0,total_year_1,total_year_2,total_year_3,total_year_4,total_year_5] %>  
+
+      <div class="row">
+        <div class="span12">
+
+          <%= form_for actannual, {:class => "form-inline"} do |f| %>
+            <%= render 'shared/error_messages', :object => f.object %>
+
+            <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item", :value=> actannual.name %>
+
+            <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> total_year_0.round(1) %>
+
+            <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> total_year_1.round(1) %>
+
+            <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> total_year_2.round(1) %>
+
+            <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> total_year_3.round(1) %>
+
+            <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> total_year_4.round(1) %>
+
+            <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> total_year_5.round(1) %> 
+        
+          <% end %>
+        </div>
+      </div>
+
+<% end %>
+
+<h2>Gain/loss</h2>
+
+<% actannual_count = 0 %>
+
+<% @actannuals.each do |actannual| %>
+
+    <% actannual.actcurrencies.each do |currency| %>
+
+        <% the_pair = (@epochdates.currency + currency.currency_name) %>
+      
+    <% end %>
+
+      <div class="row">
+        <div class="span12">
+
+          <%= form_for actannual, {:class => "form-inline"} do |f| %>
+            <%= render 'shared/error_messages', :object => f.object %>
+
+            <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item", :value=> actannual.name %>
+
+            <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> (actannual_total_array[actannual_count][0].round(1) - actannual.year_0).round(1) %>
+
+            <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> (actannual_total_array[actannual_count][1].round(1) - actannual.year_1).round(1) %>
+
+            <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> (actannual_total_array[actannual_count][2].round(1) - actannual.year_2).round(1) %>
+
+            <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> (actannual_total_array[actannual_count][3].round(1) - actannual.year_3).round(1) %>
+
+            <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> (actannual_total_array[actannual_count][4].round(1) - actannual.year_4).round(1) %>
+
+            <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> (actannual_total_array[actannual_count][5].round(1) - actannual.year_5).round(1) %> 
+        
+          <% end %>
+        </div>
+      </div>
+      <% actannual_count = actannual_count + 1 %>
 <% end %>
 
 
+<!--
 
 <br/><br/><hr><br/>
 <h1>Debt portfolio</h1>
@@ -970,3 +1007,5 @@ For floating rate debt enter the credit spread as the coupon
 </h1>
 <br/><br/>
 <% end %>
+
+-->

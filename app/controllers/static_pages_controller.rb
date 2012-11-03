@@ -19,4 +19,14 @@ class StaticPagesController < ApplicationController
     flash[:success] = "File has been uploaded successfully"
   end
 
+  def uploadfiletwo
+    @group= current_user.group
+    @basecase = Basecase.find(:last, :conditions => [" group_id = ?", @group.id])
+    @scenario = Scenario.find(params[:scenario_id])    
+    post = Annual.save(params[:upload])
+    @filename = params[:upload]
+    flash[:success] = "File has been uploaded successfully"
+  end
+
+
 end

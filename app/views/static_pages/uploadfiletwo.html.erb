@@ -20,9 +20,9 @@ if thegrid.headers == annual_headers
 end 
 
 if annual_file > 0 
-    annual = Hash.new
+    actannual = Hash.new
     thegrid.each do |row| 
-        params[:annual] = {
+        params[:actannual] = {
      
             name: row[0],
             year_0: row[1], 
@@ -34,8 +34,8 @@ if annual_file > 0
             basecase_id: row[7]
             }
      
-        @annual = @basecase.annuals.build(params[:annual]) 
-        if @annual.save  
+        @actannual = @scenario.actannuals.build(params[:actannual]) 
+        if @actannual.save  
             flash[:success] = "You have created new data" 
         else 
             flash[:success] = "It didn't work mate" 
