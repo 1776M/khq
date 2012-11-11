@@ -25,6 +25,14 @@
    </li>
 <% end %>
 
+<% @scenarios.each do |scenario| %>
+      <% if scenario.gains.count > 0 %>
+        <% scenario.gains.each do |gain| %>
+          <%=gain.name %>
+        <% end %>
+      <% end %>
+<% end %>
+
 <!--
 
 <br/><hr><br/>

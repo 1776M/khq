@@ -4,6 +4,11 @@
 
 <hr><br/>
 
+<p>
+  <button class="btn btn-mini btn-primary" type="button">button</button>
+  <button class="btn btn-mini" type="button">button</button>
+</p>
+
 <%= form_tag({:controller => 'static_pages', :action => :uploadfiletwo}, :multipart => true) do %>
   <%= file_field_tag 'upload[datafile]' %>
   <%= hidden_field_tag :scenario_id, @scenario.id %> 
@@ -63,7 +68,7 @@
   </div>
 <% end %>
 
-
+<div class="stuff">
 <h1>Financials</h1>
 
 <h2>Edit or accept the existing financials for this scenario</h2>
@@ -200,6 +205,17 @@
          <% end %>
        <% end %>
 <% end %>
+</div>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+   $("h1").toggle(function(){
+     $(".stuff").hide('slow');
+   },function(){
+     $(".stuff").show('fast');
+   });
+ });
+</script>
 
 <h1>Epoch</h1>
 <h2>Local currency</h2>
@@ -345,16 +361,10 @@
 <% end %>
 
 <h2>Gain/loss</h2>
-
+<% params = Hash.new %>
 <% actannual_count = 0 %>
 
 <% @actannuals.each do |actannual| %>
-
-    <% actannual.actcurrencies.each do |currency| %>
-
-        <% the_pair = (@epochdates.currency + currency.currency_name) %>
-      
-    <% end %>
 
       <div class="row">
         <div class="span12">
@@ -379,8 +389,105 @@
           <% end %>
         </div>
       </div>
+      <% year_0_gain = (actannual_total_array[actannual_count][0].round(1) - actannual.year_0).round(1) %> 
+      <% year_1_gain = (actannual_total_array[actannual_count][1].round(1) - actannual.year_1).round(1) %>
+      <% year_2_gain = (actannual_total_array[actannual_count][2].round(1) - actannual.year_2).round(1) %>
+      <% year_3_gain = (actannual_total_array[actannual_count][3].round(1) - actannual.year_3).round(1) %>
+      <% year_4_gain = (actannual_total_array[actannual_count][4].round(1) - actannual.year_4).round(1) %>
+      <% year_5_gain = (actannual_total_array[actannual_count][5].round(1) - actannual.year_5).round(1) %>
+
       <% actannual_count = actannual_count + 1 %>
+
+      <%
+
+              params[:gain] = {
+     
+                name: actannual.name,
+                year_0: year_0_gain,
+                year_1: year_1_gain,
+                year_2: year_2_gain,
+                year_3: year_3_gain,
+                year_4: year_4_gain,
+                year_5: year_5_gain,
+                scenario_id: @scenario.id
+                }     
+         
+              @gain = Gain.find(:all, :conditions => ["scenario_id = ? AND name = ?", @scenario.id, actannual.name])
+              if @gain.count > 0 
+                @gain.each do |gain|  
+                  gain.update_attributes(params[:gain])
+                end
+              else
+                @gain = @scenario.gains.build(params[:gain])
+                if @gain.save
+                  # this is just a dummy to do something in the loop
+                  a=1 
+                end 
+
+              end 
+      %> 
+
+            
 <% end %>
+
+<% params = Hash.new %>
+<% actannual_count = 0 %>
+
+<table class="table table-striped">
+  <tr>
+    <th>Item</th><th><%=Time.now.year %></th><th><%=Time.now.year + 1 %></th><th><%=Time.now.year + 2 %></th><th><%=Time.now.year + 3%></th><th><%=Time.now.year + 4 %></th><th><%=Time.now.year + 5%></th>
+  </tr>
+  <% @actannuals.each do |actannual| %>
+  <tr>
+   <td><%= actannual.name %></td>
+   <td><%= (actannual_total_array[actannual_count][0].round(1) - actannual.year_0).round(1) %></td>
+   <td><%= (actannual_total_array[actannual_count][1].round(1) - actannual.year_1).round(1) %></td>
+   <td><%= (actannual_total_array[actannual_count][2].round(1) - actannual.year_2).round(1) %></td>
+   <td><%= (actannual_total_array[actannual_count][3].round(1) - actannual.year_3).round(1) %></td>
+   <td><%= (actannual_total_array[actannual_count][4].round(1) - actannual.year_4).round(1) %></td>
+   <td><%= (actannual_total_array[actannual_count][5].round(1) - actannual.year_5).round(1) %></td>
+  </tr>
+      <% year_0_gain = (actannual_total_array[actannual_count][0].round(1) - actannual.year_0).round(1) %> 
+      <% year_1_gain = (actannual_total_array[actannual_count][1].round(1) - actannual.year_1).round(1) %>
+      <% year_2_gain = (actannual_total_array[actannual_count][2].round(1) - actannual.year_2).round(1) %>
+      <% year_3_gain = (actannual_total_array[actannual_count][3].round(1) - actannual.year_3).round(1) %>
+      <% year_4_gain = (actannual_total_array[actannual_count][4].round(1) - actannual.year_4).round(1) %>
+      <% year_5_gain = (actannual_total_array[actannual_count][5].round(1) - actannual.year_5).round(1) %>
+
+      <% actannual_count = actannual_count + 1 %>
+
+      <%
+
+              params[:gain] = {
+     
+                name: actannual.name,
+                year_0: year_0_gain,
+                year_1: year_1_gain,
+                year_2: year_2_gain,
+                year_3: year_3_gain,
+                year_4: year_4_gain,
+                year_5: year_5_gain,
+                scenario_id: @scenario.id
+                }     
+         
+              @gain = Gain.find(:all, :conditions => ["scenario_id = ? AND name = ?", @scenario.id, actannual.name])
+              if @gain.count > 0 
+                @gain.each do |gain|  
+                  gain.update_attributes(params[:gain])
+                end
+              else
+                @gain = @scenario.gains.build(params[:gain])
+                if @gain.save
+                  # this is just a dummy to do something in the loop
+                  a=1 
+                end 
+
+              end 
+      %> 
+  <% end %>
+</table>
+
+
 
 
 <!--

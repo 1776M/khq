@@ -6,6 +6,7 @@ class Scenario < ActiveRecord::Base
   
     has_many :actannuals
     has_many :actborrowings
+    has_many :gains
     has_many :epochdates
     has_many :basecases, :through => :project
 

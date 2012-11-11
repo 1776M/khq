@@ -1,6 +1,23 @@
 <% provide(:title, 'Contact') %>
 <h1>Contact</h1>
+
+ <p>Hello</p>
+  <a href="#" class="stuff" >Click to hide me too</a>
+  <p>Here is another paragraph</p>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+   $("h1").toggle(function(){
+     $(".stuff").hide('slow');
+   },function(){
+     $(".stuff").show('fast');
+   });
+ });
+</script>
+
+
 <p>
   Contact Ruby on Rails Tutorial about the sample app at the
   <a href="http://railstutorial.org/contact">contact page</a>.
 </p>
+
