@@ -1,36 +1,77 @@
-<h1>
-  <%= @project.project_name %>
-</h1>
-
-<hr>
-
 <h3>
-  Add a scenario to your project, then compare scenarios
+  <%= @project.project_name %>
 </h3>
 
-<% if current_user.admin? || current_user.name == 'mandeep3' %>
-  <h6>Ensure your <%= link_to 'business financials', basecase_path(@basecase.id) %> are up to date before creating a scenario</h6>
-<% end %>
-<br/><br/>
 
           <%= render 'shared/scenario_form' %>
 
-<b>Current scenarios</b><br/>
-<% @scenarios.each do |scenario| %>
-   <li>
-     <%= link_to scenario.name, scenario %>
+<h3>Current scenarios</h3>
 
-            <%= link_to "delete", scenario,   :method => :delete,
-                                              :confirm => "You sure?" %>
-   </li>
-<% end %>
+<% # this hash is for the %>
+<% data_table = Hash.new %>
 
 <% @scenarios.each do |scenario| %>
-      <% if scenario.gains.count > 0 %>
-        <% scenario.gains.each do |gain| %>
-          <%=gain.name %>
+  <h2>
+    <%= link_to scenario.name, scenario %>
+  </h2>
+
+   <%= link_to "delete scenario", scenario,   :method => :delete,
+                                     :confirm => "You sure?" %>
+  
+  <table class="table table-striped">
+    <tr>
+     <th>Item</th><th><%=Time.now.year %></th><th><%=Time.now.year + 1 %></th><th><%=Time.now.year + 2 %></th><th><%=Time.now.year + 3%></th><th><%=Time.now.year + 4 %></th><th><%=Time.now.year + 5%></th>
+    </tr>
+ 
+    
+        <% if scenario.gains.count > 0 %>
+          <% scenario.gains.each do |gain| %>
+            <tr>
+              <td><%=gain.name %></td>
+              <td><%=gain.year_0 %></td>
+              <td><%=gain.year_1 %></td>
+              <td><%=gain.year_2 %></td>
+              <td><%=gain.year_3 %></td>
+              <td><%=gain.year_4 %></td>
+              <td><%=gain.year_5 %></td>
+            </tr>
+          <% end %>
         <% end %>
-      <% end %>
+
+  </table>
+
+        <% if scenario.gains.count > 0 %>
+          <% scenario.gains.each do |gain| %>
+              <%
+
+                data_scenario = scenario.id
+                data_table["#{data_scenario}"] = GoogleVisualr::DataTable.new
+
+                # Add Column Headers
+                data_table["#{data_scenario}"].new_column('string', 'Year' )
+                data_table["#{data_scenario}"].new_column('number', gain.name)
+
+                # Add Rows and Values
+                data_table["#{data_scenario}"].add_rows([
+                  [Time.now.year.to_s, gain.year_0],
+                  [(Time.now.year + 1).to_s, gain.year_1],
+                  [(Time.now.year + 2).to_s, gain.year_2],
+                  [(Time.now.year + 3).to_s, gain.year_3],
+                  [(Time.now.year + 4).to_s, gain.year_4],
+                  [(Time.now.year + 5).to_s, gain.year_5]
+                ])           
+
+                option = { width: 800, height: 240, title: gain.name }
+                @chart = GoogleVisualr::Interactive::LineChart.new(data_table["#{data_scenario}"], option)
+
+                %>
+
+                <div id="<%=data_table["#{data_scenario}"]%>"></div>
+                <%= render_chart(@chart, data_table["#{data_scenario}"]) %>
+
+          <% end %>
+        <% end %>
+
 <% end %>
 
 <!--

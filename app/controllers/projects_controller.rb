@@ -13,7 +13,7 @@ class ProjectsController < ApplicationController
      # this it to add show the cholesky 
      # @cholesky = Cholesky.find(:all)
      # @choleskyir = Choleskyir.find(:all)
-     # @forwardcurve = Forwardcurve.find(:all)           
+     # @forwardcurve = Forwardcurve.find(:all)
   end
 
   def create
