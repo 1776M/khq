@@ -1,39 +1,26 @@
-<h1>
-  <%= @group.group_name %> 
-</h1>
-
 <h3>
-   Financial data
-</h3>  
+  <%= @group.group_name %> 
+</h3>
 
-  <% @basecases.each do |basecase| %>
-       <%= link_to 'Update your business financials', basecase %>
-       <%if current_user.name == 'mandeep3' %>
-
-              <%= link_to "delete", basecase,   :method => :delete,
-                                                :confirm => "You sure?" %>
-      <% end%>
-  <% end %>
-
-<br/><br/>
-<hr>
-
-
+<br/>
         <%= render 'shared/user_form' %>
 
-<hr>
+<% if @users.count > 0 %>
+  <h3>Current group members</h3>
+<% end %>
 
-<h3>Current group members</h3>
 <% @users.each do |user| %>
-   <li>
-     <%= link_to user.name, user %>
-     <%if user.admin? && user.name!=current_user.name %>
-              <%= link_to "delete", user,   :method => :delete,
-                                          :confirm => "You sure?",
-                                          :title => user.name %>
+   <ul class="unstyled">
+     <li>
+       <%= link_to user.name, user %>
+       <%if user.admin? && user.name!=current_user.name %>
+                <%= link_to "delete", user,   :method => :delete,
+                                              :confirm => "You sure?",
+                                              :title => user.name %>
             
-     <% end%>
-   </li>
+       <% end%>
+     </li>
+   </ul>
 <% end %>
 
 

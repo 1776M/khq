@@ -4,8 +4,9 @@
 
 
           <%= render 'shared/scenario_form' %>
-
-<h3>Current scenarios</h3>
+<% if @scenarios.count > 0 %>
+ <h3>Current scenarios</h3>
+<% end %>
 
 <% # this hash is for the %>
 <% data_table = Hash.new %>
@@ -15,7 +16,7 @@
     <%= link_to scenario.name, scenario %>
   </h2>
 
-   <%= link_to "delete scenario", scenario,   :method => :delete,
+   <%= link_to "delete #{scenario.name}", scenario,   :method => :delete,
                                      :confirm => "You sure?" %>
   
   <table class="table table-striped">

@@ -1,15 +1,13 @@
 <%= provide(:title, 'Add a project') %>
-<h1>Add a project</h1>
 
 <div class="row">
   <div class="span6 offset3">
-    <%= form_for @project do |f| %>
+
+      <h2>Add a new project</h2>
+      <%= form_for @project, {:class => "form-inline"} do |f| %>
       <%= render 'shared/error_messages', :object => f.object %>
-
       <%= f.text_field :project_name %>
-
-      <%= f.submit "Create project", :class => "btn btn-large btn-primary"  %>
-  
-    <% end %>
+      <%= f.submit "Create project", :class => "btn btn-mini btn-primary"  %>
+      <% end %>
   </div>
 </div>

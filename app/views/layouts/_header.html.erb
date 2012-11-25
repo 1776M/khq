@@ -8,10 +8,12 @@
           <% if signed_in? %>
             <% if current_user.name=='mandeep3'%>
               <li><%= link_to "Environment", environment_path %></li> 
-              <li><%= link_to "Projects", user_path(current_user) %></li> 
+              <li><%= link_to "Projects", user_path(current_user) %></li>
+              <li><%= link_to "Financials", basecase_path(@basecase.id) %></li> 
               <li><%= link_to "Groups", groups_path %></li>
             <% elsif current_user.admin? %>
               <li><%= link_to "Projects", user_path(current_user) %></li>
+              <li><%= link_to "Financials", basecase_path(current_user.group.basecases.last) %></li>
               <li><%= link_to "Group", group_path(current_user.group) %></li>
             <% else %>
               <li><%= link_to "Projects", user_path(current_user) %></li>   

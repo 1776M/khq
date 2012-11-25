@@ -4,12 +4,15 @@
   <%= @user.name %>,<%= @user.admin %>
 <% end %> 
 
-        <%= render 'shared/project_form' %>
+<h3><%=current_user.name %></h3>
 
+<%= render 'shared/project_form' %>
 
-<hr><br/>
+<% if @projects.count > 0%>
+  <h3>Current projects</h3>
+<% end %>
 
-<h1>Your current projects</h1>
+<br />
 <% unless @user.projects.empty? %>
-        <%= render @projects %>
+  <%= render @projects %>
 <% end %>

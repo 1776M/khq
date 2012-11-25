@@ -8,6 +8,7 @@
   <button class="btn btn-mini btn-primary btn-upload" type="button">Upload</button>
   <button class="btn btn-mini btn-primary btn-general-info" type="button">General info</button>
   <button class="btn btn-mini btn-primary btn-financials" type="button">Financials</button>
+  <button class="btn btn-mini btn-primary btn-epoch" type="button">Detailed tables</button>
 </p>
 
 <div class="upload">
@@ -21,10 +22,17 @@
 
 <script type="text/javascript">
  $(document).ready(function(){
+   $(".upload").hide();
+ });
+</script>
+
+
+<script type="text/javascript">
+ $(document).ready(function(){
    $(".btn-upload").toggle(function(){
-     $(".upload").hide('slow');
-   },function(){
      $(".upload").show('fast');
+   },function(){
+     $(".upload").hide('slow');
    });
  });
 </script>
@@ -236,14 +244,22 @@
 
 <script type="text/javascript">
  $(document).ready(function(){
+   $(".financials").hide();
+ });
+</script>
+
+
+<script type="text/javascript">
+ $(document).ready(function(){
    $(".btn-financials").toggle(function(){
-     $(".financials").hide('slow');
-   },function(){
      $(".financials").show('fast');
+   },function(){
+     $(".financials").hide('slow');
    });
  });
 </script>
 
+<div class="epoch">
 <h1>Epoch</h1>
 <h2>Local currency</h2>
 
@@ -337,6 +353,24 @@
     <br/>
     <br/>
 <% end %>
+</div>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+   $(".epoch").hide();
+ });
+</script>
+
+
+<script type="text/javascript">
+ $(document).ready(function(){
+   $(".btn-epoch").toggle(function(){
+     $(".epoch").show('fast');
+   },function(){
+     $(".epoch").hide('slow');
+   });
+ });
+</script>
 
 
 <h2>Gain/loss</h2>
