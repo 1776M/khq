@@ -11468,7 +11468,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 }).call(this);
 (function() {
 
-  $('.test').hide;
+
 
 }).call(this);
 (function() {

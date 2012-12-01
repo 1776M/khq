@@ -13,6 +13,19 @@
      end
 %>
 
+<%
+
+  # these are to sum the totals for each currencies
+
+  total_year_0 = 0
+  total_year_1 = 0
+  total_year_2 = 0
+  total_year_3 = 0
+  total_year_4 = 0
+  total_year_5 = 0
+
+%>
+
 
 <% #loop through each basecase borrowing  %>
 <% arr.each do |i| %>
@@ -40,6 +53,15 @@
                       <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5" %>
 
                       <%= f.submit "Update" %>
+            
+                      <%
+                        total_year_0 = total_year_0 + actcurrency.year_0
+                        total_year_1 = total_year_1 + actcurrency.year_1
+                        total_year_2 = total_year_2 + actcurrency.year_2
+                        total_year_3 = total_year_3 + actcurrency.year_3
+                        total_year_4 = total_year_4 + actcurrency.year_4
+                        total_year_5 = total_year_5 + actcurrency.year_5
+                      %> 
 
                 <% end %>
          <%  j = 1 %>
@@ -81,8 +103,7 @@
 
 <% end %>
 
-<b>Currencies specific to this annual data</b><br/>
-      <% @actcurrencies.each do |actcurrency| %>
+<% @actcurrencies.each do |actcurrency| %>
           <% if actcurrency.top_currency.nil? %> 
               <%= form_for actcurrency do |f| %>
                       <%= render 'shared/error_messages', :object => f.object %>
@@ -105,12 +126,49 @@
  
                       <%= f.submit "Update" %>
 
+                      <%
+                        total_year_0 = total_year_0 + actcurrency.year_0
+                        total_year_1 = total_year_1 + actcurrency.year_1
+                        total_year_2 = total_year_2 + actcurrency.year_2
+                        total_year_3 = total_year_3 + actcurrency.year_3
+                        total_year_4 = total_year_4 + actcurrency.year_4
+                        total_year_5 = total_year_5 + actcurrency.year_5
+                      %> 
+
               <% end %>
  
          <%  j = 1 %>
          <% end %>
      <% next %>
      <% end %> 
+
+
+  <div class="row">
+    <div class="span12">
+
+      <%= form_for @actcurrency_new, {:class => "form-inline"} do |f| %>
+        <%= render 'shared/error_messages', :object => f.object %>
+
+           <%= f.text_field :currency_name, :class=> "input-small", :placeholder=>"currency", :value => "Total" %>
+
+           <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value => total_year_0.round(1) %>
+
+           <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value => total_year_1.round(1) %>
+
+           <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value => total_year_2.round(1) %>
+
+           <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value => total_year_3.round(1) %>
+
+           <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value => total_year_4.round(1) %>
+
+           <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value => total_year_5.round(1) %>
+
+      <% end %>
+    </div>
+  </div>
+
+
+
 
 Add currency data specific to this scenario
 

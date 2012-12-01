@@ -11,7 +11,7 @@ class AnnualsController < ApplicationController
 
   def create
     @basecase = Basecase.find(params[:basecase_id])    
-    @annual = @basecase.annuals.build(params[:annual])
+    @annual = @basecase.annuals.build(params[:annual])     
     if @annual.save
       flash[:success] = "You have created new data"
       redirect_to basecase_path(@annual.basecase_id)
@@ -41,12 +41,13 @@ class AnnualsController < ApplicationController
   end
 
   def destroy
+    @basecase = Annual.find(params[:id]).basecase
     Annual.find(params[:id]).destroy
     flash[:success] = "Data deleted"
     if current_user.name == 'mandeep3'     
         redirect_to basecase_path
     else
-        redirect_to group_path(current_user.group_id)
+        redirect_to basecase_path(@basecase.id)
     end
   end
 

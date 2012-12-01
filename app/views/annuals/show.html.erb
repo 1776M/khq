@@ -6,6 +6,20 @@
 
           <%= render 'shared/currency_form' %>
 
+<%
+
+  # set some totals to put through the loops
+
+  total_year_0 = 0 
+  total_year_1 = 0 
+  total_year_2 = 0
+  total_year_3 = 0
+  total_year_4 = 0
+  total_year_5 = 0
+
+%>
+
+
 <% @currencies.each do |currency| %>
 
     <%= form_for currency do |f| %>
@@ -29,9 +43,43 @@
  
            <%= f.submit "Update" %>
 
+           <%
+             total_year_0 = total_year_0 + currency.year_0 
+             total_year_1 = total_year_1 + currency.year_1 
+             total_year_2 = total_year_2 + currency.year_2
+             total_year_3 = total_year_3 + currency.year_3
+             total_year_4 = total_year_4 + currency.year_4
+             total_year_5 = total_year_5 + currency.year_5
+           %>  
+
     <% end %>
 
 <% end %>
+
+
+  <div class="row">
+    <div class="span12">
+
+      <%= form_for @currency, {:class => "form-inline"} do |f| %>
+        <%= render 'shared/error_messages', :object => f.object %>
+
+           <%= f.text_field :currency_name, :class=> "input-small", :placeholder=>"currency", :value => "Total" %>
+
+           <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value => total_year_0.round(1) %>
+
+           <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value => total_year_1.round(1) %>
+
+           <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value => total_year_2.round(1) %>
+
+           <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value => total_year_3.round(1) %>
+
+           <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value => total_year_4.round(1) %>
+
+           <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value => total_year_5.round(1) %>
+
+      <% end %>
+    </div>
+  </div>
 
 
 

@@ -11,6 +11,31 @@
   <button class="btn btn-mini btn-primary btn-epoch" type="button">Detailed tables</button>
 </p>
 
+
+<script type="text/javascript">
+    $(function() {
+        $( "#slider" ).slider({ 
+
+                          min: 2000,
+                          max: 2008,
+                          value:<%=@epochdates.start_year %> ,
+                          slide: function( event, ui ) {
+                               $("#slider_value").html(ui.value); 
+                               }                          
+        });
+        
+    });
+    
+</script>
+
+<br/>
+
+
+<div id="slider">
+</div>
+<p id="slider_value"><%=@epochdates.start_year%></p>
+
+<br/>
 <div class="upload">
  <h1>Upload data</h1>
  <%= form_tag({:controller => 'static_pages', :action => :uploadfiletwo}, :multipart => true) do %>
@@ -39,7 +64,7 @@
 
 
 <div class="general-info">
- <h1>General info</h1>
+ <h2>General info</h2>
 
   <div class="row">
     <div class="span12">
@@ -274,23 +299,23 @@
     <% actannual.actcurrencies.each do |currency| %>
       <tr>
         <td><%=currency.currency_name %></td>
-        <td><%=(currency.year_0*actannual.year_0) %></td>
-        <td><%=(currency.year_1*actannual.year_1) %></td>
-        <td><%=(currency.year_2*actannual.year_2) %></td>
-        <td><%=(currency.year_3*actannual.year_3) %></td>
-        <td><%=(currency.year_4*actannual.year_4) %></td>
-        <td><%=(currency.year_5*actannual.year_5) %></td> 
+        <td><%=(currency.year_0*actannual.year_0).round(1) %></td>
+        <td><%=(currency.year_1*actannual.year_1).round(1) %></td>
+        <td><%=(currency.year_2*actannual.year_2).round(1) %></td>
+        <td><%=(currency.year_3*actannual.year_3).round(1) %></td>
+        <td><%=(currency.year_4*actannual.year_4).round(1) %></td>
+        <td><%=(currency.year_5*actannual.year_5).round(1) %></td> 
       </tr>   
       
     <% end %>
     <tr>
-      <td><%=actannual.name %></td>
-      <td><%=actannual.year_0 %></td>
-      <td><%=actannual.year_1 %></td>
-      <td><%=actannual.year_2 %></td>
-      <td><%=actannual.year_3 %></td>
-      <td><%=actannual.year_4 %></td>
-      <td><%=actannual.year_5 %></td>
+      <td><%="Total" %></td>
+      <td><%=actannual.year_0.round(1) %></td>
+      <td><%=actannual.year_1.round(1) %></td>
+      <td><%=actannual.year_2.round(1) %></td>
+      <td><%=actannual.year_3.round(1) %></td>
+      <td><%=actannual.year_4.round(1) %></td>
+      <td><%=actannual.year_5.round(1) %></td>
     </tr>
     </table> 
 
@@ -322,7 +347,7 @@
         <% the_pair = (@epochdates.currency + currency.currency_name) %>
         <tr>
           <td><%=currency.currency_name %></td>
-          <td><%=(currency.year_0*actannual.year_0) %></td>
+          <td><%=(currency.year_0*actannual.year_0).round(1) %></td>
           <td><%=((currency.year_1*actannual.year_1)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1).last.rate)).round(1) %></td>
           <td><%=((currency.year_2*actannual.year_2)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 1).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 1).last.rate)).round(1) %></td>
           <td><%=((currency.year_3*actannual.year_3)*(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year + 2).last.rate)/(Epochfxrate.where("currency_pair = ? AND year = ?", the_pair, @epochdates.start_year - 1 + 2).last.rate)).round(1) %></td>

@@ -42,7 +42,7 @@
 <% #= @lookup.name 
 %><br/>
 
-<h3>Upload financial data</h3>
+<h3>Upload financial data or add it manually through the form below</h3><br/>
 
 <%= form_tag({:controller => 'static_pages', :action => :uploadfile}, :multipart => true) do %>
   <%= file_field_tag 'upload[datafile]' %> 
@@ -79,7 +79,6 @@
 <% # end 
 %>
 
-
 <%= render 'shared/annual_form' %>
 
 
@@ -102,16 +101,19 @@
            <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> annual.year_4 %>
 
            <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> annual.year_5 %>
- 
-           <%= f.submit "Update" %>
+
+           <%= f.submit "Update" %> 
+             
+           <%= link_to "delete", annual,   :method => :delete,
+                                           :confirm => "You sure?" %>
+
+           <% @annual_item = Annual.where("id = ?", annual.id) %>
+           <% @annual_item.each do |annual_item|%>
+             <%=link_to "edit fx", annual_item %>       
+           <% end %> 
 
          <% end %>
        <% end %>
-
-<h2> Edit currency composition </h2>
-<ul class="unstyled" >
-  <%= render @annuals %>
-</ul>
 
 <!--
 
