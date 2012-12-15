@@ -196,6 +196,9 @@ class Basecase < ActiveRecord::Base
        # array to hold true/false of whether each actor is an array or not
        type_check = []
 
+       # this tests which part of max_array_length the calc goes through
+       test_var = 0
+
        rules_array.each do |rule|
 
          # holds the max length of any array within a single rule
@@ -278,7 +281,8 @@ class Basecase < ActiveRecord::Base
                      # item = item + " " 
                      rule_body = rule_body.gsub("#{item}", "#{ value }" )
                      # need to remove the spaces from item again so rest of code is not screwed up
-                     # item = item.strip! 
+                     # item = item.strip!
+  
                  end
              end 
 
@@ -286,15 +290,21 @@ class Basecase < ActiveRecord::Base
              if max_array_length > 0
                  # need to convert each item in broken string into an array, so all items are an array
 
-                 if lookup_array[:"#{ item }"].kind_of?(Array) != true
-                     items_as_array = Array.new(max_array_length){|x| x = item }
+                 if lookup_array[:"#{ item }"].kind_of?(Array) != true && lookup_array[:"#{ item }"]
+                     items_as_array = Array.new(max_array_length){|x| x = lookup_array[:"#{ item }"] }
                      # add these new items_as_array into broken_string_as_array
-                     broken_string_as_array << items_as_array 
+                     broken_string_as_array << items_as_array                  
+                 end
+
+                 if lookup_array[:"#{ item }"].kind_of?(Array) != true && lookup_array[:"#{ item }"].nil?
+                     items_as_array = Array.new(max_array_length){|x| x = item  }
+                     # add these new items_as_array into broken_string_as_array
+                     broken_string_as_array << items_as_array                  
                  end
 
                  # add array items into the broken_string_as_array too
                  if lookup_array[:"#{ item }"].kind_of?(Array) 
-                     broken_string_as_array << lookup_array[:"#{ item }"] 
+                     broken_string_as_array << lookup_array[:"#{ item }"]
                  end
    
              end
@@ -336,7 +346,7 @@ class Basecase < ActiveRecord::Base
 
        end
  	
-       return lookup_array #answers_array
+       return lookup_array 
 
     end
 

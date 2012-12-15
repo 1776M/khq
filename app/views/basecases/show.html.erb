@@ -1,21 +1,15 @@
 <% # update the lookup table on page reload 
 
-#  @basecase.create_lookuptable(@basecase.id)
-
-    # this is not actually used
-    lookup_hash = Hash.new
-
-    # this just loads the params to update or create the lookup table below
-    params[:lookup] = {
-     
-        name: @basecase.lookup_table(@basecase.id),
-        basecase_id: @basecase.id
-       }
-
      
     # if there is already a lookup table then is is updated
 
     if @basecase.lookups.count > 0  
+
+        params[:lookup] = {
+     
+            name: @basecase.parse_code(@rules.last.name, @basecase.id),
+            basecase_id: @basecase.id
+           }
 
         @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", @basecase.id]) 
             if @lookup.update_attributes(params[:lookup])
@@ -27,6 +21,13 @@
     # if there isn't a lookup table it is created
     
     else 
+
+        params[:lookup] = {
+     
+            name: @basecase.lookup_table(@basecase.id),
+            basecase_id: @basecase.id
+           }
+
         @lookup = @basecase.lookups.build(params[:lookup]) 
             if @lookup.save  
                 flash[:success] = "You have created new data" 
@@ -39,28 +40,26 @@
 %>
 
 <% @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", @basecase.id])  %>
-<% #= @lookup.name 
-%><br/>
+<%= @lookup.name %>
+<br/>
 
-<h3>Upload financial data or add it manually through the form below</h3><br/>
+<h2>Financials</h2>
+
+<h1>Upload input data</h1>
 
 <%= form_tag({:controller => 'static_pages', :action => :uploadfile}, :multipart => true) do %>
-  <%= file_field_tag 'upload[datafile]' %> 
+  <%= file_field_tag 'upload[datafile]' %>
   <%= submit_tag("Upload") %> 
 <% end %>
 
 
-<% # = @basecase.parse_code(@rules.last.name, @basecase.id)
+<%= @basecase.parse_code(@rules.last.name, @basecase.id)
 %><br/>
 
 
-<% # if @basecase.rules.count < 1
-%>
-  <%# = render 'shared/rule_form'  
-  %>
-<% # else 
-%>
-<!--
+<%  if @basecase.rules.count < 1 %>
+  <%= render 'shared/rule_form' %>
+<%  else %>
   <div class="row">
     <div class="span12">
 
@@ -75,9 +74,7 @@
     <% end %>
     </div>
   </div>
--->
-<% # end 
-%>
+<% end %>
 
 <%= render 'shared/annual_form' %>
 
@@ -115,7 +112,6 @@
          <% end %>
        <% end %>
 
-<!--
 
 <h2>Debt portfolio</h2>
 
@@ -146,4 +142,3 @@
 
 <br/><br/><hr><br/>
 
--->
