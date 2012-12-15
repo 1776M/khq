@@ -31,22 +31,28 @@ class ScenariosController < ApplicationController
 
   def create
       @project = Project.find(params[:project_id])    
-      @scenario = @project.scenarios.build(params[:scenario]) 
-    if @scenario.save
-      flash[:success] = "scenario created!"
-      redirect_to project_path(params[:project_id])
-    else
-      render user_path(current_user)
-    end
+      @scenario = @project.scenarios.build(params[:scenario])
+      @scenarios = @project.scenarios 
+
+      respond_to do |format| 
+          if @scenario.save
+            flash[:success] = "scenario created!"
+            format.html {redirect_to project_path(params[:project_id])} 
+            format.js 
+          else
+            render user_path(current_user)
+          end
+      end
   end
 
   def destroy
+    @scenario = Scenario.find(params[:id])
     Scenario.find(params[:id]).destroy
     flash[:success] = "scenario deleted"
     if current_user.name == 'mandeep3'     
         redirect_to groups_path
     else
-        redirect_to group_path(current_user.group_id)
+        redirect_to project_path(@scenario.project_id)
     end
 
   end

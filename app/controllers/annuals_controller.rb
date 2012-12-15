@@ -11,13 +11,33 @@ class AnnualsController < ApplicationController
 
   def create
     @basecase = Basecase.find(params[:basecase_id])    
-    @annual = @basecase.annuals.build(params[:annual])     
+    @annual = @basecase.annuals.build(params[:annual])   
     if @annual.save
       flash[:success] = "You have created new data"
       redirect_to basecase_path(@annual.basecase_id)
     else
       render 'new'
     end
+
+    params = Hash.new  
+    params[:currency] = {
+     
+             currency_name: "EUR",
+             year_0: 1,
+             year_1: 1,
+             year_2: 1,
+             year_3: 1,
+             year_4: 1,
+             year_5: 1,            
+             annual_id: @annual.id
+             }
+
+    @currency = @annual.currencies.build(params[:currency])
+    if @currency.save
+      # this is just a dummy variable to do something in the loop
+      a = 1
+    end   
+
   end
 
   def edit 

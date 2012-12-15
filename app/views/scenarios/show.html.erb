@@ -1,16 +1,31 @@
-<h1>
-  <%= @scenario.name %>
-</h1>
 
-<hr><br/>
+<h3>
+  <%= @scenario.name %>
+</h3>
+
+<br/>
 
 <p>
   <button class="btn btn-mini btn-primary btn-upload" type="button">Upload</button>
   <button class="btn btn-mini btn-primary btn-general-info" type="button">General info</button>
   <button class="btn btn-mini btn-primary btn-financials" type="button">Financials</button>
-  <button class="btn btn-mini btn-primary btn-epoch" type="button">Detailed tables</button>
+  <button class="btn btn-mini btn-primary btn-epoch" type="button">FX mix</button>
 </p>
 
+<br/>
+
+<div id="slider">
+</div>
+<p id="slider_value"></p>
+
+<% 
+   if @epochdates
+     # this is just a dummy variable to do something in the if statement 
+     a=1   
+   else
+     start_year = 2007
+   end
+%>
 
 <script type="text/javascript">
     $(function() {
@@ -18,22 +33,19 @@
 
                           min: 2000,
                           max: 2008,
-                          value:<%=@epochdates.start_year %> ,
+                          value:<%=start_year %>,
                           slide: function( event, ui ) {
-                               $("#slider_value").html(ui.value); 
+                               $("#slider_value").html(ui.value);
+                               $(".home-fx").val(ui.value);
+                               $("form#new_epochdate").submit();
+ 
                                }                          
         });
-        
+     $(".ui-slider-handle").focus();        
     });
-    
 </script>
 
-<br/>
 
-
-<div id="slider">
-</div>
-<p id="slider_value"><%=@epochdates.start_year%></p>
 
 <br/>
 <div class="upload">
@@ -63,33 +75,35 @@
 </script>
 
 
+
+ <script type="text/javascript">
+    $(function() {
+        var availableTags = [
+            "EUR",
+            "USD",
+            "GBP",
+            "YEN",
+            "BRL"
+        ];
+        $( ".currency-tag" ).autocomplete({
+            source: availableTags
+        });
+    });
+    </script>
+
 <div class="general-info">
  <h2>General info</h2>
-
-  <div class="row">
-    <div class="span12">
-
-      <%= form_for @epochdate, {:class => "form-inline"} do |f| %>
-        <%= render 'shared/error_messages', :object => f.object %>
-
-        <%= f.text_field :currency, :class=> "input-small", :placeholder=>"home fx", :value => "home fx" %>
-
-        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"year", :value => "year" %>
-
-      <% end %>
-    </div>
-  </div>
 
  <% if @epochdates %>
   <div class="row">
     <div class="span12">
 
-      <%= form_for @epochdate, {:class => "form-inline"} do |f| %>
+      <%= form_for @epochdate, {:class => "form-inline jq-submit"} do |f| %>
         <%= render 'shared/error_messages', :object => f.object %>
 
-        <%= f.text_field :currency, :class=> "input-small", :placeholder=>"home fx", :value => @epochdates.currency %>
+        <%= f.text_field :currency, :class=> "input-small currency-tag", :placeholder=>"home fx", :value => @epochdates.currency %>
 
-        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"home fx", :value => @epochdates.start_year %>
+        <%= f.text_field :start_year, :class=> "input-small home-fx", :placeholder=>"start year", :value => @epochdates.start_year %>
 
         <%= hidden_field_tag :scenario_id, @scenario.id %>
  
@@ -106,7 +120,7 @@
 
         <%= f.text_field :currency, :class=> "input-small", :placeholder=>"home fx" %>
 
-        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"home fx" %>
+        <%= f.text_field :start_year, :class=> "input-small", :placeholder=>"start year" %>
 
         <%= hidden_field_tag :scenario_id, @scenario.id %>
  
@@ -260,7 +274,7 @@
 
            <%= hidden_field_tag :scenario_id, @scenario.id %>
  
-           <%= f.submit "Accept" %>
+           <%= f.submit "Update" %>
 
          <% end %>
        <% end %>
@@ -286,7 +300,7 @@
 
 <div class="epoch">
 <h1>Epoch</h1>
-<h2>Local currency</h2>
+<h2>Current mix</h2>
 
 <% @actannuals.each do |actannual| %>
     <h4><%=link_to actannual.name, actannual %></h4> <br/>

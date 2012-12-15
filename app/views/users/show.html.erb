@@ -6,6 +6,12 @@
 
 <h3><%=current_user.name %></h3>
 
+<script type="text/javascript">
+    $("#project_project_name").change(function () {
+      $("form:first").submit();
+    });
+</script>
+
 <%= render 'shared/project_form' %>
 
 <% if @projects.count > 0%>
@@ -16,3 +22,4 @@
 <% unless @user.projects.empty? %>
   <%= render @projects %>
 <% end %>
+

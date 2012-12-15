@@ -23,6 +23,34 @@ class ActannualsController < ApplicationController
       @title = "Sign up"
       render 'new'
     end
+
+    @annual = Annual.find(@actannual.top_annual)
+    @currencies = @annual.currencies
+
+    params = Hash.new  
+    @currencies.each do |currency|
+      unless @actannual.top_annual.nil? || @actannual.top_annual ==""
+
+        params[:actcurrency] = {
+     
+             currency_name: currency.currency_name,
+             year_0: currency.year_0,
+             year_1: currency.year_0,
+             year_2: currency.year_0,
+             year_3: currency.year_0,
+             year_4: currency.year_0,
+             year_5: currency.year_0,            
+             actannual_id: @actannual.id,
+  
+             }
+
+        @actcurrency = @actannual.actcurrencies.build(params[:actcurrency])
+        if @actcurrency.save
+          # this is just a dummy variable to do something in the loop
+          a = 1
+        end   
+      end
+    end   
   end
 
   def edit 

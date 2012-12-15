@@ -1,8 +1,8 @@
-<h1>
+<h3>
   <%= @annual.name %>
-</h1>
+</h3>
 
-
+<%= link_to "basecase", basecase_path(@annual.basecase_id)%>
 
           <%= render 'shared/currency_form' %>
 

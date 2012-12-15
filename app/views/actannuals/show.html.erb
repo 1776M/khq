@@ -1,7 +1,8 @@
-<h1>
-  <%= @actannual.name %>
-</h1>
+<%= link_to @actannual.scenario.name, scenario_path(@actannual.scenario_id)%>
 
+<h2>
+  <%= @actannual.name %>
+</h2>
 
 <% 
 
@@ -75,29 +76,7 @@
        <% if j > 0 || currency.id != i %>
          <% next %>
        <% else %> 
-         <%= form_for @actcurrency_new do |f| %>
-           <%= render 'shared/error_messages', :object => f.object %>
-
-           <%= f.text_field :currency_name, :class=> "input-small", :placeholder=>"currency", :value => currency.currency_name %>
-
-           <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value => currency.year_0 %>
-
-           <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value => currency.year_1 %>
-
-           <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value => currency.year_2 %>
-
-           <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value => currency.year_3 %>
-
-           <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value => currency.year_4 %>
-
-           <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value => currency.year_5 %>
-
-           <%= f.hidden_field :top_currency, :value => currency.id %>
-           <%= hidden_field_tag :actannual_id, @actannual.id %>
- 
-           <%= f.submit "Accept" %>
-
-         <% end %>
+         <% next %>
        <% end %>
      <% end %>
 
