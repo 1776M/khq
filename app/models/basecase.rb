@@ -67,7 +67,7 @@ class Basecase < ActiveRecord::Base
             lookup[annual.name + "." + "year_5"] = annual.year_5 
         end
 
-        # create hash entry for each input single
+	 # create hash entry for each input single
         # create hash entry for each input multi
 
         @inputs.each do |input|

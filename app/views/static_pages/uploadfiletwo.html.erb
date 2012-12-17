@@ -8,9 +8,9 @@
 require 'csv'
 
 thegrid = CSV.table(path, :headers => true, :header_converters => :symbol)
-thegrid[:basecase_id] = @basecase.id
+thegrid[:scenario_id] = @scenario.id
 
-annual_headers = [:name, :year_0, :year_1, :year_2, :year_3, :year_4, :year_5, :basecase_id]
+annual_headers = [:name, :year_0, :year_1, :year_2, :year_3, :year_4, :year_5, :scenario_id]
 
 # if the uploaded file is an annual file then it will be set to 1 later and save data to annual model
 annual_file = 0 
@@ -33,12 +33,23 @@ if annual_file > 0
             year_5: row[6],
             basecase_id: row[7]
             }
+
+        @actannual = Actannual.find(:last, :conditions => [" scenario_id = ? AND name = ? ", @scenario.id, row[0] ])         
+        if @actannual
+            if @actannual.update_attributes(params[:actannual])
+                flash[:success] = "Data updated"
+            else
+                flash[:success] = "The data didn't update this time"
+            end 
+ 
+        else           
      
-        @actannual = @scenario.actannuals.build(params[:actannual]) 
-        if @actannual.save  
-            flash[:success] = "You have created new data" 
-        else 
-            flash[:success] = "It didn't work mate" 
+            @actannual = @scenario.actannuals.build(params[:actannual]) 
+            if @actannual.save  
+                flash[:success] = "You have created new data" 
+            else 
+                flash[:success] = "It didn't work mate" 
+            end
         end 
     end
 
@@ -82,4 +93,10 @@ else
             end   
     end
 end 
+
+
+path_to_file = path
+
+File.delete(path_to_file) 
+
 %>

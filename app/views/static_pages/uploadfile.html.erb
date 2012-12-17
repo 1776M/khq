@@ -33,13 +33,24 @@ if annual_file > 0
             year_5: row[6],
             basecase_id: row[7]
             }
-     
-        @annual = @basecase.annuals.build(params[:annual]) 
-        if @annual.save  
-            flash[:success] = "You have created new data" 
-        else 
-            flash[:success] = "It didn't work mate" 
-        end 
+
+        @annual = Annual.find(:last, :conditions => [" basecase_id = ? AND name = ? ", @basecase.id, row[0] ])         
+        if @annual
+            if @annual.update_attributes(params[:annual])
+                flash[:success] = "Data updated"
+            else
+                flash[:success] = "The data didn't update this time"
+            end 
+ 
+        else           
+
+            @annual = @basecase.annuals.build(params[:annual]) 
+            if @annual.save  
+                flash[:success] = "You have created new data" 
+            else 
+                flash[:success] = "It didn't work mate" 
+            end
+        end  
     end
 
 else 
@@ -81,5 +92,9 @@ else
                 flash[:success] = "The data didn't update this time"
             end   
     end
-end 
+end
+
+path_to_file = path
+
+File.delete(path_to_file) 
 %>

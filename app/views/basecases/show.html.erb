@@ -2,8 +2,23 @@
 
      
     # if there is already a lookup table then is is updated
+    # need to actually do this twice, the first time sweeps for newly uploaded items, the second calculates the parsed data
 
     if @basecase.lookups.count > 0  
+
+        params[:lookup] = {
+     
+            name: @basecase.lookup_table(@basecase.id),
+            basecase_id: @basecase.id
+           }
+
+        @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", @basecase.id]) 
+            if @lookup.update_attributes(params[:lookup])
+                # commented this out because it keeps happening every page reload and is annoying 
+                # flash[:success] = "Data updated"
+            else
+                flash[:success] = "The data didn't update this time"
+            end   
 
         params[:lookup] = {
      
@@ -13,10 +28,11 @@
 
         @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", @basecase.id]) 
             if @lookup.update_attributes(params[:lookup])
-                flash[:success] = "Data updated"
+                # flash[:success] = "Data updated"
             else
                 flash[:success] = "The data didn't update this time"
-            end   
+            end 
+
 
     # if there isn't a lookup table it is created
     
@@ -39,106 +55,213 @@
 
 %>
 
+<p>
+  <button class="btn btn-mini btn-primary btn-upload" type="button">Upload</button>
+  <button class="btn btn-mini btn-primary btn-inputs" type="button">Inputs</button>
+  <button class="btn btn-mini btn-primary btn-rules" type="button">Rules</button>
+  <button class="btn btn-mini btn-primary btn-financials" type="button">Annual data</button>
+  <button class="btn btn-mini btn-primary btn-debt" type="button">Debt</button>
+</p>
+
+
 <% @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", @basecase.id])  %>
-<%= @lookup.name %>
+<% @lookup.name %>
 <br/>
 
-<h2>Financials</h2>
 
-<h1>Upload input data</h1>
+<div class="upload">
+    <h2>Upload input data</h2>
 
-<%= form_tag({:controller => 'static_pages', :action => :uploadfile}, :multipart => true) do %>
-  <%= file_field_tag 'upload[datafile]' %>
-  <%= submit_tag("Upload") %> 
-<% end %>
-
-
-<%= @basecase.parse_code(@rules.last.name, @basecase.id)
-%><br/>
-
-
-<%  if @basecase.rules.count < 1 %>
-  <%= render 'shared/rule_form' %>
-<%  else %>
-  <div class="row">
-    <div class="span12">
-
-     <% @rules.each do |rule| %>
-      <%= form_for rule do |f| %>
-        <%= render 'shared/error_messages', :object => f.object %>
-
-        <%= f.text_area :name %>
-
-        <%= f.submit "Update", :class => "btn"  %>
-      <% end %>
+    <%= form_tag({:controller => 'static_pages', :action => :uploadfile}, :multipart => true) do %>
+      <%= file_field_tag 'upload[datafile]' %>
+      <%= submit_tag("Upload") %> 
     <% end %>
-    </div>
-  </div>
-<% end %>
+</div>
+<div class="inputs">
+  <% @inputs =   Input.find(:all, :conditions => [" basecase_id = ?", @basecase.id]) %>
+  <%
 
-<%= render 'shared/annual_form' %>
+        @inputs.each do |input|
+           require 'csv'
+           input.body = CSV.parse(input.body, :headers => true, :header_converters => :symbol)
+
+           %>
+           <h2><%=input.name %></h2>
+           <%= input.body %>   
+           <table class="table table-striped">
+           <tr> 
+             <% i=0 %>
+             <% number_of_cols = input.body[0].headers.count %>
+             <% while i < number_of_cols-1 do %>           
+               <th><%=input.body[0].headers[i] %></th>
+               <% i = i + 1 %>   
+             <% end %> 
+           </tr>
+             <% input.body.each do |row| %>
+                 <% i=0 %>
+                 <tr> 
+                     <% while i < number_of_cols-1 do %>     
+                         <td><%=row[i] %></td>
+                         <% i = i + 1 %> 
+                     <% end %>
+                 </tr> 
+             <% end %>
+           </table> 
+           <br/> 
+           <%
+        end 
+  %> 
+</div>
+<div class="rules">
+    <h2>Rules</h2>
+    <% @basecase.parse_code(@rules.last.name, @basecase.id)
+    %><br/>
 
 
-<h4>Current annual data</h4>
-<br/>
-     <% @annuals.each do |annual| %>
-         <%= form_for annual do |f| %>
-           <%= render 'shared/error_messages', :object => f.object %>
+    <%  if @basecase.rules.count < 1 %>
+      <%= render 'shared/rule_form' %>
+    <%  else %>
+      <div class="row">
+        <div class="span12">
 
-           <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item", :value=> annual.name %>
+         <% @rules.each do |rule| %>
+          <%= form_for rule do |f| %>
+            <%= render 'shared/error_messages', :object => f.object %>
 
-           <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> annual.year_0 %>
+            <%= f.text_area :name %>
 
-           <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> annual.year_1 %>
+            <%= f.submit "Update", :class => "btn"  %>
+          <% end %>
+        <% end %>
+        </div>
+      </div>
+    <% end %>
+</div>
 
-           <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> annual.year_2 %>
+<div class="financials">
+    <h2>Annual data</h2>
+    <%= render 'shared/annual_form' %>
 
-           <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> annual.year_3 %>
 
-           <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> annual.year_4 %>
+    <h4>Current annual data</h4>
+    <br/>
+         <% @annuals.each do |annual| %>
+             <%= form_for annual do |f| %>
+               <%= render 'shared/error_messages', :object => f.object %>
 
-           <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> annual.year_5 %>
+               <%= f.text_field :name, :class=> "input-small", :placeholder=>"Line item", :value=> annual.name %>
 
-           <%= f.submit "Update" %> 
+               <%= f.text_field :year_0, :class=> "input-small", :placeholder=>"year 0", :value=> annual.year_0 %>
+
+               <%= f.text_field :year_1, :class=> "input-small", :placeholder=>"year 1", :value=> annual.year_1 %>
+
+               <%= f.text_field :year_2, :class=> "input-small", :placeholder=>"year 2", :value=> annual.year_2 %>
+
+               <%= f.text_field :year_3, :class=> "input-small", :placeholder=>"year 3", :value=> annual.year_3 %>
+
+               <%= f.text_field :year_4, :class=> "input-small", :placeholder=>"year 4", :value=> annual.year_4 %>
+
+               <%= f.text_field :year_5, :class=> "input-small", :placeholder=>"year 5", :value=> annual.year_5 %>
+
+               <%= f.submit "Update" %> 
              
-           <%= link_to "delete", annual,   :method => :delete,
+               <%= link_to "delete", annual,   :method => :delete,
                                            :confirm => "You sure?" %>
 
-           <% @annual_item = Annual.where("id = ?", annual.id) %>
-           <% @annual_item.each do |annual_item|%>
-             <%=link_to "edit fx", annual_item %>       
-           <% end %> 
+               <% @annual_item = Annual.where("id = ?", annual.id) %>
+               <% @annual_item.each do |annual_item|%>
+                 <%=link_to "edit fx", annual_item %>       
+               <% end %> 
 
+             <% end %>
+           <% end %>
+</div>
+
+<div class="debt">
+    <h2>Debt portfolio</h2>
+
+    <%= render 'shared/borrowing_form' %>
+
+    <h4>Current debt portfolio</h4>
+
+         <% @borrowings.each do |borrowing| %>
+             <%= form_for borrowing do |f| %>
+               <%= render 'shared/error_messages', :object => f.object %>
+
+               <%= f.text_field :size, :class=> "input-small", :placeholder=>"size", :value => borrowing.size %>
+
+               <%= f.text_field :coupon, :class=> "input-small", :placeholder=>"coupon", :value => borrowing.coupon %>
+
+               <%= f.text_field :issue_year, :class=> "input-small", :placeholder=>"issue_year", :value => borrowing.issue_year %>
+
+               <%= f.text_field :maturity_year, :class=> "input-small", :placeholder=>"maturity_year", :value => borrowing.maturity_year %>
+
+               <%= f.text_field :currency, :class=> "input-small", :placeholder=>"currency", :value => borrowing.currency %>
+
+               <%= f.text_field :fixed_float, :class=> "input-small", :placeholder=>"fixed/float", :value => borrowing.fixed_float %>
+
+               <%= f.submit "Update" %>
+
+             <% end %>
          <% end %>
-       <% end %>
+</div>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+   $(".upload").hide();
+   $(".inputs").hide();
+   $(".rules").hide();
+   $(".debt").hide();
+ });
+</script>
 
 
-<h2>Debt portfolio</h2>
+<script type="text/javascript">
+ $(document).ready(function(){
+   $(".btn-upload").toggle(function(){
+     $(".upload").show('fast');
+   },function(){
+     $(".upload").hide('slow');
+   });
+ });
+</script>
 
-<%= render 'shared/borrowing_form' %>
+<script type="text/javascript">
+ $(document).ready(function(){
+   $(".btn-inputs").toggle(function(){
+     $(".inputs").show('fast');
+   },function(){
+     $(".inputs").hide('slow');
+   });
+ });
+</script>
 
-<h4>Current debt portfolio</h4>
+<script type="text/javascript">
+ $(document).ready(function(){
+   $(".btn-rules").toggle(function(){
+     $(".rules").show('fast');
+   },function(){
+     $(".rules").hide('slow');
+   });
+ });
+</script>
 
-     <% @borrowings.each do |borrowing| %>
-         <%= form_for borrowing do |f| %>
-           <%= render 'shared/error_messages', :object => f.object %>
+<script type="text/javascript">
+ $(document).ready(function(){
+   $(".btn-financials").toggle(function(){
+     $(".financials").hide('slow');
+   },function(){
+     $(".financials").show('fast');
+   });
+ });
+</script>
 
-           <%= f.text_field :size, :class=> "input-small", :placeholder=>"size", :value => borrowing.size %>
-
-           <%= f.text_field :coupon, :class=> "input-small", :placeholder=>"coupon", :value => borrowing.coupon %>
-
-           <%= f.text_field :issue_year, :class=> "input-small", :placeholder=>"issue_year", :value => borrowing.issue_year %>
-
-           <%= f.text_field :maturity_year, :class=> "input-small", :placeholder=>"maturity_year", :value => borrowing.maturity_year %>
-
-           <%= f.text_field :currency, :class=> "input-small", :placeholder=>"currency", :value => borrowing.currency %>
-
-           <%= f.text_field :fixed_float, :class=> "input-small", :placeholder=>"fixed/float", :value => borrowing.fixed_float %>
-
-           <%= f.submit "Update" %>
-
-         <% end %>
-     <% end %>
-
-<br/><br/><hr><br/>
-
+<script type="text/javascript">
+ $(document).ready(function(){
+   $(".btn-debt").toggle(function(){
+     $(".debt").show('fast');
+   },function(){
+     $(".debt").hide('slow');
+   });
+ });
+</script>
