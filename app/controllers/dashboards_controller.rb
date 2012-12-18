@@ -4,7 +4,11 @@ class DashboardsController < ApplicationController
   before_filter :authorized_group_member, :only => [:show]
 
   def show
-      @dashboard = Dashboard.find(params[:id])
+    @dashboard = Dashboard.find(params[:id])
+    @basecase = current_user.group.basecases.find(:last)
+    @face = Face.new if signed_in?
+    @dashboards = @basecase.dashboards
+    @faces = @dashboard.faces
   end
 
   def create

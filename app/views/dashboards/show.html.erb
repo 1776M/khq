@@ -3,3 +3,19 @@
 </h1>
 
 
+    <%= render 'shared/face_form' %>
+
+<% if @faces.count > 0 %>
+ <h3>Current tabs</h3>
+<% end %>
+
+<% @faces.each do |face| %>
+  <h2>
+    <%= link_to face.name, face %>
+  </h2>
+
+   <%= link_to "delete #{face.name}", face,   :method => :delete,
+                                              :confirm => "You sure?" %>
+
+<% end %>
+

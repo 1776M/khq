@@ -1,0 +1,17 @@
+<%= provide(:title, 'Add tabs') %>
+<h4>Add tabs</h4>
+
+<div class="row">
+  <div class="span6 offset3">
+
+    <%= form_for @face do |f| %>
+      <%= render 'shared/error_messages', :object => f.object %>
+
+      <%= f.text_field :name %>
+
+      <%= hidden_field_tag :dashboard_id, @dashboard.id %>
+ 
+      <%= f.submit "Create tab", :class => "btn btn-mini btn-primary"  %>
+    <% end %>
+  </div>
+</div>
