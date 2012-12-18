@@ -1,0 +1,15 @@
+<%= provide(:title, 'Edit dashboard') %>
+<h4>Edit dashboard</h4>
+
+<div class="row">
+  <div class="span12">
+
+    <%= form_for @dashboard do |f| %>
+      <%= render 'shared/error_messages', :object => f.object %>
+
+      <%= f.text_field :name %>
+
+      <%= f.submit "Update", :class => "btn"  %>
+    <% end %>
+  </div>
+</div>

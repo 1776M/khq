@@ -11,7 +11,7 @@ class RulesController < ApplicationController
     @basecase = Basecase.find(params[:basecase_id])    
     @rule = @basecase.rules.build(params[:rule])
     if @rule.save
-      flash[:success] = "You have created new rule"
+      flash[:success] = "You have created a new rule"
       redirect_to basecase_path(@rule.basecase_id)
     else
       render 'new'

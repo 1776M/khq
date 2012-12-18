@@ -9,6 +9,7 @@ class Basecase < ActiveRecord::Base
     has_many :rules
     has_many :inputs
     has_many :lookups
+    has_many :dashboards
 
     validates :name,     :presence => true
     validates :group_id, :presence => true

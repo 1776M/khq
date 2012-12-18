@@ -34,6 +34,7 @@ Khq::Application.routes.draw do
   resources :inputs
   resources :lookups
   resources :gains
+  resources :dashboards
 
   root to: 'static_pages#home'
 
@@ -47,6 +48,8 @@ Khq::Application.routes.draw do
   match '/environment', to: 'static_pages#environment'
   match '/uploadfile', to: 'static_pages#uploadfile'
   match '/uploadfiletwo', to: 'static_pages#uploadfiletwo'    
+  match '/board', to: 'static_pages#board'    
+
 
 # The priority is based upon order of creation:
   

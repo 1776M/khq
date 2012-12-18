@@ -28,5 +28,10 @@ class StaticPagesController < ApplicationController
     flash[:success] = "File has been uploaded successfully"
   end
 
+  def board
+    @basecase = current_user.group.basecases.find(:last)
+    @dashboard = Dashboard.new if signed_in?
+    @dashboards = @basecase.dashboards
+  end
 
 end

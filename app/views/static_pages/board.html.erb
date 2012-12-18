@@ -1,0 +1,16 @@
+
+    <%= render 'shared/dashboard_form' %>
+
+<% if @dashboards.count > 0 %>
+ <h3>Current dashboards</h3>
+<% end %>
+
+<% @dashboards.each do |dashboard| %>
+  <h2>
+    <%= link_to dashboard.name, dashboard %>
+  </h2>
+
+   <%= link_to "delete #{dashboard.name}", dashboard,   :method => :delete,
+                                                        :confirm => "You sure?" %>
+
+<% end %>

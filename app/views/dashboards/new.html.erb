@@ -1,0 +1,17 @@
+<%= provide(:title, 'Add dashboards') %>
+<h4>Add dashboards</h4>
+
+<div class="row">
+  <div class="span12">
+
+    <%= form_for @dashboard do |f| %>
+      <%= render 'shared/error_messages', :object => f.object %>
+
+      <%= f.text_field :name %>
+
+      <%= hidden_field_tag :basecase_id, @basecase.id %>
+ 
+      <%= f.submit "Submit", :class => "btn"  %>
+    <% end %>
+  </div>
+</div>
