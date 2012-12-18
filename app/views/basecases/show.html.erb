@@ -58,9 +58,10 @@
 <p>
   <button class="btn btn-mini btn-primary btn-upload" type="button">Upload</button>
   <button class="btn btn-mini btn-primary btn-inputs" type="button">Inputs</button>
-  <button class="btn btn-mini btn-primary btn-rules" type="button">Rules</button>
   <button class="btn btn-mini btn-primary btn-financials" type="button">Annual data</button>
   <button class="btn btn-mini btn-primary btn-debt" type="button">Debt</button>
+  <button class="btn btn-mini btn-primary btn-rules" type="button">Rules</button>
+  <button class="btn btn-mini btn-primary btn-calculated" type="button">Calculated data</button>
 </p>
 
 
@@ -87,7 +88,6 @@
 
            %>
            <h2><%=input.name %></h2>
-           <%= input.body %>   
            <table class="table table-striped">
            <tr> 
              <% i=0 %>
@@ -107,7 +107,6 @@
                  </tr> 
              <% end %>
            </table> 
-           <br/> 
            <%
         end 
   %> 
@@ -206,12 +205,20 @@
          <% end %>
 </div>
 
+<div class="calculated">
+ hello<br/>
+ hello<br/>
+ hello<br/>
+ hello<br/>
+</div>
+
 <script type="text/javascript">
  $(document).ready(function(){
    $(".upload").hide();
    $(".inputs").hide();
    $(".rules").hide();
    $(".debt").hide();
+   $(".calculated").hide();
  });
 </script>
 
@@ -262,6 +269,16 @@
      $(".debt").show('fast');
    },function(){
      $(".debt").hide('slow');
+   });
+ });
+</script>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+   $(".btn-calculated").toggle(function(){
+     $(".calculated").show('fast');
+   },function(){
+     $(".calculated").hide('slow');
    });
  });
 </script>
