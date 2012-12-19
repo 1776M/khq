@@ -11,7 +11,7 @@ class SensesController < ApplicationController
     @face = Face.find(params[:face_id])    
     @sense = @face.senses.build(params[:sense])
     if @sense.save
-      flash[:success] = "You have created a new tab"
+      flash[:success] = "You have created a new sub tab"
       redirect_to face_path(@sense.face_id)
     else
       render 'new'
@@ -25,10 +25,10 @@ class SensesController < ApplicationController
   def update
     @sense = Sense.find(params[:id])
     if @sense.update_attributes(params[:sense])
-      flash[:success] = "Tab updated"
+      flash[:success] = "Sub tab updated"
       redirect_to sense_path(@sense.face_id)
     else
-      @title = "Edit tab"
+      @title = "Edit sub tab"
       render 'edit'
     end
   end
@@ -39,7 +39,7 @@ class SensesController < ApplicationController
 
   def destroy
     Sense.find(params[:id]).destroy
-    flash[:success] = "Tab deleted"
+    flash[:success] = "sub tab deleted"
     if current_user.name == 'mandeep3'     
         redirect_to basecase_path
     else
