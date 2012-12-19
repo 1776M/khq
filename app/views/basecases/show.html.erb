@@ -88,7 +88,7 @@
 
            %>
            <h2><%=input.name %></h2>
-           <table class="table table-striped">
+           <table class="table">
            <tr> 
              <% i=0 %>
              <% number_of_cols = input.body[0].headers.count %>
@@ -281,4 +281,14 @@
      $(".calculated").hide('slow');
    });
  });
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+      $('textarea').autosize();  
+  });
+</script>
+
+<script type="text/javascript">
+  $.backstretch("http://24.media.tumblr.com/tumblr_ltwpq6DxIv1qiz784o1_1280.jpg");
 </script>

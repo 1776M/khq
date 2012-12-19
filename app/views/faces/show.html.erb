@@ -2,4 +2,22 @@
   <%= @face.name %>
 </h1>
 
+    <%= render 'shared/sense_form' %>
 
+<% if @senses.count > 0 %>
+ <h3>Current sub tabs</h3>
+<% end %>
+
+<% @senses.each do |sense| %>
+  <h2>
+    <%= link_to sense.name, sense %>
+  </h2>
+
+   <%= link_to "delete #{sense.name}", sense,   :method => :delete,
+                                                :confirm => "You sure?" %>
+
+<% end %>
+
+<script type="text/javascript">
+  $.backstretch("http://24.media.tumblr.com/tumblr_ltwpq6DxIv1qiz784o1_1280.jpg");
+</script>

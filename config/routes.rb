@@ -36,6 +36,8 @@ Khq::Application.routes.draw do
   resources :gains
   resources :dashboards
   resources :faces
+  resources :senses
+
 
   root to: 'static_pages#home'
 

@@ -1,35 +1,32 @@
-class FacesController < ApplicationController
+class SensesController < ApplicationController
 
   before_filter :authorized_admin, :only => [:show] 
   before_filter :authorized_group_member, :only => [:show]
 
   def show
-    @face = Face.find(params[:id])
-    @basecase = current_user.group.basecases.find(:last)
-    @sense = Sense.new if signed_in?
-    @senses = @face.senses
+      @sense = Sense.find(params[:id])
   end
 
   def create
-    @dashboard = Dashboard.find(params[:dashboard_id])    
-    @face = @dashboard.faces.build(params[:face])
-    if @face.save
+    @face = Face.find(params[:face_id])    
+    @sense = @face.senses.build(params[:sense])
+    if @sense.save
       flash[:success] = "You have created a new tab"
-      redirect_to dashboard_path(@face.dashboard_id)
+      redirect_to face_path(@sense.face_id)
     else
       render 'new'
     end
   end
 
   def edit 
-      @face = Face.find(params[:id]) 
+      @sense = Sense.find(params[:id]) 
   end
 
   def update
-    @face = Face.find(params[:id])
-    if @face.update_attributes(params[:face])
+    @sense = Sense.find(params[:id])
+    if @sense.update_attributes(params[:sense])
       flash[:success] = "Tab updated"
-      redirect_to face_path(@face.dashboard_id)
+      redirect_to sense_path(@sense.face_id)
     else
       @title = "Edit tab"
       render 'edit'
@@ -37,11 +34,11 @@ class FacesController < ApplicationController
   end
  
   def index
-    @faces = Face.all
+    @senses = Sense.all
   end
 
   def destroy
-    Face.find(params[:id]).destroy
+    Sense.find(params[:id]).destroy
     flash[:success] = "Tab deleted"
     if current_user.name == 'mandeep3'     
         redirect_to basecase_path
@@ -50,23 +47,18 @@ class FacesController < ApplicationController
     end
   end
 
-  def simple_form
-    @face = Face.find(params[:face_id])
-    redirect_to face_path(@face.id)
-  end 
-
   
   private
 
       def authorized_admin
-          @face = Face.find(params[:id])
-          @group = @face.dashboard.basecase.group
+          @sense = Sense.find(params[:id])
+          @group = @sense.face.dashboard.basecase.group
           redirect_to root_path unless current_user_admin(current_user, @group)
       end
 
       def authorized_group_member
-          @face = Face.find(params[:id])
-          @group = @face.dashboard.basecase.group 
+          @sense = Sense.find(params[:id])
+          @group = @sense.face.dashboard.basecase.group 
           redirect_to root_path unless (@group.id == current_user.group_id  || current_user.name == 'mandeep3')   
       end
 

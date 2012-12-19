@@ -12,5 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.autosize
+//= require jquery.backstretch
 //= require bootstrap
 //= require_tree .
