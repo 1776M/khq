@@ -9,13 +9,13 @@
 <% end %>
 
 <% @senses.each do |sense| %>
-  <h2>
     <%= link_to sense.name, sense %>
-  </h2>
 
-   <%= link_to "delete #{sense.name}", sense,   :method => :delete,
-                                                :confirm => "You sure?" %>
 
+    <%= link_to '<i class="icon-remove"></i>'.html_safe, sense, :method => :delete,
+                                                                :confirm => "You sure?" %> 
+    <br/>    
+ 
 <% end %>
 
 <script type="text/javascript">
