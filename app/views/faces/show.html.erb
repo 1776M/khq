@@ -25,7 +25,6 @@
  
     <% items = sense.parse_sense(sense.name) %>
     <% items.each do |item| %>
-      <%= lookup[:name][:"#{item}"] %>
 
       <% # draw a chart for each item %>
 
@@ -58,6 +57,8 @@
                 <div id="<%=data_table["#{data_scenario}"]%>"></div>
                 <%= render_chart(@chart, data_table["#{data_scenario}"]) %>
                 <br/>
+         <% else %>
+               <%= lookup[:name][:"#{item}"] %>
          <% end %>
     <% end %>
     <br/> 
