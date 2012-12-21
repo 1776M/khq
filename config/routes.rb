@@ -37,7 +37,7 @@ Khq::Application.routes.draw do
   resources :dashboards
   resources :faces
   resources :senses
-
+  resources :arbs
 
   root to: 'static_pages#home'
 

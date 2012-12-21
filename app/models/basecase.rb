@@ -9,6 +9,7 @@ class Basecase < ActiveRecord::Base
     has_many :rules
     has_many :inputs
     has_many :lookups
+    has_many :arbs
     has_many :dashboards
 
     validates :name,     :presence => true
@@ -323,7 +324,8 @@ class Basecase < ActiveRecord::Base
                evaluated_strings << eval(rule_body)               
  
                # need to add the rule head into the lookup array
-               lookup_array[:"#{rule_head}"]  = eval(rule_body)  
+               lookup_array[:"#{rule_head}"]  = eval(rule_body) 
+               rule_head_array << rule_head 
          end
 
          # evaluate the rule for arrays
@@ -338,12 +340,17 @@ class Basecase < ActiveRecord::Base
                  # delete any previous elements in the array
                  # evaluated_strings.delete_if {|x| x }
                  evaluated_strings << eval(item)
-                 lookup_array[:"#{rule_head}"]  = evaluated_strings 
+                 lookup_array[:"#{rule_head}"]  = evaluated_strings
+                 rule_head_array << rule_head 
              end
 
          end
 
          answers_array << evaluated_strings
+
+         # this is to get the calculated fields into the lookup_array 
+         lookup_array[:rule_head_array] = rule_head_array
+         lookup_array[:rule_head_array] = lookup_array[:rule_head_array].uniq
 
        end
  	

@@ -10,6 +10,7 @@
 
 <% # this just finds the lookup table in case it is needed later %>
 <% lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", @basecase.id]) %> <br/>
+<%=lookup[:name] %>
 
 <% # this is used for the chart %>
 <% data_table = Hash.new %>

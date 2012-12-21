@@ -50,6 +50,26 @@ if annual_file > 0
             else 
                 flash[:success] = "It didn't work mate" 
             end
+
+            params = Hash.new  
+            params[:currency] = {
+     
+              currency_name: "EUR",
+              year_0: 1,
+              year_1: 1,
+              year_2: 1,
+              year_3: 1,
+              year_4: 1,
+              year_5: 1,            
+              annual_id: @annual.id
+              }
+
+              @currency = @annual.currencies.build(params[:currency])
+              if @currency.save
+                # this is just a dummy variable to do something in the loop
+                a = 1
+              end   
+
         end  
     end
 
