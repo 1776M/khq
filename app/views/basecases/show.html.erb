@@ -92,7 +92,7 @@
            <tr> 
              <% i=0 %>
              <% number_of_cols = input.body[0].headers.count %>
-             <% while i < number_of_cols-1 do %>           
+             <% while i < number_of_cols - 1 do %>           
                <th><%=input.body[0].headers[i] %></th>
                <% i = i + 1 %>   
              <% end %> 
@@ -106,7 +106,64 @@
                      <% end %>
                  </tr> 
              <% end %>
-           </table> 
+           </table>
+
+
+             <% input.body.each do |row| %>
+                 <b><%=row[0] %></b><br/>
+                 <% # need to show exposure data here %>
+                 <table class="table">
+                 <tr>
+                   <th><%="Breakdown" %></th>
+                   <% i=0 %>
+                   <% while i < number_of_cols-2 do %>           
+                     <th><%=input.body[0].headers[i+1] %></th>
+                     <% i = i + 1 %>   
+                   <% end %> 
+                 </tr>
+ 
+                
+                 <% @arb = Arb.find(:all)%>
+                 <% @arb.each do |arb|  %>
+           
+                   <% i = 0 %>
+                   <% if arb[:name][:"#{row[0]}"] %>
+                     <tr>
+                     <% while i < number_of_cols  do %>
+                         <% if i != 1%>     
+                           <td><%=arb[:name][:"#{row[0]}"][i] %></td>
+                         <% end %>
+                         <% i = i + 1 %> 
+                     <% end %>
+                     </tr>
+                   <% else %>
+                     <% # do nothing %>  
+                   <% end %>                   
+                 <% end %>
+                 </table> 
+                 
+                 <%="add exposure data" %>   
+                 <br/>
+                 <div class="row">
+                   <div class="span6 offset3">  
+                     <%= form_tag "/exposure" do %>
+                       <% # need to create a field for each column in the respective table and one for currency %>
+                       <%= label_tag "currency" %>
+                       <%= text_field_tag "currency" %>                       
+                       <%= hidden_field_tag "item", "#{row[0]}" %>
+                       <%= hidden_field_tag "id", @basecase.id %>
+                       <% i =0 %>
+                       <% while i < number_of_cols - 2 do %>
+                           <%= label_tag "#{input.body[0].headers[i + 1]}" %>  
+                           <%= text_field_tag "#{input.body[0].headers[i + 1]}" %>
+                           <% i = i + 1 %> 
+                       <% end %>
+                     <%= submit_tag "Save" %>
+                     <% end %>
+                   </div>
+                 </div>   
+                 <br/>                                 
+             <% end %> 
            <%
         end 
   %> 
@@ -207,12 +264,14 @@
 
 <div class="calculated">
     <%=@lookup[:name][:rule_head_array] %>
+    <%=@lookup[:name][:rule_body_array] %>
 </div>
 
 <script type="text/javascript">
  $(document).ready(function(){
    $(".upload").hide();
    $(".inputs").hide();
+   $(".financials").hide();
    $(".rules").hide();
    $(".debt").hide();
    $(".calculated").hide();
@@ -253,9 +312,9 @@
 <script type="text/javascript">
  $(document).ready(function(){
    $(".btn-financials").toggle(function(){
-     $(".financials").hide('slow');
-   },function(){
      $(".financials").show('fast');
+   },function(){
+     $(".financials").hide('slow');
    });
  });
 </script>

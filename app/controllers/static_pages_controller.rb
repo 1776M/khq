@@ -11,6 +11,11 @@ class StaticPagesController < ApplicationController
   def contact 
   end
 
+  def exposure 
+     @arb = Arb.new if signed_in?
+     @basecase = current_user.group.basecases.find(:last)
+  end
+
   def uploadfile
     @group= current_user.group
     @basecase = Basecase.find(:last, :conditions => [" group_id = ?", @group.id])

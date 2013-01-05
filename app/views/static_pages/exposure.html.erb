@@ -1,0 +1,49 @@
+<% provide(:title, 'Exposures') %>
+<h1>Add exposures</h1>
+
+<% if params %>
+  <br/>
+  <% # the params that are sent from the form include unnecessary fields, the code below removes these fields %>
+
+  <% the_arb = params.values %>
+  <% the_arb.delete_at(0) %>
+  <% the_arb.delete_at(0) %>
+  <% the_arb.delete_at(-1) %>
+  <% the_arb.delete_at(-1) %>
+  <% the_arb.delete_at(-1) %>
+  <% the_arb.delete_at(2) %>
+  <%= the_arb[1] %> 
+
+  <% @basecase = Basecase.find(params[:id])%>
+  
+  <%
+    arb_array = Hash.new
+    # field_name = the_arb[1].to_s + "." + the_arb[0].to_s 
+    arb_array[:"#{the_arb[1]}"] = the_arb
+
+    params = Hash.new
+    params[:arb] = {
+                 name: arb_array 
+                }
+
+  %>
+
+
+  <% # need to check if that arb already exists, if it doesn't then create it, else update it %>
+  <% @arbs = @basecase.arbs %>
+
+  <% 
+
+     @arb = @basecase.arbs.build(params[:arb])
+     if @arb.save
+       # this is just a dummy variable to do something in the loop
+     end   
+
+  %>
+
+<% end %>
+
+<script type="text/javascript">
+  $.backstretch("http://24.media.tumblr.com/tumblr_ltwpq6DxIv1qiz784o1_1280.jpg");
+</script>
+

@@ -52,7 +52,7 @@ Khq::Application.routes.draw do
   match '/uploadfile', to: 'static_pages#uploadfile'
   match '/uploadfiletwo', to: 'static_pages#uploadfiletwo'    
   match '/board', to: 'static_pages#board'    
-
+  match '/exposure', to: 'static_pages#exposure'    
 
 # The priority is based upon order of creation:
   

@@ -46,3 +46,32 @@ c = Array.new(4){ |x| x = b }
 <%= a %>
 
 <%= c %>
+
+<%
+# testing hashes here
+
+this_array = Hash.new
+
+this_array[:hello] = [5,3]
+this_array[:nope] = [6,8]
+this_a = this_array
+this_array[:oops] = this_a
+
+people = Hash.new
+
+people = {
+	"torvalds"=>{"lname"=>"Torvalds", "fname"=>"Linus", "job"=>"maintainer"},
+	"matsumoto"=>{"lname"=>"Matsumoto", "fname"=>"Yukihiro", "job"=>"Ruby originator"},
+	"litt"=>{"lname"=>"Litt", "fname"=>"Steve", "job"=>"troubleshooter"}
+	}
+
+people[:aa] = [1,2,3]
+
+%>
+
+<%=people %>
+
+<script type="text/javascript">
+  $.backstretch("http://24.media.tumblr.com/tumblr_ltwpq6DxIv1qiz784o1_1280.jpg");
+</script>
+
