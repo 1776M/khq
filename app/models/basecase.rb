@@ -54,6 +54,8 @@ class Basecase < ActiveRecord::Base
         @annuals =  Annual.find(:all, :conditions => [" basecase_id = ?", id])
         @inputs =   Input.find(:all, :conditions => [" basecase_id = ?", id])
 
+        array_of_currencies = []  
+
         lookup = Hash.new
 
         # create hash entry for each annual
@@ -72,6 +74,7 @@ class Basecase < ActiveRecord::Base
 
             if annual.currencies.count > 0
               annual.currencies.each do |currency|
+                array_of_currencies << currency.currency_name   
                 lookup[annual.name + "." + currency.currency_name] = [(annual.year_0*currency.year_0).round(1), (annual.year_1*currency.year_1).round(1), (annual.year_2*currency.year_2).round(1),(annual.year_3*currency.year_3).round(1), (annual.year_4*currency.year_4).round(1), (annual.year_5*currency.year_5).round(1)]
               end
             end 
@@ -115,6 +118,7 @@ class Basecase < ActiveRecord::Base
 
                if arb_item
                  the_currency = arb_item.name[0]
+                 array_of_currencies << the_currency
 
                  arb_item.name.delete_at(1)
                  arb_item.name.delete_at(0)               
@@ -124,6 +128,8 @@ class Basecase < ActiveRecord::Base
 
                row_num = row_num + 1
            end
+
+           lookup["array_of_currencies"] = array_of_currencies.uniq   
 
         end
  
@@ -302,6 +308,7 @@ class Basecase < ActiveRecord::Base
              # if there are no arrays in the formula then use the simple approach to calculations
              if max_array_length == 0
                  if lookup_array[:"#{ item }"]
+
                      value = lookup_array[:"#{ item }"]
                      # need to add space before and after item so EBIT and EBITA aren't mixed up
                      # item = item + " " 
@@ -319,13 +326,15 @@ class Basecase < ActiveRecord::Base
                  if lookup_array[:"#{ item }"].kind_of?(Array) != true && lookup_array[:"#{ item }"]
                      items_as_array = Array.new(max_array_length){|x| x = lookup_array[:"#{ item }"] }
                      # add these new items_as_array into broken_string_as_array
-                     broken_string_as_array << items_as_array                  
+                     broken_string_as_array << items_as_array 
+                                       
                  end
 
                  if lookup_array[:"#{ item }"].kind_of?(Array) != true && lookup_array[:"#{ item }"].nil?
                      items_as_array = Array.new(max_array_length){|x| x = item  }
                      # add these new items_as_array into broken_string_as_array
-                     broken_string_as_array << items_as_array                  
+                     broken_string_as_array << items_as_array
+                                       
                  end
 
                  # add array items into the broken_string_as_array too
@@ -372,17 +381,340 @@ class Basecase < ActiveRecord::Base
 
          end
 
-         answers_array << evaluated_strings
-
-         # this is to get the calculated fields into the lookup_array 
-         ### lookup_array[:rule_head_array] = rule_head_array
-         ### lookup_array[:rule_body_array] = rule_body_array
-         ### lookup_array[:rule_head_array] = lookup_array[:rule_head_array].uniq
 
        end
  	
        return lookup_array 
 
     end
+
+
+    def parse_code_fx(input_string, id)
+        
+       # explode string into new lines
+       input_string = input_string.split(/\r?\n/)
+
+       # create an array of rules
+       rules_array = []
+
+       # put all the rules into an array
+       input_string.each do |sub_rule|
+               rules_array << sub_rule                
+       end
+  
+       # loop through the rules array and perform appropriate actions or call appropriate functions
+
+       rules_array.delete_if {|x| x == "" || x == " "}
+
+       # head is the left hand side of the equals sign, body is the right     
+       rule_head = ""
+       rule_body = ""
+
+       # rule_head_array is an array for holding results of summed arrays
+       rule_head_array = []
+
+       # rule_body_array is an array for holding results of summed arrays
+       rule_body_array = []
+
+       # array for holding non-array items as arrays, e.g + becomes +,+,+,+,+
+       items_as_array = []
+
+       # all parts of the broken string are arrays
+       broken_string_as_array = []
+
+       # broken_string_as_array is then sorted into a series of strings held in an array, to be evaluated
+       strings_to_evaluate = []
+
+       # this holds the evaluated strings after strings_to_evaluate
+       evaluated_strings = []
+
+       # this array holds all the evaluated_strings (i.e. the answers to each rule calculation)
+       answers_array = []
+       
+       # pull out the lookup_array
+       @lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", id])
+       lookup_array = @lookup.name
+
+       # array to hold true/false of whether each actor is an array or not
+       type_check = []
+
+       # this tests which part of max_array_length the calc goes through
+       test_var = 0
+
+       # max_array_length is also set to zero here so it can be added to the lookup_array
+       max_array_length = 0
+
+       rules_array.each do |rule|
+
+         # holds the max length of any array within a single rule
+         max_array_length = 0
+    
+         # have to reset this to empty, for each loop of the array
+         broken_string_as_array = []
+
+         # check if it contains an = sign
+         if rule.include? "="
+            rule_head = rule.split("=").first
+            rule_body = rule.split("=").last
+         end
+
+         # first replace all + - * / ( ) with a space before and after it, if it does not exist
+
+         if rule_body.include? "+"
+             rule_body = rule_body.gsub(/[+]/, '+' => ' + ')
+         end
+
+         if rule_body.include? "-"
+             rule_body = rule_body.gsub(/[-]/, '-' => ' - ')
+         end
+
+         if rule_body.include? "*"
+             rule_body = rule_body.gsub(/[*]/, '*' => ' * ')
+         end
+
+         if rule_body.include? "/"
+             rule_body = rule_body.gsub("/", '/' => ' / ')
+         end
+
+         if rule_body.include? "("
+             rule_body = rule_body.gsub(/[(]/, '(' => ' ( ')
+         end
+
+         if rule_body.include? ")"
+             rule_body = rule_body.gsub(/[)]/, ')' => ' ) ')
+         end
+
+         # replace all multiple white spaces with a single space
+         rule_body = rule_body.squeeze(" ")
+         rule_body_original = rule_body
+
+         # remove white space from end of string
+         rule_head = rule_head.strip!
+
+         # replace all actors with the items from the lookup table
+
+         # add operators to lookup_array
+         lookup_array["+"] = "+"
+         lookup_array["-"] = "-"
+         lookup_array["*"] = "*"
+         lookup_array["/"] = "/"
+         lookup_array["("] = "("
+         lookup_array[")"] = ")"
+
+         broken_string = rule_body.split(" ")
+
+         # substitute the lookup table into the rule
+
+         # loop through the broken_string twice, first to find the max_array_length, then two convert all items to array or leave as items
+         broken_string.each do |item|
+
+             # find the max length of an array in the rule, under the assumption all arrays are the same length
+             if lookup_array[:"#{ item }"].kind_of?(Array)
+                 if lookup_array[:"#{ item }"].count > max_array_length  
+                     max_array_length = lookup_array[:"#{ item }"].count
+                 end
+             end 
+
+         end
+
+         ##### this is the first loop through without the currency splits
+
+         broken_string.each do |item|
+
+             # if there are no arrays in the formula then use the simple approach to calculations
+             if max_array_length == 0
+                 if lookup_array[:"#{ item }"]
+
+                     value = lookup_array[:"#{ item }"]
+                     # need to add space before and after item so EBIT and EBITA aren't mixed up
+                     # item = item + " " 
+                     rule_body = rule_body.gsub("#{item}", "#{ value }" )
+                     # need to remove the spaces from item again so rest of code is not screwed up
+                     # item = item.strip!
+  
+                 end
+             end 
+
+
+             if max_array_length > 0
+                 # need to convert each item in broken string into an array, so all items are an array
+
+                 if lookup_array[:"#{ item }"].kind_of?(Array) != true && lookup_array[:"#{ item }"]
+                     items_as_array = Array.new(max_array_length){|x| x = lookup_array[:"#{ item }"] }
+                     # add these new items_as_array into broken_string_as_array
+                     broken_string_as_array << items_as_array                  
+                 end
+
+                 if lookup_array[:"#{ item }"].kind_of?(Array) != true && lookup_array[:"#{ item }"].nil?
+                     items_as_array = Array.new(max_array_length){|x| x = item  }
+                     # add these new items_as_array into broken_string_as_array
+                     broken_string_as_array << items_as_array                  
+                 end
+
+                 # add array items into the broken_string_as_array too
+                 if lookup_array[:"#{ item }"].kind_of?(Array) 
+                     broken_string_as_array << lookup_array[:"#{ item }"]
+                 end
+   
+             end
+
+         end 
+         
+         # evaluated_strings = [] don't need to declare it again
+
+         # evaluate the rule but only allow certain operands and numbers, or an array containing numbers
+         if max_array_length == 0
+               evaluated_strings << eval(rule_body)               
+ 
+               # need to add the rule head into the lookup array
+               lookup_array[:"#{rule_head}"]  = eval(rule_body) 
+         end
+
+         # evaluate the rule for arrays
+
+         if max_array_length > 0
+             # using the stackoverflow answer
+
+             strings_to_evaluate = broken_string_as_array.transpose.map { |c| c.join } 
+             
+             strings_to_evaluate.each do |item|
+
+                 evaluated_strings << eval(item)
+                 lookup_array[:"#{rule_head}"]  = evaluated_strings
+             end
+
+         end
+
+         # this sets the rule_body back to the original rule_body, and arrays are cleared for the currency loops
+         rule_body = rule_body_original
+         items_as_array.clear
+         evaluated_strings.clear
+         strings_to_evaluate.clear
+         broken_string_as_array.clear
+
+         #### this is the currency loop
+         
+         lookup_array["array_of_currencies"].each do |currency|
+             broken_string.each do |item|
+                 the_fx_string = item + "." + currency
+
+                 # if there are no arrays in the formula then use the simple approach to calculations
+                 if max_array_length == 0
+                     if lookup_array[:"#{ item }"] 
+                         if lookup_array[:"#{ the_fx_string }"]                             
+                             value = lookup_array[:"#{ the_fx_string }"]  
+                         else
+                             # e.g it could be buyback.year_0 (I think this is the outline this line covers)
+                             value = lookup_array[:"#{ item }"]
+                         end
+                         # need to add space before and after item so EBIT and EBITA aren't mixed up
+                         # item = item + " " 
+                         rule_body = rule_body.gsub("#{item}", "#{ value }" )
+                         # need to remove the spaces from item again so rest of code is not screwed up
+                         # item = item.strip!
+  
+                     end
+                 end 
+
+
+                 if max_array_length > 0
+                     # need to convert each item in broken string into an array, so all items are an array
+
+                     # this checks if it is not an array but within the lookup_array e.g buyback.year_0
+                     if lookup_array[:"#{ item }"].kind_of?(Array) != true && lookup_array[:"#{ item }"]
+                         the_fx_string = item + "." + currency 
+                         if lookup_array[:"#{ the_fx_string }"]
+                             items_as_array = Array.new(max_array_length){|x| x = lookup_array[:"#{ the_fx_string }"] }
+                         else
+                             items_as_array = Array.new(max_array_length){|x| x = lookup_array[:"#{ item }"] } 
+                         end
+                         
+                         # add these new items_as_array into broken_string_as_array
+                         broken_string_as_array << items_as_array
+                                            
+                     end
+
+                     # this checks if it is not an array but not within the lookup_array e.g an integer such as 1
+                     if lookup_array[:"#{ item }"].kind_of?(Array) != true && lookup_array[:"#{ item }"].nil?
+                         
+                         items_as_array = Array.new(max_array_length){|x| x = item  }
+                         # add these new items_as_array into broken_string_as_array
+                         broken_string_as_array << items_as_array                  
+                     end
+
+                     # add array items into the broken_string_as_array too
+                     if lookup_array[:"#{ item }"].kind_of?(Array)
+                          
+                         if lookup_array[:"#{ item }"]  == "+" || lookup_array[:"#{ item }"] == "-" || lookup_array[:"#{ item }"] == "*" || lookup_array[:"#{ item }"] == "/" || lookup_array[:"#{ item }"] == "(" || lookup_array[:"#{ item }"] == ")" 
+                             
+                             # add these new items_as_array into broken_string_as_array
+                             # items_as_array = Array.new(max_array_length){|x| x = item  } 
+                             items_as_array = Array.new(max_array_length){|x| x = 0 }
+                             broken_string_as_array << items_as_array                                             
+                         else
+
+                             if lookup_array[:"#{ the_fx_string }"] 
+                                 # if the array length is less than the max_array_length, the remainder of the string if filled with zeroes  
+                                 broken_string_as_array << (lookup_array[:"#{ the_fx_string }"] + (Array.new((max_array_length - lookup_array[:"#{ the_fx_string }"].count)){|x| x = 0 }))                                  
+                             else
+                                 broken_string_as_array << Array.new(max_array_length){|x| x = 0 }      
+                             end
+
+                         end
+   
+                     end
+    
+                 end
+             
+             end 
+             
+
+             # evaluate the rule but only allow certain operands and numbers, or an array containing numbers
+             if max_array_length == 0
+
+                   evaluated_strings << eval(rule_body)               
+   
+                   the_fx_string = rule_head + "." + currency 
+                   # need to add the rule head into the lookup array
+                   # if the currency is the home currency, it is evaluated, otherwise it is nil
+                   if currency == "EUR"                                        
+                       lookup_array[:"#{the_fx_string}"]  = eval(rule_body)
+                   else
+                       lookup_array[:"#{the_fx_string}"] = 0
+                   end                    
+             end
+
+             # evaluate the rule for arrays
+
+             if max_array_length > 0
+                 # using the stackoverflow answer
+
+                 strings_to_evaluate = broken_string_as_array.transpose.map { |c| c.join } 
+             
+                 strings_to_evaluate.each do |item|
+
+                     the_fx_string = rule_head + "." + currency
+                      evaluated_strings << eval(item)
+                      lookup_array[:"#{the_fx_string}"]  = evaluated_strings
+                 end                 
+             end
+
+             # this sets the rule_body back to the original rule_body, and arrays are cleared for the currency loops
+             rule_body = rule_body_original
+             items_as_array.clear
+             evaluated_strings.clear
+             strings_to_evaluate.clear
+             broken_string_as_array.clear
+             
+         # this end statement below is the end of the currency loop
+         end
+         
+       end
+
+       lookup_array[:"max_array_length"] = max_array_length  	
+       return lookup_array 
+
+    end
+
     
 end
