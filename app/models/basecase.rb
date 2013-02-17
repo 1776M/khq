@@ -63,12 +63,12 @@ class Basecase < ActiveRecord::Base
 
         @annuals.each do |annual|
             lookup[annual.name] = [annual.year_0, annual.year_1, annual.year_2, annual.year_3, annual.year_4, annual.year_5]
-            lookup[annual.name + "." + "year_0"] = annual.year_0
-            lookup[annual.name + "." + "year_1"] = annual.year_1
-            lookup[annual.name + "." + "year_2"] = annual.year_2
-            lookup[annual.name + "." + "year_3"] = annual.year_3
-            lookup[annual.name + "." + "year_4"] = annual.year_4
-            lookup[annual.name + "." + "year_5"] = annual.year_5
+            lookup[annual.name + "." + "year_0"] = [annual.year_0]
+            lookup[annual.name + "." + "year_1"] = [annual.year_1]
+            lookup[annual.name + "." + "year_2"] = [annual.year_2]
+            lookup[annual.name + "." + "year_3"] = [annual.year_3]
+            lookup[annual.name + "." + "year_4"] = [annual.year_4]
+            lookup[annual.name + "." + "year_5"] = [annual.year_5]
 
             # add the currencies to the lookup table 
 
@@ -76,6 +76,12 @@ class Basecase < ActiveRecord::Base
               annual.currencies.each do |currency|
                 array_of_currencies << currency.currency_name   
                 lookup[annual.name + "." + currency.currency_name] = [(annual.year_0*currency.year_0).round(1), (annual.year_1*currency.year_1).round(1), (annual.year_2*currency.year_2).round(1),(annual.year_3*currency.year_3).round(1), (annual.year_4*currency.year_4).round(1), (annual.year_5*currency.year_5).round(1)]
+                lookup[annual.name + "." + "year_0" + "." + currency.currency_name] = [(annual.year_0*currency.year_0).round(1)]
+                lookup[annual.name + "." + "year_1" + "." + currency.currency_name] = [(annual.year_1*currency.year_1).round(1)]
+                lookup[annual.name + "." + "year_2" + "." + currency.currency_name] = [(annual.year_2*currency.year_2).round(1)]
+                lookup[annual.name + "." + "year_3" + "." + currency.currency_name] = [(annual.year_3*currency.year_3).round(1)]
+                lookup[annual.name + "." + "year_4" + "." + currency.currency_name] = [(annual.year_4*currency.year_4).round(1)]
+                lookup[annual.name + "." + "year_5" + "." + currency.currency_name] = [(annual.year_5*currency.year_5).round(1)]
               end
             end 
 
@@ -84,6 +90,7 @@ class Basecase < ActiveRecord::Base
 	 # create hash entry for each input single
         # create hash entry for each input multi
 
+        lookup["testa"] = 0
         @inputs.each do |input|
            require 'csv'
            input.body = CSV.parse(input.body, :headers => true, :header_converters => :symbol) 
@@ -94,10 +101,10 @@ class Basecase < ActiveRecord::Base
                end 
            else 
                input.body.each do |row|
-                   col_num = 0
-                   while col_num < input.body.headers().count
-                       lookup[row[0] + "." + input.body.headers[col_num].to_s] = row[col_num]
-      
+                   # this starts from 1 to skip the item name column, also the headers.count removes 1 to remove basecase_id 
+                   col_num = 1
+                   while col_num < (input.body.headers().count - 1)
+                       lookup[row[0] + "." + input.body.headers[col_num].to_s] = [row[col_num]]                       
                        col_num = col_num + 1
                    end 
                end  
@@ -105,32 +112,45 @@ class Basecase < ActiveRecord::Base
            end
 
            # add the actual arrays from the input table to the lookups as well
-
+ 
            row_num = 0
+             
            input.body.each do |row|
-               lookup[row[0]] = input.body[row_num].fields
+               lookup[row[0]] = input.body[row_num].fields                              
 
                # remove the first and last items (i.e the row name is first and basecase id value is last)
                lookup[row[0]].pop
                lookup[row[0]].shift
 
-               arb_item = Arb.where("name = ? AND basecase_id = ?", row[0], id).last
+               @arb_item = Arb.where("basecase_id = ?", id)
+               @arb_item.each do |arb_item|
+                                        
+                   if arb_item[:name][:"#{row[0]}"]  
+                                                                                      
+                           the_currency = arb_item[:name][:"#{row[0]}"][0]
+                           array_of_currencies << the_currency
 
-               if arb_item
-                 the_currency = arb_item.name[0]
-                 array_of_currencies << the_currency
 
-                 arb_item.name.delete_at(1)
-                 arb_item.name.delete_at(0)               
+                           if input.name != "dets"                      
+                               lookup[row[0] + "." + the_currency] = Array.new(lookup[row[0]].count){ |i| ((row[i+1]).to_f * (arb_item[:name][:"#{row[0]}"][i+2]).to_f ).round(1) }  
+                           end
 
-                 lookup[row[0] + "." + the_currency] = Array.new(input.body.headers().count){ |i| (arb_item[col_num] * row[col_num]).round(1) } 
-               end
-
+                           # this starts from 1 to skip the item name column, also the headers.count removes 1 to remove basecase_id                           
+                           col_num = 1
+                           while col_num < (input.body.headers().count - 1)
+                               # this stops the entry of the "dets" test data into the lookup array
+                               if input.name != "dets" 
+                                   lookup[row[0] + "." + input.body.headers[col_num].to_s + "." + the_currency] = [((row[col_num]).to_f * (arb_item[:name][:"#{row[0]}"][col_num+1]).to_f).round(1)]
+                               end       
+                               col_num = col_num + 1
+                           end 
+                   end
+               end                   
                row_num = row_num + 1
            end
 
-           lookup["array_of_currencies"] = array_of_currencies.uniq   
-
+           lookup["array_of_currencies"] = array_of_currencies.uniq
+           
         end
  
         return lookup    

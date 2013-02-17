@@ -6,6 +6,7 @@
   <% # the params that are sent from the form include unnecessary fields, the code below removes these fields %>
 
   <% the_arb = params.values %>
+  <%= the_arb %>
   <% the_arb.delete_at(0) %>
   <% the_arb.delete_at(0) %>
   <% the_arb.delete_at(-1) %>
