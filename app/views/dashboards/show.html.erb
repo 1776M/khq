@@ -17,7 +17,73 @@
    <%= link_to "delete #{face.name}", face,   :method => :delete,
                                               :confirm => "You sure?" %>
 
+
+  <% # this just finds the lookup table in case it is needed later %>
+  <% lookup = Lookup.find(:last, :conditions => [" basecase_id = ?", @basecase.id]) %> <br/>
+
+  <% # put an equals sign in front of lookup[:name] to show array on screen %>
+  <% lookup[:name] %>
+
+  <% # this is used for the chart %>
+  <% data_table = Hash.new %>
+
+  <% @senses = face.senses %>
+  <% @senses.each do |sense| %>
+      <%= link_to sense.name, sense %>
+
+
+      <%= link_to '<i class="icon-remove"></i>'.html_safe, sense, :method => :delete,
+                                                                  :confirm => "You sure?" %> 
+      <br/>    
+ 
+      <% items = sense.parse_sense(sense.name) %>
+      <% items.each do |item| %>
+
+        <% # draw a chart for each item %>
+
+            <% if lookup[:name][:"#{item}"].kind_of?(Array)%>
+
+                <%
+
+                  data_scenario = item
+                  data_table["#{data_scenario}"] = GoogleVisualr::DataTable.new
+
+                  # Add Column Headers
+                  data_table["#{data_scenario}"].new_column('string', 'Year' )
+                  data_table["#{data_scenario}"].new_column('number', item)
+
+                  # Add Rows and Values
+                  data_table["#{data_scenario}"].add_rows([
+                    [Time.now.year.to_s, (lookup[:name][:"#{item}"][0]).to_f],
+                    [(Time.now.year + 1).to_s, (lookup[:name][:"#{item}"][1]).to_f],
+                    [(Time.now.year + 2).to_s, (lookup[:name][:"#{item}"][2]).to_f],
+                    [(Time.now.year + 3).to_s, (lookup[:name][:"#{item}"][3]).to_f],
+                    [(Time.now.year + 4).to_s, (lookup[:name][:"#{item}"][4]).to_f],
+                    [(Time.now.year + 5).to_s, (lookup[:name][:"#{item}"][5]).to_f]
+                  ])           
+
+                  option = { width: 800, height: 240, title: item }
+                  @chart = GoogleVisualr::Interactive::LineChart.new(data_table["#{data_scenario}"], option)
+
+                %>
+
+                <div id="<%=data_table["#{data_scenario}"]%>"></div>
+                <%= render_chart(@chart, data_table["#{data_scenario}"]) %>
+                <br/>
+            <% else %>
+               <%= lookup[:name][:"#{item}"] %>
+            <% end %>
+      <% end %>
+      <br/> 
+      <br/> 
+  <% end %>
+
 <% end %>
+
+
+
+
+
 
 <script type="text/javascript">
   $.backstretch("http://24.media.tumblr.com/tumblr_ltwpq6DxIv1qiz784o1_1280.jpg");

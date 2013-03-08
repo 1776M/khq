@@ -701,7 +701,9 @@ class Basecase < ActiveRecord::Base
                        lookup_array[:"#{the_fx_string}"]  = eval(rule_body)
                    else
                        lookup_array[:"#{the_fx_string}"] = 0
-                   end                    
+                   end
+              
+                   rule_head_array << rule_head                    
              end
 
              # evaluate the rule for arrays
@@ -716,7 +718,10 @@ class Basecase < ActiveRecord::Base
                      the_fx_string = rule_head + "." + currency
                       evaluated_strings << eval(item)
                       lookup_array[:"#{the_fx_string}"]  = evaluated_strings
-                 end                 
+                 end                
+
+                 rule_head_array << rule_head
+ 
              end
 
              # this sets the rule_body back to the original rule_body, and arrays are cleared for the currency loops
@@ -731,7 +736,8 @@ class Basecase < ActiveRecord::Base
          
        end
 
-       lookup_array[:"max_array_length"] = max_array_length  	
+       lookup_array[:"max_array_length"] = max_array_length
+       lookup_array[:"rule_head_array"] = rule_head_array.uniq 	
        return lookup_array 
 
     end

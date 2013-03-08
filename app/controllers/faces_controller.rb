@@ -29,7 +29,7 @@ class FacesController < ApplicationController
     @face = Face.find(params[:id])
     if @face.update_attributes(params[:face])
       flash[:success] = "Tab updated"
-      redirect_to face_path(@face.dashboard_id)
+      redirect_to dashboard_path(@face.dashboard_id)
     else
       @title = "Edit tab"
       render 'edit'
@@ -41,12 +41,13 @@ class FacesController < ApplicationController
   end
 
   def destroy
+    @face = Face.find(params[:id])
     Face.find(params[:id]).destroy
     flash[:success] = "Tab deleted"
     if current_user.name == 'mandeep3'     
         redirect_to basecase_path
     else
-        redirect_to group_path(current_user.group_id)
+        redirect_to face_path(@face.id)
     end
   end
 

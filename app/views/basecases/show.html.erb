@@ -70,6 +70,23 @@
 <br/>
 
 
+<div class="box">
+    Info about a game
+    <div class="overlay"> Play </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+    $(".box").hover(function(){
+      $(this).find(".overlay").fadeIn();
+    }
+                    ,function(){
+                        $(this).find(".overlay").fadeOut();
+                    }
+                   );        
+});
+</script>
+
 <div class="upload">
     <h2>Upload input data</h2>
 
@@ -88,7 +105,9 @@
 
            %>
            <h2><%=input.name %></h2>
-           <table class="table">
+           <%= link_to "delete", input,   :method => :delete,
+                                           :confirm => "You sure?" %>    
+           <table class="table" bgcolor="#ffffff">
            <tr> 
              <% i=0 %>
              <% number_of_cols = input.body[0].headers.count %>
@@ -108,11 +127,12 @@
              <% end %>
            </table>
 
-
+             <div class="exposure-toggle"><%="add exposure data" %></div>   
+             <div class="exposure">
              <% input.body.each do |row| %>
                  <b><%=row[0] %></b><br/>
                  <% # need to show exposure data here %>
-                 <table class="table">
+                 <table class="table" bgcolor="#ffffff">
                  <tr>
                    <th><%="Breakdown" %></th>
                    <% i=0 %>
@@ -141,12 +161,11 @@
                    <% end %>                   
                  <% end %>
                  </table> 
-                 
-                 <%="add exposure data" %>   
+                                   
                  <br/>
                  <div class="row">
-                   <div class="span6 offset3">  
-                     <%= form_tag "/exposure" do %>
+                   <div class="span6 offset3">                       
+                     <%= form_tag "/exposure" do  %>
                        <% # need to create a field for each column in the respective table and one for currency %>
                        <%= label_tag "currency" %>
                        <%= text_field_tag "currency" %>                       
@@ -161,16 +180,17 @@
                      <%= submit_tag "Save" %>
                      <% end %>
                    </div>
-                 </div>   
+                 </div>                    
                  <br/>                                 
-             <% end %> 
+             <% end %>
+             </div> 
            <%
         end 
   %> 
 </div>
 <div class="rules">
     <h2>Rules</h2>
-    <%= @basecase.parse_code_fx(@rules.last.name, @basecase.id)
+    <% @basecase.parse_code_fx(@rules.last.name, @basecase.id)
     %><br/>
 
 
@@ -263,7 +283,30 @@
 </div>
 
 <div class="calculated">
-    <%=@lookup[:name] %>
+    <% @lookup[:name][:rule_head_array].each do |rule_head| %>
+        <table class="table" bgcolor="#ffffff">
+        <tr>
+          <td> 
+            <%=rule_head %>
+          </td>
+
+          <% if @lookup[:name][:"#{rule_head}"].kind_of?(Array)%>
+              <% i=0 %>
+              <% while i < @lookup[:name][:"#{rule_head}"].count do %>
+              <td> 
+                <%= @lookup[:name][:"#{rule_head}"][i] %>
+                <% i = i + 1%> 
+              </td>
+              <% end %>
+          <% else %>
+              <td>
+                <%= @lookup[:name][:"#{rule_head}"] %> 
+              </td> 
+          <% end %> 
+        </tr>
+        </table>   
+    <% end %>
+    
 </div>
 
 <script type="text/javascript">
@@ -274,6 +317,17 @@
    $(".rules").hide();
    $(".debt").hide();
    $(".calculated").hide();
+   $(".exposure").hide();
+ });
+</script>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+   $(".exposure-toggle").toggle(function(){
+     $(".exposure").show('fast');
+   },function(){
+     $(".exposure").hide('slow');
+   });
  });
 </script>
 
